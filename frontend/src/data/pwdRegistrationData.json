@@ -1,0 +1,9 @@
+{
+    "quarters": ["Q1", "Q2", "Q3", "Q4"],
+    "sexOptions": ["Male", "Female", "Other"],
+    "disabilityCategories": ["Physical", "Mental", "Sensory", "Multiple"],
+    "disabilityTypes": ["Blindness", "Deafness", "Mobility Impairment", "Autism", "Epilepsy"],
+    "communities": ["Community A", "Community B", "Community C"],
+    "occupation": ["Engineer", "Teacher", "Doctor", "Artist", "Scientist", "Nurse", "Technician", "Farmer"]
+  }
+  

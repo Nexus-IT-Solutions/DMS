@@ -10,6 +10,13 @@ import OfficerForgotPassword from "./components/officer/OfficerForgotPassword.js
 import AdminForgotPassword from "./components/admin/AdminForgotPassword.jsx"
 import OfficerOtp from "./components/officer/OfficerOtp.jsx"
 import AdminOtp from "./components/admin/AdminOtp.jsx"
+import AdminDashboardLayout from "./components/admin/AdminDashboardLayout.jsx"
+import DashboardHome from "./pages/admin/DashboardHome.jsx"
+import RegisterPWD from "./pages/admin/RegisterPWD.jsx"
+import PWDRecords from "./pages/admin/PWDRecords.jsx"
+import PWDDetails from "./pages/PWDDetails.jsx"
+
+
 
 createRoot(document.getElementById('root')).render( 
   <DarkModeProvider>
@@ -21,6 +28,14 @@ createRoot(document.getElementById('root')).render(
         <Route path="/admin-forgot-password" element={<AdminForgotPassword />} />
         <Route path="/officer-otp" element={<OfficerOtp />} />
         <Route path="/admin-otp" element={<AdminOtp />} />
+
+        {/* Admin dashboard layout and nested routes */}
+        <Route path="/admin-dashboard" element={<AdminDashboardLayout />}>
+          <Route index element={<DashboardHome />} />
+          <Route path="register-pwd" element={<RegisterPWD />} />
+          <Route path="records" element={<PWDRecords />} />
+          <Route path="records/:id" element={<PWDDetails />} />          
+        </Route>
         <Route path="/*" element={<Page404 />} />
       </Routes>
     </BrowserRouter>
