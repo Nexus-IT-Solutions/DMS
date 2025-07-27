@@ -1,0 +1,75 @@
+{
+  "adminInfo": {
+    "name": "Officer",
+    "role": "Data Entry Officer"
+  },
+  "metrics": {
+    "totalPwdsRegistered": {
+      "value": 3,
+      "title": "Total PWDS Registered",
+      "description": "Total persons with disabilities in the system",
+      "icon": "users",
+      "color": "blue"
+    },
+    "quarterlyAdditions": {
+      "value": 0,
+      "title": "Quarterly Additions",
+      "description": "New registration this quarter",
+      "icon": "user-plus",
+      "color": "purple"
+    },
+    "assessedBeneficiaries": {
+      "value": 3,
+      "title": "Assessed Beneficiaries",
+      "description": "Number of assessments conducted",
+      "icon": "heart",
+      "color": "orange"
+    }
+  },
+  "recentActivities": [
+    {
+      "id": 1,
+      "activity": "New PWD registered",
+      "time": "2 hours ago",
+      "type": "registration",
+      "color": "blue"
+    },
+    {
+      "id": 2,
+      "activity": "Assistance provided",
+      "time": "2 hours ago",
+      "type": "assistance",
+      "color": "green"
+    },
+    {
+      "id": 3,
+      "activity": "Quarterly report generated",
+      "time": "1 hour ago",
+      "type": "report",
+      "color": "orange"
+    }
+  ],
+  "quickActions": [
+    {
+      "id": 1,
+      "title": "Register New PWD",
+      "description": "Add a new person with disability to the system",
+      "icon": "user-plus",
+      "link": "/officer-dashboard/register-pwd"
+    },
+    {
+      "id": 2,
+      "title": "Log Assistance",
+      "description": "Record assistance provided to beneficiaries",
+      "icon": "hand-heart",
+      "link": "/admin-dashboard/log-assistance"
+    },
+    {
+      "id": 3,
+      "title": "Skills Training",
+      "description": "Manage skills training programs",
+      "icon": "graduation-cap",
+      "link": "/admin-dashboard/skills-training"
+    }
+  ]
+} 

@@ -6,26 +6,27 @@ import {
   RiUserSettingsLine, RiLogoutBoxLine, RiMenuLine, RiSearchLine,
   RiMoonLine, RiSunLine
 } from 'react-icons/ri';
-import { SiSimpleanalytics } from "react-icons/si";
+// import { SiSimpleanalytics } from "react-icons/si";
 
 const navItems = [
-  { label: 'Dashboard', path: '/admin-dashboard', icon: RiDashboardLine },
-  { label: 'Register PWD', path: '/admin-dashboard/register-pwd', icon: RiUserAddLine },
-  { label: 'PWD Records', path: '/admin-dashboard/records', icon: RiFileListLine },
-  { label: 'Assistance Tracking', path: '/admin-dashboard/assistance-tracking', icon: RiFileWarningLine },
-  { label: 'Reports', path: '/admin-dashboard/reports', icon: SiSimpleanalytics },
-  { label: 'User Management', path: '/admin-dashboard/user-management', icon: RiUserSettingsLine },
+  { label: 'Dashboard', path: '/officer-dashboard', icon: RiDashboardLine },
+  { label: 'Register PWD', path: '/officer-dashboard/register-pwd', icon: RiUserAddLine },
+  { label: 'PWD Records', path: '/officer-dashboard/records', icon: RiFileListLine },
+//   { label: 'Assistance Tracking', path: '/admin-dashboard/assistance-tracking', icon: RiFileWarningLine },
+//   { label: 'Reports', path: '/admin-dashboard/reports', icon: SiSimpleanalytics },
+//   { label: 'User Management', path: '/admin-dashboard/user-management', icon: RiUserSettingsLine },
 ];
 
-const AdminDashboardLayout = () => {
+
+const OfficerDashboardLayout = () => {
   const { isDark, toggleDarkMode } = useContext(DarkModeContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === '/admin-dashboard' || location.pathname === '/admin-dashboard/') {
-      navigate('/admin-dashboard');
+    if (location.pathname === '/officer-dashboard' || location.pathname === '/officer-dashboard/') {
+      navigate('/officer-dashboard');
     }
   }, []);
 
@@ -43,7 +44,7 @@ const AdminDashboardLayout = () => {
                   key={item.label}
                   onClick={() => navigate(item.path)}
                   className={`flex items-center gap-3 w-full text-left px-4 py-3 rounded-lg font-medium transition-colors duration-200
-                    ${isActive || (item.path === '/admin-dashboard' && location.pathname === '/admin-dashboard') ? 'bg-[#232b3e] dark:bg-[#1a2233] text-white' : 'text-gray-300 hover:bg-[#232b3e] dark:hover:bg-[#1a2233] hover:text-white'}`}
+                    ${isActive || (item.path === '/officer-dashboard' && location.pathname === '/officer-dashboard') ? 'bg-[#232b3e] dark:bg-[#1a2233] text-white' : 'text-gray-300 hover:bg-[#232b3e] dark:hover:bg-[#1a2233] hover:text-white'}`}
                 >
                   <span className="flex-shrink-0">{item.icon()}</span>
                   <span>{item.label}</span>
@@ -54,7 +55,7 @@ const AdminDashboardLayout = () => {
         </div>
 
         <div className="border-t border-gray-700 pt-4">
-          <div className="text-xs text-gray-400 px-4 mb-3">Administrator</div>
+          <div className="text-xs text-gray-400 px-4 mb-3">Data Entry Officer</div>
           <button
             onClick={() => navigate('/logout')}
             className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-lg text-sm text-gray-300 hover:bg-[#232b3e] dark:hover:bg-[#1a2233] hover:text-white transition-colors duration-200"
@@ -80,7 +81,7 @@ const AdminDashboardLayout = () => {
             >
               <RiMenuLine className="w-5 h-5 text-gray-700 dark:text-gray-200" />
             </button>
-            <span className="text-base font-semibold text-gray-800 dark:text-gray-100">Admin Dashboard</span>
+            <span className="text-base font-semibold text-gray-800 dark:text-gray-100">Officer Dashboard</span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -114,7 +115,7 @@ const AdminDashboardLayout = () => {
   );
 };
 
-export default AdminDashboardLayout;
+export default OfficerDashboardLayout;
 
 
 
