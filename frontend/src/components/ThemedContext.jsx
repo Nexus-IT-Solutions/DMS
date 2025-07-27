@@ -3,30 +3,22 @@ import React, { createContext, useState, useEffect } from "react";
 export const DarkModeContext = createContext();
 
 export const DarkModeProvider = ({ children }) => {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(
+    localStorage.getItem("theme") === "dark" || false
+  );
 
   useEffect(() => {
-    const saved = localStorage.getItem('theme');
-    if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-      setIsDark(true);
+    const html = document.documentElement;
+    if (isDark) {
+      html.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
-      setIsDark(false);
+      html.classList.remove("dark");
     }
-  }, []);
+  }, [isDark]);
 
   const toggleDarkMode = () => {
-    const html = document.documentElement;
-    if (html.classList.contains('dark')) {
-      html.classList.remove('dark');
-      setIsDark(false);
-      localStorage.setItem('theme', 'light');
-    } else {
-      html.classList.add('dark');
-      setIsDark(true);
-      localStorage.setItem('theme', 'dark');
-    }
+    setIsDark(!isDark);
+    localStorage.setItem("theme", isDark ? "light" : "dark");
   };
 
   return (
