@@ -33,67 +33,64 @@ const AssistanceTracking = () => {
   );
 
   return (
-    <div className="dark text-white p-5">
-      <div className="flex justify-between items-center mb-4">
+    <div className="dark text-white p-8 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-8 bg-gray-800 p-6 rounded-lg">
         <div>
-          <h2 className="text-xl font-semibold">Assistance Tracking</h2>
-          <p className="text-sm text-gray-400">Log and manage assistance provided to PWDS</p>
+          <h2 className="text-2xl font-bold mb-2">Assistance Tracking</h2>
+          <p className="text-gray-400">Log and manage assistance provided to PWDS</p>
         </div>
         <button
-          onClick={() => navigate('/log-assistance')}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
+          onClick={() => navigate('/admin-dashboard/log-assistance')}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition duration-200 ease-in-out transform hover:scale-105"
         >
           + Log New Assistance
         </button>
       </div>
 
-      <input
-        type="text"
-        placeholder="Search assistance type, name"
-        className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600 mb-4"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-
-      <table className="w-full bg-gray-900 border border-gray-700 text-sm">
-        <thead>
-          <tr className="border-b border-gray-600">
-            <th className="p-2 text-left">Date</th>
-            <th className="p-2 text-left">Assistance Type</th>
-            <th className="p-2 text-left">Beneficiaries</th>
-            <th className="p-2 text-left">Assessment</th>
-            <th className="p-2 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map((entry, idx) => (
-            <tr key={idx} className="border-b border-gray-700 hover:bg-gray-800">
-              <td className="p-2">{entry.date}</td>
-              <td className="p-2">{entry.type}</td>
-              <td className="p-2">{entry.beneficiary}</td>
-              <td className="p-2">
-                <span
-                  className={`px-2 py-1 rounded text-xs ${
-                    entry.assessment === 'Assessed' ? 'bg-green-700' : 'bg-gray-600'
-                  }`}
-                >
-                  {entry.assessment}
-                </span>
-              </td>
-              <td className="p-2">
-                <button
-                  onClick={() => navigate(`/assistance/${idx}`)}
-                  className="text-white hover:text-purple-300"
-                >
-                  👁
-                </button>
-              </td>
+      <div className="bg-gray-800 rounded-lg overflow-hidden shadow-xl">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-gray-900 border-b border-gray-700">
+              <th className="p-4 text-left font-semibold">Date</th>
+              <th className="p-4 text-left font-semibold">Assistance Type</th>
+              <th className="p-4 text-left font-semibold">Beneficiaries</th>
+              <th className="p-4 text-left font-semibold">Assessment</th>
+              <th className="p-4 text-left font-semibold">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filtered.map((entry, idx) => (
+              <tr key={idx} className="border-b border-gray-700 hover:bg-gray-700 transition duration-150">
+                <td className="p-4 font-medium">{entry.date}</td>
+                <td className="p-4 font-medium">{entry.type}</td>
+                <td className="p-4 font-medium">{entry.beneficiary}</td>
+                <td className="p-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      entry.assessment === 'Assessed' 
+                        ? 'bg-green-600 text-green-100' 
+                        : 'bg-gray-600 text-gray-100'
+                    }`}
+                  >
+                    {entry.assessment}
+                  </span>
+                </td>
+                <td className="p-4">
+                  <button
+                    onClick={() => navigate(`/admin-dashboard/view-assistance/${idx}`)}
+                    className="text-white hover:text-purple-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
+                  >
+                    👁️
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
 export default AssistanceTracking;
+

@@ -18,6 +18,9 @@ import OfficerDashboardLayout from "./components/officer/OfficerDashboardLayout.
 import OfficerDashboard from "./pages/officer/OfficerDashboard.jsx"
 import OfficerPWDRecords from "./pages/officer/PWDRecords.jsx"
 import OfficerRegisterPWD from "./pages/officer/RegisterPWD.jsx"
+import AssistanceTracking from "./pages/admin/Assistance_Tracking.jsx"
+import AssistanceDetails from "./pages/admin/AssistanceDetails.jsx"
+import LogAssistance from "./pages/admin/LogAssistance.jsx"
 
 
 createRoot(document.getElementById('root')).render( 
@@ -36,7 +39,10 @@ createRoot(document.getElementById('root')).render(
           <Route index element={<DashboardHome />} />
           <Route path="register-pwd" element={<RegisterPWD />} />
           <Route path="records" element={<PWDRecords />} />
-          <Route path="records/:id" element={<PWDDetails />} />          
+          <Route path="records/:id" element={<PWDDetails />} />   
+          <Route path="assistance-tracking" element={<AssistanceTracking />} />
+          <Route path="log-assistance" element={<LogAssistance />} />
+          <Route path="view-assistance/:id" element={<AssistanceDetails />} />
         </Route>
 
         {/* Officer dashboard layout and nested routes */}
