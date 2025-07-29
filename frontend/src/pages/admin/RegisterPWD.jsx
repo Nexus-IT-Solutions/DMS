@@ -3,71 +3,6 @@ import { useNavigate } from "react-router-dom";
 import formOptions from "../../data/pwdRegistrationData.json";
 import { IoIosArrowBack } from "react-icons/io";
 
-
-const RegisterPWD = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    quarter: "",
-    sex: "",
-    fullName: "",
-    contact: "",
-    disabilityType: "",
-    disabilityCategory: "", 
-    dateOfBirth: "",
-    age: "",
-    ghCardNumber: "",
-    nhisNumber: "",
-    community: "",
-    occupation: "",
-    userImage: null,
-    documents: null,
-  });
-
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    
-    if (name === "dateOfBirth") {
-      const birthDate = new Date(value);
-      const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-      setFormData(prev => ({
-        ...prev,
-        dateOfBirth: value,
-        age: age.toString()
-      }));
-    } else if (name === "age") {
-      const today = new Date();
-      const birthYear = today.getFullYear() - parseInt(value);
-      const birthDate = new Date(birthYear, today.getMonth(), today.getDate());
-      
-      // Check if birthDate is valid before converting to ISO string
-      if (!isNaN(birthDate.getTime())) {
-        setFormData(prev => ({
-          ...prev,
-          age: value,
-          dateOfBirth: birthDate.toISOString().split('T')[0]
-        }));
-      } else {
-        setFormData(prev => ({
-          ...prev,
-          age: value,
-          dateOfBirth: ''
-        }));
-      }
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: files ? files[0] : value,
-      }));
-    }
-  };
-
-  // Rest of the component code remains the same
-
 const RegisterPWD = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -438,7 +373,6 @@ const RegisterPWD = () => {
       </div>
     </div>
   );
-};
 };
 
 export default RegisterPWD;
