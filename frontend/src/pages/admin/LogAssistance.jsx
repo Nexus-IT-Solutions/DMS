@@ -144,7 +144,7 @@ const LogAssistance = () => {
             </div>
             
             <div className="flex justify-end gap-4">
-              <button className="bg-teal-600 hover:bg-teal-700 px-8 py-4 rounded-md font-medium transition-colors min-w-[150px]">
+              <button className="bg-purple-600 hover:bg-purple-700 px-8 py-4 rounded-md font-medium transition-colors min-w-[150px]">
                 Save Assistance Record
               </button>
               <button 

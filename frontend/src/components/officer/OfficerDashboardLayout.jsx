@@ -4,7 +4,7 @@ import { DarkModeContext } from '../ThemedContext';
 import {
   RiDashboardLine, RiUserAddLine, RiFileListLine, RiFileWarningLine,
   RiUserSettingsLine, RiLogoutBoxLine, RiMenuLine, RiSearchLine,
-  RiMoonLine, RiSunLine
+  RiMoonLine, RiSunLine, RiUserLine
 } from 'react-icons/ri';
 // import { SiSimpleanalytics } from "react-icons/si";
 
@@ -12,6 +12,7 @@ const navItems = [
   { label: 'Dashboard', path: '/officer-dashboard', icon: RiDashboardLine },
   { label: 'Register PWD', path: '/officer-dashboard/register-pwd', icon: RiUserAddLine },
   { label: 'PWD Records', path: '/officer-dashboard/records', icon: RiFileListLine },
+  { label: 'Profile', path: '/officer-dashboard/profile', icon: RiUserLine },
 //   { label: 'Assistance Tracking', path: '/admin-dashboard/assistance-tracking', icon: RiFileWarningLine },
 //   { label: 'Reports', path: '/admin-dashboard/reports', icon: SiSimpleanalytics },
 //   { label: 'User Management', path: '/admin-dashboard/user-management', icon: RiUserSettingsLine },

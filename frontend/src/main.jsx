@@ -21,6 +21,11 @@ import OfficerRegisterPWD from "./pages/officer/RegisterPWD.jsx"
 import AssistanceTracking from "./pages/admin/Assistance_Tracking.jsx"
 import AssistanceDetails from "./pages/admin/AssistanceDetails.jsx"
 import LogAssistance from "./pages/admin/LogAssistance.jsx"
+import ReportsAnalytics from "./pages/admin/ReportAnalytics.jsx"
+import UserManagement from "./pages/admin/UserManagement.jsx"
+import AddUser from "./components/admin/AddUser.jsx"
+import EditUser from "./components/admin/EditUser.jsx"
+import Profile from "./pages/admin/profile.jsx"
 
 
 createRoot(document.getElementById('root')).render( 
@@ -43,6 +48,11 @@ createRoot(document.getElementById('root')).render(
           <Route path="assistance-tracking" element={<AssistanceTracking />} />
           <Route path="log-assistance" element={<LogAssistance />} />
           <Route path="view-assistance/:id" element={<AssistanceDetails />} />
+          <Route path="reports" element={<ReportsAnalytics />} />
+          <Route path="user-management" element={<UserManagement />} />
+          <Route path="add-user" element={<AddUser />} />
+          <Route path="edit-user/:id" element={<EditUser />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
 
         {/* Officer dashboard layout and nested routes */}
@@ -50,7 +60,8 @@ createRoot(document.getElementById('root')).render(
           <Route index element={<OfficerDashboard />} />
           <Route path="register-pwd" element={<OfficerRegisterPWD />} />
           <Route path="records" element={<OfficerPWDRecords />} />
-          <Route path="records/:id" element={<PWDDetails />} />          
+          <Route path="records/:id" element={<PWDDetails />} />       
+          <Route path="profile" element={<Profile />} />   
         </Route>
 
         {/* 404 Page */}

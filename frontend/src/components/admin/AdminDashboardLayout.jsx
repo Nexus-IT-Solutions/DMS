@@ -4,7 +4,7 @@ import { DarkModeContext } from '../ThemedContext';
 import {
   RiDashboardLine, RiUserAddLine, RiFileListLine, RiFileWarningLine,
   RiUserSettingsLine, RiLogoutBoxLine, RiMenuLine, RiSearchLine,
-  RiMoonLine, RiSunLine
+  RiMoonLine, RiSunLine, RiUserLine
 } from 'react-icons/ri';
 import { SiSimpleanalytics } from "react-icons/si";
 
@@ -13,9 +13,10 @@ const navItems = [
   { label: 'Register PWD', path: '/admin-dashboard/register-pwd', icon: RiUserAddLine },
   { label: 'PWD Records', path: '/admin-dashboard/records', icon: RiFileListLine },
   { label: 'Assistance Tracking', path: '/admin-dashboard/assistance-tracking', icon: RiFileWarningLine },
-  { label: 'Reports', path: '/admin-dashboard/reports', icon: SiSimpleanalytics },
+  { label: 'Reports', path: '/admin-dashboard/reports', icon: SiSimpleanalytics }, 
   { label: 'User Management', path: '/admin-dashboard/user-management', icon: RiUserSettingsLine },
-];
+  { label: 'Profile', path: '/admin-dashboard/profile', icon: RiUserLine },
+]
 
 const AdminDashboardLayout = () => {
   const { isDark, toggleDarkMode } = useContext(DarkModeContext);
