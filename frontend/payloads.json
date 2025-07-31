@@ -1,0 +1,405 @@
+// OFFICER PAYLOADS
+
+// Payload for officer login, Method = POST
+{
+    "username": "john doe",
+    "password": "1234"
+}
+
+// Payload for officer forget-password,  Method = POST
+{
+    "email": "john.doe@example.com"
+}
+
+// Payload for officer otp,  Method = POST
+{
+    "otp": "123456"
+}
+
+// Payload for officer reset-password,  Method = POST
+{
+    "username": "officer",
+    "new_password": "newpassword123"
+}
+
+
+// OFFICER DASHBOARD
+// Key fields needed for officer dashboard,  Method = GET
+{
+    "officerId": "12345",
+    "officer_name": "abcd",
+    "total_pwds_registered": 4,
+    "quaterly_additions": 3,
+    "assessed_beneficiaries": 4,
+    "recent_activities": [
+        {
+            "activity": "Registered new beneficiary",
+            "timestamp": "2023-10-01T12:00:00Z"
+        },
+        {
+            "activity": "Updated beneficiary details",
+            "timestamp": "2023-10-02T14:30:00Z"
+        },
+        {
+            "activity": "Assessed beneficiary",
+            "timestamp": "2023-10-03T09:15:00Z"
+        }
+    ],
+
+}
+
+
+// Payload to register new pwd,  Method = POST
+{
+    "quater": "Q1",
+    "sex": "male",
+    "full_name": "amaaamdmama",
+    "occupation": "student",
+    "contact": "+233123456789",
+    "dob": "12/05/1990",
+    "age": 45,
+    "disability_category": "physical",
+    "disability_type": "blindness",
+    "gh_card_number": "GHA-xxxxxxxxx-x",
+    "nhis_number": "xxxxxxxx",
+    "community": "sefwi-xxaxxx",
+    "profile_image": "image.jpg",
+    "supporting_documents": ["passport.pdf", "letter.docx"]
+}
+
+
+// Retriving all pwd records,  Method = GET
+{
+    "officerId": "12345",
+    "records": [
+        {
+            "pwdId": "1",
+            "full_name": "Ama Doe",
+            "quater": "Q1",
+            "sex": "male",
+            "occupation": "student",
+            "contact": "+233123456789",
+            "dob": "12/05/1990",
+            "age": 45,
+            "disability_category": "physical",
+            "disability_type": "blindness",
+            "gh_card_number": "GHA-xxxxxxxxx-x",
+            "nhis_number": "xxxxxxxx",
+            "community": "sefwi-xxaxxx",
+            "status" : "approved",
+            "profile_image": "image.jpg",
+            "supporting_documents": ["passport.pdf", "letter.docx"]
+        },
+        {
+            "pwdId": "2",
+            "full_name": "John Smith",
+            "quater": "Q1",
+            "sex": "male",
+            "occupation": "student",
+            "contact": "+233123456789",
+            "dob": "12/05/1990",
+            "age": 45,
+            "disability_category": "physical",
+            "disability_type": "blindness",
+            "gh_card_number": "GHA-xxxxxxxxx-x",
+            "nhis_number": "xxxxxxxx",
+            "community": "sefwi-xxaxxx",
+            "status" : "pending",
+            "profile_image": "image.jpg",
+            "supporting_documents": ["passport.pdf", "letter.docx"]
+        }
+    ]
+}
+
+
+// Getting individual pwd records,  Method = GET
+{
+    "officerId": "12345",
+    "records": 
+        {
+            "pwdId": "1",
+            "full_name": "Ama Doe",
+            "quater": "Q1",
+            "sex": "male",
+            "occupation": "student",
+            "contact": "+233123456789",
+            "dob": "12/05/1990",
+            "age": 45,
+            "disability_category": "physical",
+            "disability_type": "blindness",
+            "gh_card_number": "GHA-xxxxxxxxx-x",
+            "nhis_number": "xxxxxxxx",
+            "community": "sefwi-xxaxxx",
+            "status" : "pending",
+            "profile_image": "image.jpg",
+            "supporting_documents": ["passport.pdf", "letter.docx"]
+        }
+    
+}
+
+// Officer profile settings,  Method = POST
+{
+    "profile_image": "image.jpg",
+    "username": "aaaabbbaaa",
+    "email": "officer@officer.com",
+    "current_password": "xxxxxxxxxxx",
+    "new_password": "yyyyyyyyyyy"
+}
+
+
+
+
+
+
+
+
+
+// ADMIN PAYLOADS
+// Payload for admin login,  Method = POST
+{
+    "username": "ama affah",
+    "password": "12345"
+}
+
+
+// Payload for admin forget-password,  Method = POST
+{
+    "email": "ama.affah@example.com"
+}
+
+// Payload for admin otp,  Method = POST
+{
+    "otp": "123456"
+}
+
+
+// Payload for admin reset-password,  Method = POST
+{
+    "username": "admin",
+    "new_password": "newpassword123"
+}
+
+
+// ADMIN DASHBOARD
+// Key fields needed for admin dashboard,  Method = GET
+{
+    "adminId": "12345",
+    "admin_name": "abcd",
+    "total_pwds_registered": 4,
+    "quaterly_additions": 3,
+    "assessed_beneficiaries": 4,
+    "recent_activities": [
+        {
+            "activity": "Registered new beneficiary",
+            "timestamp": "2023-10-01T12:00:00Z"
+        },
+        {
+            "activity": "Updated beneficiary details",
+            "timestamp": "2023-10-02T14:30:00Z"
+        },
+        {
+            "activity": "Assessed beneficiary",
+            "timestamp": "2023-10-03T09:15:00Z"
+        }
+    ],
+
+}
+
+
+// Payload to register new pwd (same as officer),  Method = POST
+
+// Retrieving all pwd records (same as officer),  Method = GET
+
+// Getting individual pwd records,  Method = GET
+{
+    "adminId": "12345",
+    "records": 
+        {
+            "adminId": "1",
+            "pwdId": "1",
+            "full_name": "Ama Doe",
+            "quater": "Q1",
+            "sex": "male",
+            "occupation": "student",
+            "contact": "+233123456789",
+            "dob": "12/05/1990",
+            "age": 45,
+            "disability_category": "physical",
+            "disability_type": "blindness",
+            "gh_card_number": "GHA-xxxxxxxxx-x",
+            "nhis_number": "xxxxxxxx",
+            "community": "sefwi-xxaxxx",
+            "status" : "pending",
+            "profile_image": "image.jpg",
+            "supporting_documents": ["passport.pdf", "letter.docx"]
+        }
+    
+}
+
+// Approving a pwd record, Method = POST
+{
+    "pwdId": "1",
+    "status": "approved",
+}
+
+// Disapproving a pwd record, Method = POST
+{
+    "pwdId": "1",
+    "status": "disapproved",
+}
+
+
+// Logging new assistance, Method = POST
+{
+    "assistance_type": "Financial Support",
+    "date_of_support": "xx/xx/xxxx",
+    "beneficiary_name": "amaamamamma",
+    "beneficiary_gh_card_number": "GHA-xxxxxxxxx-x",
+    "pre_assessment": 1, //boolean
+    "status":  "pending", // default is pending
+    "assessment_notes": "xxxx x  xxx x x x x x",
+    "supporting_documents": ["image.jpg", "documents.pdf"]
+}
+
+
+// Getting all logged assistance records, Method = GET
+{
+    "adminId": "12345",
+    "records": [
+        {
+            "assistanceId": "1",
+            "assistance_type": "Financial Support",
+            "date_of_support": "xx/xx/xxxx",
+            "beneficiary_name": "amaamamamma",
+            "beneficiary_gh_card_number": "GHA-xxxxxxxxx-x",
+            "pre_assessment": true,
+            "status": "pending",
+            "assessment_notes": "xxxx x  xxx x x x x x",
+            "supporting_documents": ["image.jpg", "documents.pdf"]
+        },
+        {
+            "assistanceId": "2",
+            "assistance_type": "Medical Assistance",
+            "date_of_support": "xx/xx/xxxx",
+            "beneficiary_name": "john doe",
+            "beneficiary_gh_card_number": "GHA-xxxxxxxxx-x",
+            "pre_assessment": false,
+            "status": "pending",
+            "assessment_notes": "xxxx x  xxx x x x x x",    
+            "supporting_documents": ["image.jpg", "documents.pdf"]
+        }
+    ]
+}
+
+
+
+// Approving an assistance record, Method = POST
+{
+    "assistanceId": "1",
+    "status": "approved",
+}
+
+
+// Disapproving an assistance record, Method = POST
+{
+    "assistanceId": "1",
+    "status": "disapproved",
+}
+
+
+// Retrieving all users, Method = GET
+{
+    "users": [
+        {
+            "userId": 1,
+            "username": "Sys Admin",
+            "email": "admin@admin.com",
+            "role": "admin",
+            "created_at": "xx/xx/xxxx"
+        },
+        {
+            "userId": 2,
+            "username": "Data Entry Officer",
+            "email": "officer@officer.com",
+            "role": "officer",
+            "created_at": "xx/xx/xxxx"
+        }
+    ]
+}
+
+
+// Adding new Users, Method = POST
+{
+    "username": "new officer",
+    "email": "officer@officer.com",
+    "role": "data entry officer"
+}
+
+
+// Editing User, Method = PATCH
+{
+    "userId": 2,
+    "username": "updated officer",
+    "email": "admin@admin.com",
+    "role":  "admin"
+}
+
+
+// Deleting User, Method = DELETE
+{
+    "userId": 2
+}
+
+
+// REPORTS
+// Quaterly Statistics, Method = GET
+{
+    "bar_chart_data" : [
+        {
+            "quater": "Q1",
+            "total_registered_pwd": 100,
+            "total_assessed": 80,
+            "pending": 20
+        },
+        {
+            "quater": "Q2",
+            "total_registered_pwd": 120,
+            "total_assessed": 90,
+            "pending": 30
+        }
+    ]
+}
+
+
+// Pie chart payload, Method = GET
+{
+    "pie_chart_data": [
+        {
+            "assistance_type": "Financial Support",
+            "count": 50
+        },
+        {
+            "assistance_type": "Medical Assistance",
+            "count": 30
+        }
+    ]
+}
+
+
+// Quaterly Registration Report pdf, Method = GET
+
+// Assistance Distribution Report pdf, Method = GET
+
+// Community-based Beneficiary Report pdf, Method = GET
+
+// Demographics Summary pdf, Method = GET
+
+
+// Admin profile settings,  Method = POST
+{
+    "profile_image": "image.jpg",
+    "username": "aaaabbbaaa",
+    "email": "officer@officer.com",
+    "current_password": "xxxxxxxxxxx",
+    "new_password": "yyyyyyyyyyy"
+}

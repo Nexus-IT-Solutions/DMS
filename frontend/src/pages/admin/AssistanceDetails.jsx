@@ -1,5 +1,27 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
+// Placeholder API functions
+const approveAssessment = async (id) => {
+  try {
+    // Simulated API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return { success: true };
+  } catch (error) {
+    throw new Error('Failed to approve assessment');
+  }
+};
+
+const disapproveAssessment = async (id) => {
+  try {
+    // Simulated API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return { success: true };
+  } catch (error) {
+    throw new Error('Failed to disapprove assessment');
+  }
+};
 
 const fakeData = [
   {
@@ -32,6 +54,40 @@ const AssistanceDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const data = fakeData[id];
+
+  const handleApprove = async () => {
+    try {
+      await approveAssessment(id);
+      Swal.fire({
+        icon: 'success',
+        title: 'Assessment Approved',
+        text: 'The assessment has been successfully approved',
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message,
+      });
+    }
+  };
+
+  const handleDisapprove = async () => {
+    try {
+      await disapproveAssessment(id);
+      Swal.fire({
+        icon: 'success',
+        title: 'Assessment Disapproved',
+        text: 'The assessment has been disapproved',
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message,
+      });
+    }
+  };
 
   return (
     <div className="bg-gray-900 min-h-screen p-8">
@@ -82,6 +138,7 @@ const AssistanceDetails = () => {
                 <p className="text-xs text-gray-300">Assessment Notes</p>
                 <p className="text-base font-medium text-white">{data.notes}</p>
               </div>
+              
             </div>
           </div>
 
@@ -103,6 +160,52 @@ const AssistanceDetails = () => {
               )}
             </div>
           </div>
+
+          {data.assessment !== 'Assessed' && (
+  <div className="flex gap-4 justify-end">
+    <button
+      onClick={() =>
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'Do you want to approve this assessment?',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#22c55e',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: 'Yes, approve it!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleApprove();
+          }
+        })
+      }
+      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+    >
+      Approve Assessment
+    </button>
+    <button
+      onClick={() =>
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'Do you want to disapprove this assessment?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: 'Yes, disapprove it!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleDisapprove();
+          }
+        })
+      }
+      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+    >
+      Disapprove Assessment
+    </button>
+  </div>
+)}
+
         </div>
       </div>
     </div>

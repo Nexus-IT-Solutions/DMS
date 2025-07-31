@@ -26,6 +26,8 @@ import UserManagement from "./pages/admin/UserManagement.jsx"
 import AddUser from "./components/admin/AddUser.jsx"
 import EditUser from "./components/admin/EditUser.jsx"
 import Profile from "./pages/admin/profile.jsx"
+import OfficerResetPassword from "./components/officer/OfficerResetPassword.jsx"
+import AdminResetPassword from "./components/admin/AdminResetPassword.jsx"
 
 
 createRoot(document.getElementById('root')).render( 
@@ -38,6 +40,8 @@ createRoot(document.getElementById('root')).render(
         <Route path="/admin-forgot-password" element={<AdminForgotPassword />} />
         <Route path="/officer-otp" element={<OfficerOtp />} />
         <Route path="/admin-otp" element={<AdminOtp />} />
+        <Route path="/officer-reset-password" element={<OfficerResetPassword />} />
+        <Route path="/admin-reset-password" element={<AdminResetPassword />} />
 
         {/* Admin dashboard layout and nested routes */}
         <Route path="/admin-dashboard" element={<AdminDashboardLayout />}>
@@ -52,7 +56,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="user-management" element={<UserManagement />} />
           <Route path="add-user" element={<AddUser />} />
           <Route path="edit-user/:id" element={<EditUser />} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="profile" element={<Profile />} />          
         </Route>
 
         {/* Officer dashboard layout and nested routes */}
