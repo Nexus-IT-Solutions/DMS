@@ -9,29 +9,32 @@ const dummyData = [
   {
     id: 1,
     name: "Peter James",
-    quarter: "Marketing",
+    quarter: "Marketing", 
     sex: "Male",
     community: "Accra Central",
     disabilityType: "Visual Impairment",
     registrationDate: "2025-01-15",
+    status: "pending"
   },
   {
     id: 2,
     name: "Jacob Adjei",
     quarter: "Sales",
-    sex: "Female",
+    sex: "Female", 
     community: "Kumasi Metropolitan",
     disabilityType: "Physical Disability",
     registrationDate: "2025-02-10",
+    status: "approved"
   },
   {
     id: 3,
     name: "Effah George",
     quarter: "HR",
     sex: "Male",
-    community: "Tamale Central",
+    community: "Tamale Central", 
     disabilityType: "Hearing Impairment",
     registrationDate: "2025-05-18",
+    status: "pending"
   },
 ];
 
@@ -47,14 +50,19 @@ export default function PWDTable() {
   const handleApprove = (id) => {
     Swal.fire({
       title: "Approve this record?",
-      icon: "question",
+      icon: "question", 
       showCancelButton: true,
       confirmButtonText: "Yes, approve",
       background: "#1f2937",
       color: "#fff",
     }).then((result) => {
       if (result.isConfirmed) {
-        setData(data.filter((record) => record.id !== id));
+        setData(data.map(record => {
+          if(record.id === id) {
+            return {...record, status: "approved"}
+          }
+          return record;
+        }));
         Swal.fire("Approved!", "", "success");
       }
     });
@@ -159,6 +167,7 @@ export default function PWDTable() {
               <th className="px-4 py-3">Community</th>
               <th className="px-4 py-3">Disability Type</th>
               <th className="px-4 py-3">Registration Date</th>
+              <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
@@ -174,6 +183,13 @@ export default function PWDTable() {
                 <td className="px-4 py-3">{record.community}</td>
                 <td className="px-4 py-3">{record.disabilityType}</td>
                 <td className="px-4 py-3">{record.registrationDate}</td>
+                <td className="px-4 py-3">
+                  <span className={`px-2 py-1 rounded text-xs ${
+                    record.status === 'approved' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500'
+                  }`}>
+                    {record.status}
+                  </span>
+                </td>
                 <td className="px-4 py-3 space-x-4">
                   <button
                     onClick={() =>

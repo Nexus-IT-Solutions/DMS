@@ -7,29 +7,58 @@ const dummyData = [
   {
     id: 1,
     name: "Peter James",
-    quarter: "Marketing",
+    quarter: "Marketing", 
     sex: "Male",
     community: "Accra Central",
     disabilityType: "Visual Impairment",
     registrationDate: "2025-01-15",
+    profileImage: "https://example.com/profile1.jpg",
+    documents: [
+      {
+        name: "Medical Certificate",
+        url: "https://example.com/doc1.pdf"
+      },
+      {
+        name: "ID Card",
+        url: "https://example.com/doc2.pdf"
+      }
+    ]
   },
   {
     id: 2,
     name: "Jacob Adjei",
     quarter: "Sales",
-    sex: "Female",
+    sex: "Female", 
     community: "Kumasi Metropolitan",
     disabilityType: "Physical Disability",
     registrationDate: "2025-02-10",
+    profileImage: "https://example.com/profile2.jpg",
+    documents: [
+      {
+        name: "Medical Certificate",
+        url: "https://example.com/doc3.pdf"
+      }
+    ]
   },
   {
     id: 3,
     name: "Effah George",
     quarter: "HR",
     sex: "Male",
-    community: "Tamale Central",
+    community: "Tamale Central", 
     disabilityType: "Hearing Impairment",
     registrationDate: "2025-05-18",
+    profileImage: "https://example.com/profile3.jpg",
+    documents: [
+      {
+        name: "Medical Certificate",
+        url: "https://example.com/doc4.pdf"
+      },
+      {
+        name: "ID Card",
+        url: "https://example.com/doc5.pdf"
+      }
+    ]
   },
 ];
 
@@ -80,19 +109,19 @@ export default function PWDDetails() {
     <div className="p-6 text-white bg-gray-900 min-h-screen flex justify-center items-start">
       <div className="max-w-4xl w-full space-y-8">
         <div className="flex items-center mb-8">
-        <button
-          type="button"
-          onClick={() => navigate("/admin-dashboard/records")}
-          className="text-white bg-gray-600 hover:bg-gray-700 px-6 py-3 rounded"
-        >
-          <IoIosArrowBack className="inline-block mr-2 text-lg -mt-1" />
-          Back
-        </button>
+          <button
+            type="button"
+            onClick={() => navigate("/admin-dashboard/records")}
+            className="text-white bg-gray-600 hover:bg-gray-700 px-6 py-3 rounded"
+          >
+            <IoIosArrowBack className="inline-block mr-2 text-lg -mt-1" />
+            Back
+          </button>
 
-        <div className="text-center ml-[28%] md:relative md:-top-1">
-          <h2 className="text-2xl font-bold mb-2">PWD Records</h2>
+          <div className="text-center ml-[28%] md:relative md:-top-1">
+            <h2 className="text-2xl font-bold mb-2">PWD Records</h2>
+          </div>
         </div>
-      </div>
         {record ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gray-800 p-4 rounded-lg shadow-md">
@@ -113,10 +142,45 @@ export default function PWDDetails() {
               <p><strong>Community:</strong> {record.community}</p>
               <p><strong>Registration Date:</strong> {record.registrationDate}</p>
             </div>
+            <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+              <h3 className="text-lg font-bold mb-2">Profile Image</h3>
+              {record.profileImage ? (
+                <img 
+                  src={record.profileImage} 
+                  alt={`${record.name}'s profile`}
+                  className="w-48 h-48 object-cover rounded-lg"
+                />
+              ) : (
+                <p>No profile image available</p>
+              )}
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+              <h3 className="text-lg font-bold mb-2">Documents</h3>
+              {record.documents && record.documents.length > 0 ? (
+                <div className="space-y-2">
+                  {record.documents.map((doc, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 bg-gray-700 rounded">
+                      <span>{doc.name}</span>
+                      <a 
+                        href={doc.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center text-blue-400 hover:text-blue-300"
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
+                        View
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>No documents available</p>
+              )}
+            </div>
             <div className="col-span-1 md:col-span-2 flex space-x-4 mt-4">
               <button
                 onClick={handleApprove}
-                className="flex items-center px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg shadow"
+                className="flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg shadow"
               >
                 <Check className="mr-2" /> Approve
               </button>
