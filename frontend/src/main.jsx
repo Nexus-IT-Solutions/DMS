@@ -17,6 +17,7 @@ import PWDDetails from "./pages/admin/PWDDetails.jsx"
 import OfficerDashboardLayout from "./components/officer/OfficerDashboardLayout.jsx"
 import OfficerDashboard from "./pages/officer/OfficerDashboard.jsx"
 import OfficerPWDRecords from "./pages/officer/PWDRecords.jsx"
+import OfficerPWDDetails from "./pages/officer/OfficerPWDDetails.jsx"
 import OfficerRegisterPWD from "./pages/officer/RegisterPWD.jsx"
 import AssistanceTracking from "./pages/admin/Assistance_Tracking.jsx"
 import AssistanceDetails from "./pages/admin/AssistanceDetails.jsx"
@@ -28,6 +29,9 @@ import EditUser from "./components/admin/EditUser.jsx"
 import Profile from "./pages/admin/profile.jsx"
 import OfficerResetPassword from "./components/officer/OfficerResetPassword.jsx"
 import AdminResetPassword from "./components/admin/AdminResetPassword.jsx"
+import OfficerAssistanceTracking from "./pages/officer/Assistance_Tracking.jsx"
+import OfficerAssistanceDetails from "./pages/officer/AssistanceDetails.jsx"
+import OfficerLogAssistance from "./pages/officer/LogAssistance.jsx"
 
 
 createRoot(document.getElementById('root')).render( 
@@ -64,7 +68,10 @@ createRoot(document.getElementById('root')).render(
           <Route index element={<OfficerDashboard />} />
           <Route path="register-pwd" element={<OfficerRegisterPWD />} />
           <Route path="records" element={<OfficerPWDRecords />} />
-          <Route path="records/:id" element={<PWDDetails />} />       
+          <Route path="records/:id" element={<OfficerPWDDetails />} />
+          <Route path="assistance-tracking" element={<OfficerAssistanceTracking />} />
+          <Route path="log-assistance" element={<OfficerLogAssistance />} />
+          <Route path="view-assistance/:id" element={<OfficerAssistanceDetails />} />       
           <Route path="profile" element={<Profile />} />   
         </Route>
 

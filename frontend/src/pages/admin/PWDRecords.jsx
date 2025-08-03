@@ -9,32 +9,35 @@ const dummyData = [
   {
     id: 1,
     name: "Peter James",
-    quarter: "Marketing", 
-    sex: "Male",
+    quarter: "Marketing",
+    sex: "Male", 
     community: "Accra Central",
     disabilityType: "Visual Impairment",
     registrationDate: "2025-01-15",
-    status: "pending"
+    status: "pending",
+    profileImage: "https://randomuser.me/api/portraits/men/44.jpg"
   },
   {
     id: 2,
     name: "Jacob Adjei",
     quarter: "Sales",
-    sex: "Female", 
-    community: "Kumasi Metropolitan",
+    sex: "Female",
+    community: "Kumasi Metropolitan", 
     disabilityType: "Physical Disability",
     registrationDate: "2025-02-10",
-    status: "approved"
+    status: "approved",
+    profileImage: "https://randomuser.me/api/portraits/women/42.jpg"
   },
   {
     id: 3,
     name: "Effah George",
     quarter: "HR",
     sex: "Male",
-    community: "Tamale Central", 
-    disabilityType: "Hearing Impairment",
+    community: "Tamale Central",
+    disabilityType: "Hearing Impairment", 
     registrationDate: "2025-05-18",
-    status: "pending"
+    status: "pending",
+    profileImage: "https://randomuser.me/api/portraits/men/40.jpg"
   },
 ];
 
@@ -50,7 +53,7 @@ export default function PWDTable() {
   const handleApprove = (id) => {
     Swal.fire({
       title: "Approve this record?",
-      icon: "question", 
+      icon: "question",
       showCancelButton: true,
       confirmButtonText: "Yes, approve",
       background: "#1f2937",
@@ -73,7 +76,7 @@ export default function PWDTable() {
       title: "Disapprove this record?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, disapprove",
+      confirmButtonText: "Yes, disapprove", 
       background: "#1f2937",
       color: "#fff",
     }).then((result) => {
@@ -100,7 +103,7 @@ export default function PWDTable() {
   );
 
   return (
-    <div className="p-4 md:p-6 text-white">
+    <div className="p-1 text-white">
       <div className="flex items-center mb-8">
         <button
           type="button"
@@ -157,10 +160,11 @@ export default function PWDTable() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto min-w-full">
         <table className="min-w-full table-auto bg-gray-800 rounded-lg">
           <thead>
             <tr className="text-left bg-gray-700">
+              <th className="px-4 py-3">Profile</th>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Quarter</th>
               <th className="px-4 py-3">Sex</th>
@@ -177,6 +181,13 @@ export default function PWDTable() {
                 key={record.id}
                 className="border-t border-gray-600 hover:bg-gray-700"
               >
+                <td className="px-4 py-3">
+                  <img 
+                    src={record.profileImage}
+                    alt={record.name}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                </td>
                 <td className="px-4 py-3">{record.name}</td>
                 <td className="px-4 py-3">{record.quarter}</td>
                 <td className="px-4 py-3">{record.sex}</td>
@@ -190,7 +201,7 @@ export default function PWDTable() {
                     {record.status}
                   </span>
                 </td>
-                <td className="px-4 py-3 space-x-4">
+                <td className="px-4 py-3 space-x-3">
                   <button
                     onClick={() =>
                       navigate(`/admin-dashboard/records/${record.id}`)
@@ -199,18 +210,22 @@ export default function PWDTable() {
                   >
                     <Eye size={20} />
                   </button>
-                  <button
-                    onClick={() => handleApprove(record.id)}
-                    className="hover:text-green-400"
-                  >
-                    <Check size={20} />
-                  </button>
-                  <button
-                    onClick={() => handleDisapprove(record.id)}
-                    className="hover:text-red-400"
-                  >
-                    <X size={20} />
-                  </button>
+                  {record.status !== 'approved' && (
+                    <>
+                      <button
+                        onClick={() => handleApprove(record.id)}
+                        className="hover:text-green-400"
+                      >
+                        <Check size={20} />
+                      </button>
+                      <button
+                        onClick={() => handleDisapprove(record.id)}
+                        className="hover:text-red-400"
+                      >
+                        <X size={20} />
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}

@@ -3,25 +3,25 @@ import Swal from 'sweetalert2';
 import { IoIosArrowBack } from 'react-icons/io';
 
 // Placeholder API functions
-const approveAssessment = async (id) => {
-  try {
-    // Simulated API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return { success: true };
-  } catch (error) {
-    throw new Error('Failed to approve assessment');
-  }
-};
+// const approveAssessment = async (id) => {
+//   try {
+//     // Simulated API call
+//     await new Promise(resolve => setTimeout(resolve, 1000));
+//     return { success: true };
+//   } catch (error) {
+//     throw new Error('Failed to approve assessment');
+//   }
+// };
 
-const disapproveAssessment = async (id) => {
-  try {
-    // Simulated API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return { success: true };
-  } catch (error) {
-    throw new Error('Failed to disapprove assessment');
-  }
-};
+// const disapproveAssessment = async (id) => {
+//   try {
+//     // Simulated API call
+//     await new Promise(resolve => setTimeout(resolve, 1000));
+//     return { success: true };
+//   } catch (error) {
+//     throw new Error('Failed to disapprove assessment');
+//   }
+// };
 
 const fakeData = [
   {
@@ -132,7 +132,7 @@ const AssistanceDetails = () => {
               <div className="bg-gray-700 p-5 rounded-lg border border-gray-600">
                 <p className="text-xs text-gray-300">Assessment Status</p>
                 <p className="text-base font-medium">
-                  <span className={`inline-block px-3 py-1 mt-3 rounded-full ${
+                  <span className={`inline-block px-3 py-1 rounded-full ${
                     data.assessment === 'Assessed' ? 'bg-green-900 text-green-100' : 'bg-yellow-900 text-yellow-100'
                   }`}>
                     {data.assessment}
@@ -166,7 +166,7 @@ const AssistanceDetails = () => {
             </div>
           </div>
 
-          {data.assessment !== 'Assessed' && (
+          {/* {data.assessment !== 'Assessed' && (
   <div className="flex gap-4 justify-end">
     <button
       onClick={() =>
@@ -209,7 +209,7 @@ const AssistanceDetails = () => {
       Disapprove Assessment
     </button>
   </div>
-)}
+)} */}
 
         </div>
       </div>

@@ -2,53 +2,83 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import formOptions from "../../data/pwdRegistrationData.json";
 import { IoIosArrowBack } from "react-icons/io";
+import { RiCloseCircleLine } from "react-icons/ri";
 
 const OfficerRegisterPWD = () => {
   const navigate = useNavigate();
+  const currentYear = new Date().getFullYear();
+
+  const defaultFormOptions = {
+    disabilityCategories: [],
+    disabilityTypes: [],
+    educationLevels: ["Primary", "Secondary", "Tertiary", "Vocational"],
+    assistanceNeeded: ["Education", "Health", "Financial", "Employment"]
+  };
+
+  const options = {
+    ...defaultFormOptions,
+    ...formOptions
+  };
+
   const [formData, setFormData] = useState({
     quarter: "",
-    sex: "",
+    gender: "",
     fullName: "",
     contact: "",
     disabilityType: "",
-    disabilityCategory: "",
+    disabilityCategory: "", 
     dateOfBirth: "",
     age: "",
     ghCardNumber: "",
-    nhisNumber: "", 
+    nhisNumber: "",
     community: "",
     occupation: "",
     userImage: null,
     documents: null,
+    guardianName: "",
+    guardianOccupation: "",
+    guardianPhone: "",
+    educationLevel: "",
+    schoolName: "",
+    guardian_relationship: "",
+    assistanceNeeded: ""
   });
+
+  const [isMinor, setIsMinor] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    
+
     if (name === "dateOfBirth") {
       const birthDate = new Date(value);
       const today = new Date();
       let age = today.getFullYear() - birthDate.getFullYear();
       const monthDiff = today.getMonth() - birthDate.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDate.getDate())
+      ) {
         age--;
       }
-      setFormData(prev => ({
+      setIsMinor(age < 18);
+      setFormData((prev) => ({
         ...prev,
         dateOfBirth: value,
-        age: age.toString()
+        age: age.toString(),
       }));
     } else if (name === "age") {
+      const age = parseInt(value);
+      setIsMinor(age < 18);
       const today = new Date();
-      const birthYear = today.getFullYear() - parseInt(value);
+      const birthYear = today.getFullYear() - age;
       const birthDate = new Date(birthYear, today.getMonth(), today.getDate());
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         age: value,
-        dateOfBirth: birthDate.toISOString().split('T')[0]
+        dateOfBirth: birthDate.toISOString().split("T")[0],
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         [name]: files ? files[0] : value,
       }));
@@ -60,6 +90,19 @@ const OfficerRegisterPWD = () => {
 
     const data = new FormData();
     for (let key in formData) {
+      if (
+        !isMinor &&
+        [
+          "guardianName",
+          "guardianOccupation", 
+          "guardianPhone",
+          "educationLevel",
+          "schoolName",
+          "grade",
+        ].includes(key)
+      ) {
+        continue;
+      }
       data.append(key, formData[key]);
     }
 
@@ -83,143 +126,108 @@ const OfficerRegisterPWD = () => {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen p-6 text-sm">
-      <div className="flex items-center mb-8">
-          <button
-            type="button"
-            onClick={() => navigate("/admin-dashboard")}
-            className="text-white bg-gray-600 hover:bg-gray-700 px-6 py-3 rounded"
-          >
-            <IoIosArrowBack className="inline-block mr-2 text-lg -mt-1" />
-            Back
-          </button>
+      <div className="flex items-center justify-between mb-8">
+        <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="flex items-center px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg"
+            >
+              <IoIosArrowBack className="mr-2" />
+              Back
+            </button>
+        <h1 className="text-3xl font-bold">Register Person with Disability</h1>
+        <div></div>
+      </div>
 
-          <h2 className="text-3xl font-bold mb-8 text-center ml-[17%] md:relative md:top-[14px]">
-          Register Person with Disability
-        </h2>
-        </div>
       <div className="max-w-6xl mx-auto bg-gray-800 p-8 rounded-lg shadow-lg">
-
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Row 1 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block mb-1">Quarter</label>
-              <select
-                name="quarter"
-                value={formData.quarter}
-                onChange={handleChange}
-                className="w-full p-3 pr-[15px] bg-gray-700 border border-gray-600 rounded-lg"
-              >
-                <option value="">Select quarter</option>
-                {formOptions.quarters.map((q) => (
-                  <option key={q} value={q}>
-                    {q}
-                  </option>
-                ))}
-              </select>
-            </div>
-
+                          <label className="block mb-1">Quarter</label>
+                          <input
+                            type="text"
+                            name="quarter"
+                            value={`Quater ${Math.ceil(new Date().getMonth() / 3)}, ${new Date().getFullYear()}`}
+                            onChange={handleChange}
+                            className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                            disabled
+                          />
+                        </div>
             <div>
-              <label className="block mb-1">Sex</label>
+              <label className="block mb-1">Gender</label>
               <select
-                name="sex"
-                value={formData.sex}
+                name="gender"
+                value={formData.gender}
                 onChange={handleChange}
-                className="w-full p-3 pr-[15px] bg-gray-700 border border-gray-600 rounded-lg"
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
               >
-                <option value="">Select sex</option>
-                {formOptions.sexOptions.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
               </select>
             </div>
           </div>
 
-          {/* Full Name */}
-          <div>
-            <label className="block mb-1">Full Name</label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder="Full Name"
-              className="p-3 w-full bg-gray-700 border border-gray-600 rounded-lg"
-            />
-          </div>
-
-          {/* Occupation and Contact */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block mb-1">Occupation</label>
-              <select
-                name="occupation"
-                value={formData.occupation}
-                onChange={handleChange}
-                className="w-full p-3 pr-[15px] bg-gray-700 border border-gray-600 rounded-lg"
-              >
-                <option value="">Select Occupation</option>
-                {formOptions.occupation.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block mb-1">Contact</label>
-              <input
-                type="text"
-                name="contact"
-                value={formData.contact}
-                onChange={handleChange}
-                placeholder="Contact"
-                className="p-3 w-full bg-gray-700 border border-gray-600 rounded-lg"
-              />
-            </div>
-          </div>
-
-          {/* Disability Type & Category */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
+          <div className="flex gap-6">
+            <div className="flex-1">
               <label className="block mb-1">Disability Category</label>
               <select
                 name="disabilityCategory"
                 value={formData.disabilityCategory}
                 onChange={handleChange}
-                className="w-full p-3 pr-[15px] bg-gray-700 border border-gray-600 rounded-lg"
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
               >
                 <option value="">Select Category</option>
-                {formOptions.disabilityCategories.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
+                {options.disabilityCategories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
                   </option>
                 ))}
               </select>
             </div>
-
-            <div>
+            <div className="flex-1">
               <label className="block mb-1">Disability Type</label>
               <select
                 name="disabilityType"
                 value={formData.disabilityType}
                 onChange={handleChange}
-                className="w-full p-3 pr-[15px] bg-gray-700 border border-gray-600 rounded-lg"
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
               >
                 <option value="">Select Disability Type</option>
-                {formOptions.disabilityTypes.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
+                {options.disabilityTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
                   </option>
                 ))}
               </select>
             </div>
           </div>
 
-          {/* Date of Birth and Age */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <label className="block mb-1">Full Name</label>
+              <input
+                type="text"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1">Contact Number</label>
+              <input
+                type="tel"
+                name="contact" 
+                value={formData.contact}
+                onChange={handleChange}
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                required
+              />
+            </div>
+
             <div>
               <label className="block mb-1">Date of Birth</label>
               <input
@@ -227,9 +235,11 @@ const OfficerRegisterPWD = () => {
                 name="dateOfBirth"
                 value={formData.dateOfBirth}
                 onChange={handleChange}
-                className="p-3 w-full bg-gray-700 border border-gray-600 rounded-lg"
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                required
               />
             </div>
+
             <div>
               <label className="block mb-1">Age</label>
               <input
@@ -237,14 +247,113 @@ const OfficerRegisterPWD = () => {
                 name="age"
                 value={formData.age}
                 onChange={handleChange}
-                placeholder="Age"
-                className="p-3 w-full bg-gray-700 border border-gray-600 rounded-lg"
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                required
               />
             </div>
-          </div>
 
-          {/* Ghana Card and NHIS */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block mb-1">Assistance Needed</label>
+              <select
+                name="assistanceNeeded"
+                value={formData.assistanceNeeded}
+                onChange={handleChange}
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                required
+              >
+                <option value="">Select Assistance Needed</option>
+                {options.assistanceNeeded.map((assistance) => (
+                  <option key={assistance} value={assistance}>
+                    {assistance}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {formData.age && parseInt(formData.age) < 18 && (
+            <>
+              <div>
+                <label className="block mb-1">Guardian Name</label>
+                <input
+                  type="text"
+                  name="guardianName"
+                  value={formData.guardianName}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                  required={isMinor}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Guardian Occupation</label>
+                <input
+                  type="text"
+                  name="guardianOccupation"
+                  value={formData.guardianOccupation}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                  required={isMinor}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Guardian Phone Number</label>
+                <input
+                  type="tel"
+                  name="guardianPhone"
+                  value={formData.guardianPhone}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                  required={isMinor}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Guardian Relationship</label>
+                <input
+                  type="text"
+                  name="grade"
+                  value={formData.guardian_relationship}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                  required={isMinor}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Education Level</label>
+                <select
+                  name="educationLevel"
+                  value={formData.educationLevel}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                  required={isMinor}
+                >
+                  <option value="">Select Education Level</option>
+                  {options.educationLevels.map((level) => (
+                    <option key={level} value={level}>
+                      {level}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block mb-1">School Name</label>
+                <input
+                  type="text"
+                  name="schoolName"
+                  value={formData.schoolName}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                  required={isMinor}
+                />
+              </div>
+
+              
+           </>
+          )}
+
             <div>
               <label className="block mb-1">Ghana Card Number</label>
               <input
@@ -252,10 +361,11 @@ const OfficerRegisterPWD = () => {
                 name="ghCardNumber"
                 value={formData.ghCardNumber}
                 onChange={handleChange}
-                placeholder="Ghana Card Number"
-                className="p-3 w-full bg-gray-700 border border-gray-600 rounded-lg"
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                required
               />
             </div>
+
             <div>
               <label className="block mb-1">NHIS Number</label>
               <input
@@ -263,109 +373,86 @@ const OfficerRegisterPWD = () => {
                 name="nhisNumber"
                 value={formData.nhisNumber}
                 onChange={handleChange}
-                placeholder="NHIS Number"
-                className="p-3 w-full bg-gray-700 border border-gray-600 rounded-lg"
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1">Community</label>
+              <input
+                type="text"
+                name="community"
+                value={formData.community}
+                onChange={handleChange}
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1">Occupation</label>
+              <input
+                type="text"
+                name="occupation"
+                value={formData.occupation}
+                onChange={handleChange}
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1">Profile Image</label>
+              <input
+                type="file"
+                name="userImage"
+                onChange={handleChange}
+                accept="image/*"
+                className="w-full p-4 bg-gray-700 border-2 border-dashed border-gray-500 rounded-lg hover:border-blue-500 transition-colors cursor-pointer focus:outline-none focus:border-blue-600 h-[150px]"
+                required
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const file = e.dataTransfer.files[0];
+                  if (file) handleChange({target: {name: 'userImage', files: [file]}});
+                }}
+                onDragOver={(e) => e.preventDefault()}
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1">Supporting Documents</label>
+              <input
+                type="file"
+                name="documents" 
+                onChange={handleChange}
+                accept=".pdf,.doc,.docx"
+                className="w-full p-4 bg-gray-700 border-2 border-dashed border-gray-500 rounded-lg hover:border-blue-500 transition-colors cursor-pointer focus:outline-none focus:border-blue-600 h-[150px]"
+                required
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const file = e.dataTransfer.files[0];
+                  if (file) handleChange({target: {name: 'documents', files: [file]}});
+                }}
+                onDragOver={(e) => e.preventDefault()}
               />
             </div>
           </div>
 
-          {/* Community */}
-          <div>
-            <label className="block mb-1">Community</label>
-            <input
-              type="text"
-              name="community"
-              value={formData.community}
-              onChange={handleChange}
-              placeholder="Enter Community"
-              className="p-3 w-full bg-gray-700 border border-gray-600 rounded-lg"
-            />
-          </div>
-
-          {/* File Upload */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="w-full">
-              <label className="block text-sm font-medium mb-1 text-white">
-                User Image
-              </label>
-              <div
-                className="border-2 border-dashed border-gray-500 bg-gray-700 rounded-lg p-6 text-center md:h-[180px] flex flex-col items-center justify-center"
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const files = Array.from(e.dataTransfer.files);
-                  if(files[0].type.startsWith('image/')) {
-                    handleChange({target: {name: 'userImage', files: [files[0]]}});
-                  }
-                }}
-              >
-                <label
-                  htmlFor="imageUpload"
-                  className="cursor-pointer text-sm text-white"
-                >
-                  Drag and drop image here, or{" "}
-                  <span className="underline text-teal-400">click to browse</span>
-                </label>
-                <input
-                  id="imageUpload"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleChange({target: {name: 'userImage', files: [e.target.files[0]]}})}
-                  className="hidden"
-                />
-                <p className="text-xs text-gray-300 mt-2">
-                  Supported formats: JPG, PNG (Max 5MB)
-                </p>
-              </div>
-            </div>
-
-            <div className="w-full">
-              <label className="block text-sm font-medium mb-1 text-white">
-                Supporting Documents
-              </label>
-              <div
-                className="border-2 border-dashed border-gray-500 bg-gray-700 rounded-lg p-6 text-center md:h-[180px] flex flex-col items-center justify-center"
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const files = Array.from(e.dataTransfer.files);
-                  handleChange({target: {name: 'documents', files: [files[0]]}});
-                }}
-              >
-                <label
-                  htmlFor="documentUpload"
-                  className="cursor-pointer text-sm text-white"
-                >
-                  Drag and drop documents here, or{" "}
-                  <span className="underline text-teal-400">click to browse</span>
-                </label>
-                <input
-                  id="documentUpload"
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={(e) => handleChange({target: {name: 'documents', files: [e.target.files[0]]}})}
-                  className="hidden"
-                />
-                <p className="text-xs text-gray-300 mt-2">
-                  Supported formats: PDF, DOC (Max 10MB)
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="flex flex-col md:flex-row gap-4 mt-6">
+          
+          <div className="flex justify-end mt-8 gap-4">
             <button
               type="submit"
-              className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded text-white w-full md:w-auto"
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg"
             >
               Register PWD
             </button>
             <button
               type="button"
-              onClick={() => navigate("/admin-dashboard")}
-              className="bg-gray-600 hover:bg-gray-700 px-6 py-3 rounded text-white w-full md:w-auto"
+              onClick={() => navigate(-1)}
+              className="flex items-center px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg"
             >
+              <RiCloseCircleLine className="mr-2" />
               Cancel
             </button>
           </div>
@@ -376,5 +463,4 @@ const OfficerRegisterPWD = () => {
 };
 
 export default OfficerRegisterPWD;
-
 

@@ -1,5 +1,5 @@
-import {  useNavigate } from 'react-router-dom';
-import { useState } from "react"
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { FaEye, FaCheck, FaTimes } from 'react-icons/fa';
 
@@ -116,7 +116,7 @@ const AssistanceTracking = () => {
           <p className="text-gray-400">Log and manage assistance provided to PWDS</p>
         </div>
         <button
-          onClick={() => navigate('/admin-dashboard/log-assistance')}
+          onClick={() => navigate('/officer-dashboard/log-assistance')}
           className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition duration-200 ease-in-out transform hover:scale-105"
         >
           + Log New Assistance
@@ -153,13 +153,13 @@ const AssistanceTracking = () => {
                 </td>
                 <td className="p-4 flex gap-2">
                   <button
-                    onClick={() => navigate(`/admin-dashboard/view-assistance/${idx}`)}
+                    onClick={() => navigate(`/officer-dashboard/view-assistance/${idx}`)}
                     className="text-white hover:text-purple-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
                     title="View Details"
                   >
                     <FaEye />
                   </button>
-                  {entry.assessment !== 'Assessed' && (
+                  {/* {entry.assessment !== 'Assessed' && (
                     <>
                       <button
                         onClick={() => handleApprove(idx)}
@@ -176,7 +176,7 @@ const AssistanceTracking = () => {
                         <FaTimes />
                       </button>
                     </>
-                  )}
+                  )} */}
                 </td>
               </tr>
             ))}

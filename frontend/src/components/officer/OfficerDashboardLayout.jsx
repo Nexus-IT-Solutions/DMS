@@ -12,6 +12,7 @@ const navItems = [
   { label: 'Dashboard', path: '/officer-dashboard', icon: RiDashboardLine },
   { label: 'Register PWD', path: '/officer-dashboard/register-pwd', icon: RiUserAddLine },
   { label: 'PWD Records', path: '/officer-dashboard/records', icon: RiFileListLine },
+  { label: 'Assistance Tracking', path: '/officer-dashboard/assistance-tracking', icon: RiFileWarningLine },
   { label: 'Profile', path: '/officer-dashboard/profile', icon: RiUserLine },
 //   { label: 'Assistance Tracking', path: '/admin-dashboard/assistance-tracking', icon: RiFileWarningLine },
 //   { label: 'Reports', path: '/admin-dashboard/reports', icon: SiSimpleanalytics },

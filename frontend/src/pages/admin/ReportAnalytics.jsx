@@ -36,6 +36,10 @@ const reportCards = [
   {
     icon: <FaUser size={22} className="text-orange-400" />, title: 'Demographics Summary',
     description: 'Age, occupation, and disability type analysis'
+  },
+  {
+    icon: <FaFileAlt size={22} className="text-blue-500" />, title: 'Annual Registration Report',
+    description: 'PWD registrations for the year with demographic breakdown'
   }
 ];
 

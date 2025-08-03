@@ -7,58 +7,35 @@ const dummyData = [
   {
     id: 1,
     name: "Peter James",
-    quarter: "Marketing", 
-    sex: "Male",
+    quarter: "Marketing",
+    sex: "Male", 
     community: "Accra Central",
     disabilityType: "Visual Impairment",
     registrationDate: "2025-01-15",
-    profileImage: "https://example.com/profile1.jpg",
-    documents: [
-      {
-        name: "Medical Certificate",
-        url: "https://example.com/doc1.pdf"
-      },
-      {
-        name: "ID Card",
-        url: "https://example.com/doc2.pdf"
-      }
-    ]
+    status: "Pending",
+    profileImage: "https://randomuser.me/api/portraits/men/44.jpg"
   },
   {
     id: 2,
     name: "Jacob Adjei",
     quarter: "Sales",
-    sex: "Female", 
-    community: "Kumasi Metropolitan",
+    sex: "Female",
+    community: "Kumasi Metropolitan", 
     disabilityType: "Physical Disability",
     registrationDate: "2025-02-10",
-    profileImage: "https://example.com/profile2.jpg",
-    documents: [
-      {
-        name: "Medical Certificate",
-        url: "https://example.com/doc3.pdf"
-      }
-    ]
+    status: "Approved",
+    profileImage: "https://randomuser.me/api/portraits/women/42.jpg"
   },
   {
     id: 3,
     name: "Effah George",
     quarter: "HR",
     sex: "Male",
-    community: "Tamale Central", 
-    disabilityType: "Hearing Impairment",
+    community: "Tamale Central",
+    disabilityType: "Hearing Impairment", 
     registrationDate: "2025-05-18",
-    profileImage: "https://example.com/profile3.jpg",
-    documents: [
-      {
-        name: "Medical Certificate",
-        url: "https://example.com/doc4.pdf"
-      },
-      {
-        name: "ID Card",
-        url: "https://example.com/doc5.pdf"
-      }
-    ]
+    status: "Pending",
+    profileImage: "https://randomuser.me/api/portraits/men/40.jpg"
   },
 ];
 
@@ -177,20 +154,30 @@ export default function PWDDetails() {
                 <p>No documents available</p>
               )}
             </div>
-            <div className="col-span-1 md:col-span-2 flex space-x-4 mt-4">
-              <button
-                onClick={handleApprove}
-                className="flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg shadow"
-              >
-                <Check className="mr-2" /> Approve
-              </button>
-              <button
-                onClick={handleDisapprove}
-                className="flex items-center px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-lg shadow"
-              >
-                <X className="mr-2" /> Disapprove
-              </button>
+            <div className="bg-gray-800 p-4 rounded-lg shadow-md col-span-1 md:col-span-2">
+              <h3 className="text-lg font-bold mb-2">Record Status</h3>
+              <div className={`inline-block px-3 py-1 rounded-full ${
+                 record.status === 'Approved' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500'
+                  }`}>
+                    {record.status}
+              </div>
             </div>
+            {record.status !== 'Approved' && (
+              <div className="col-span-1 md:col-span-2 flex space-x-4 mt-4">
+                <button
+                  onClick={handleApprove}
+                  className="flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg shadow"
+                >
+                  <Check className="mr-2" /> Approve
+                </button>
+                <button
+                  onClick={handleDisapprove}
+                  className="flex items-center px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-lg shadow"
+                >
+                  <X className="mr-2" /> Disapprove
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <p className="text-red-400">Record not found.</p>
