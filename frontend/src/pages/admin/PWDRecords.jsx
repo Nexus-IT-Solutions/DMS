@@ -42,7 +42,8 @@ const dummyData = [
 ];
 
 export default function PWDTable() {
-  const [data, setData] = useState(dummyData);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [filter, setFilter] = useState({
     search: "",
@@ -50,42 +51,18 @@ export default function PWDTable() {
     community: "",
   });
 
-  const handleApprove = (id) => {
-    Swal.fire({
-      title: "Approve this record?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Yes, approve",
-      background: "#1f2937",
-      color: "#fff",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setData(data.map(record => {
-          if(record.id === id) {
-            return {...record, status: "approved"}
-          }
-          return record;
-        }));
-        Swal.fire("Approved!", "", "success");
-      }
-    });
-  };
-
-  const handleDisapprove = (id) => {
-    Swal.fire({
-      title: "Disapprove this record?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, disapprove", 
-      background: "#1f2937",
-      color: "#fff",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setData(data.filter((record) => record.id !== id));
-        Swal.fire("Disapproved!", "", "error");
-      }
-    });
-  };
+  useEffect(() => {
+    setLoading(true);
+    fetch("https://disability-management-api.onrender.com/v1/pwd-records")
+      .then(res => res.json())
+      .then(result => {
+        if (result.status === "success" && result.data && result.data.records) {
+          setData(result.data.records);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -97,9 +74,9 @@ export default function PWDTable() {
 
   const filteredData = data.filter(
     (record) =>
-      record.name.toLowerCase().includes(filter.search.toLowerCase()) &&
-      record.quarter.includes(filter.quarter) &&
-      record.community.includes(filter.community)
+      (record.name?.toLowerCase().includes(filter.search.toLowerCase()) || "".includes(filter.search.toLowerCase())) &&
+      (filter.quarter ? record.quarter === filter.quarter : true) &&
+      (filter.community ? record.community === filter.community : true)
   );
 
   return (
@@ -138,10 +115,8 @@ export default function PWDTable() {
           onChange={handleFilterChange}
         >
           <option value="">All Quarters</option>
-          {dummyData.map((record) => (
-            <option key={record.id} value={record.quarter}>
-              {record.quarter}
-            </option>
+          {[...new Set(data.map((record) => record.quarter))].map((quarter) => (
+            <option key={quarter} value={quarter}>{quarter}</option>
           ))}
         </select>
         <select
@@ -151,10 +126,8 @@ export default function PWDTable() {
           onChange={handleFilterChange}
         >
           <option value="">All Communities</option>
-          {dummyData.map((record) => (
-            <option key={record.id} value={record.community}>
-              {record.community}
-            </option>
+          {[...new Set(data.map((record) => record.community))].map((community) => (
+            <option key={community} value={community}>{community}</option>
           ))}
         </select>
       </div>
@@ -176,59 +149,49 @@ export default function PWDTable() {
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((record) => (
-              <tr
-                key={record.id}
-                className="border-t border-gray-600 hover:bg-gray-700"
-              >
-                <td className="px-4 py-3">
-                  <img 
-                    src={record.profileImage}
-                    alt={record.name}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                </td>
-                <td className="px-4 py-3">{record.name}</td>
-                <td className="px-4 py-3">{record.quarter}</td>
-                <td className="px-4 py-3">{record.sex}</td>
-                <td className="px-4 py-3">{record.community}</td>
-                <td className="px-4 py-3">{record.disabilityType}</td>
-                <td className="px-4 py-3">{record.registrationDate}</td>
-                <td className="px-4 py-3">
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    record.status === 'approved' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500'
-                  }`}>
-                    {record.status}
-                  </span>
-                </td>
-                <td className="px-4 py-3 space-x-3">
-                  <button
-                    onClick={() =>
-                      navigate(`/admin-dashboard/records/${record.id}`)
-                    }
-                    className="hover:text-blue-400"
-                  >
-                    <Eye size={20} />
-                  </button>
-                  {record.status !== 'approved' && (
-                    <>
-                      <button
-                        onClick={() => handleApprove(record.id)}
-                        className="hover:text-green-400"
-                      >
-                        <Check size={20} />
-                      </button>
-                      <button
-                        onClick={() => handleDisapprove(record.id)}
-                        className="hover:text-red-400"
-                      >
-                        <X size={20} />
-                      </button>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
+            {loading ? (
+              <tr><td colSpan={9} className="text-center py-8">Loading...</td></tr>
+            ) : filteredData.length === 0 ? (
+              <tr><td colSpan={9} className="text-center py-8">No records found.</td></tr>
+            ) : (
+              filteredData.map((record) => (
+                <tr
+                  key={record.id}
+                  className="border-t border-gray-600 hover:bg-gray-700"
+                >
+                  <td className="px-4 py-3">
+                    <img 
+                      src={record.profileImage}
+                      alt={record.name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  </td>
+                  <td className="px-4 py-3">{record.name}</td>
+                  <td className="px-4 py-3">{record.quarter}</td>
+                  <td className="px-4 py-3">{record.sex}</td>
+                  <td className="px-4 py-3">{record.community}</td>
+                  <td className="px-4 py-3">{record.disabilityType}</td>
+                  <td className="px-4 py-3">{record.registrationDate}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-1 rounded text-xs ${
+                      record.status === 'approved' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500'
+                    }`}>
+                      {record.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 space-x-3">
+                    <button
+                      onClick={() =>
+                        navigate(`/admin-dashboard/records/${record.id}`)
+                      }
+                      className="hover:text-blue-400"
+                    >
+                      <Eye size={20} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

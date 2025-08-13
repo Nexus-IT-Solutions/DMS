@@ -6,12 +6,33 @@ const OfficerLogin = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { isDark, toggleDarkMode } = useContext(DarkModeContext);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     if (!acceptTerms) return;
-    // Add login logic here
+    setLoading(true);
+    try {
+      const res = await fetch('https://disability-management-api.onrender.com/v1/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const result = await res.json();
+      if (result.status === 'success' && result.data) {
+        localStorage.setItem('dms_user', JSON.stringify(result.data));
+        // Redirect to officer dashboard
+        window.location.href = '/officer-dashboard';
+      } else {
+        setError(result.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('Network error');
+    }
+    setLoading(false);
   };
 
   return (

@@ -21,27 +21,72 @@ export default function Profile() {
     }
   };
 
-  const handleUpdateProfile = (e) => {
+  const handleUpdateProfile = async (e) => {
     e.preventDefault();
-
     if (confirmOldPassword !== oldPassword) {
       Swal.fire({
-        icon: 'error',
-        title: 'Incorrect Old Password',
-        text: 'Please enter the correct old password to make changes.',
-        background: '#1f2937',
-        color: '#fff',
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Incorrect Old Password",
+        showConfirmButton: false,
+        timer: 2500,
+        background: "#232b3e",
+        color: "#fff",
       });
       return;
     }
-
-    Swal.fire({
-      icon: 'success', 
-      title: 'Profile Updated!',
-      text: 'Your profile information has been successfully updated.',
-      background: '#1f2937',
-      color: '#fff',
-    });
+    try {
+      const payload = {
+        username,
+        email,
+        role: "admin",
+        profile_image: avatar,
+      };
+      // Replace 1 with actual user id from context/session
+      const response = await fetch(`https://disability-management-api.onrender.com/v1/users/1`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json();
+      if (result.status === "success") {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Profile Updated!",
+          showConfirmButton: false,
+          timer: 2500,
+          background: "#232b3e",
+          color: "#fff",
+        });
+      } else {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: result.message || "Update failed!",
+          showConfirmButton: false,
+          timer: 2500,
+          background: "#232b3e",
+          color: "#fff",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Network error!",
+        showConfirmButton: false,
+        timer: 2500,
+        background: "#232b3e",
+        color: "#fff",
+      });
+    }
   };
 
   return (

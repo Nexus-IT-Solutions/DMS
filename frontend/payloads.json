@@ -52,7 +52,7 @@
 // Payload to register new pwd,  Method = POST
 {
     "quater": "Q1",
-    "sex": "male",
+    "gender": "male",
     "full_name": "amaaamdmama",
     "occupation": "student",
     "contact": "+233123456789",
@@ -63,8 +63,15 @@
     "gh_card_number": "GHA-xxxxxxxxx-x",
     "nhis_number": "xxxxxxxx",
     "community": "sefwi-xxaxxx",
-    "profile_image": "image.jpg",
-    "supporting_documents": ["passport.pdf", "letter.docx"]
+    "guardianName": "",         //optional
+    "guardianOccupation": "",   //optional
+    "guardianPhone": "",        //optional
+    "educationLevel": "",       //optional
+    "schoolName": "",           //optional
+    "guardian_relationship": "",    //optional
+    "assistanceNeeded": "",     //optional
+    "profile_image": "image.jpg", //required
+    "supporting_documents": ["passport.pdf", "letter.docx"] //optional
 }
 
 
@@ -332,7 +339,8 @@
 {
     "username": "new officer",
     "email": "officer@officer.com",
-    "role": "data entry officer"
+    "role": "data entry officer",
+    "password": "new password"
 }
 
 

@@ -1,22 +1,36 @@
 import React, { useState, useContext } from 'react';
+import Swal from 'sweetalert2';
 import { DarkModeContext } from '../ThemedContext';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const OfficerForgotPassword = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('');
+  const [loading, setLoading] = useState(false);
   const { isDark } = useContext(DarkModeContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus('');
+    setLoading(true);
     try {
-      // Placeholder API endpoint
-      await axios.post('https://jsonplaceholder.typicode.com/posts', { email });
-      setStatus('success');
+      const res = await fetch('https://disability-management-api.onrender.com/v1/users/password/request-reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const result = await res.json();
+      if (result.status === 'success') {
+        Swal.fire({ icon: 'success', title: 'Success', text: result.message || 'Reset link sent! Check your email.' });
+        navigate('/officer-otp');
+      } else {
+        Swal.fire({ icon: 'error', title: 'Error', text: result.message || 'Failed to send reset link.' });
+      }
     } catch (error) {
-      setStatus('error');
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Network error. Please try again.' });
     }
+    setLoading(false);
   };
 
   return (
@@ -40,13 +54,13 @@ const OfficerForgotPassword = () => {
           </div>
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            disabled={loading}
+            className={`w-full py-2 px-4 font-semibold rounded-lg shadow-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-teal-600 hover:bg-teal-700 text-white'}`}
           >
-            Send Reset Link
+            {loading ? 'Sending...' : 'Send Reset Link'}
           </button>
         </form>
-        {status === 'success' && <div className="mt-4 text-green-600 text-center">Reset link sent! Check your email.</div>}
-        {status === 'error' && <div className="mt-4 text-red-600 text-center">Failed to send reset link. Try again.</div>}
+  {/* SweetAlert handles notifications */}
         <div className="mt-6 text-center">
           <a href="/" className="text-teal-600 dark:text-teal-400 hover:underline">Back to Login</a>
         </div>

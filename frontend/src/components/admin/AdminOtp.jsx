@@ -5,6 +5,8 @@ import axios from 'axios';
 const AdminOtp = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [status, setStatus] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
   const { isDark } = useContext(DarkModeContext);
   const inputsRef = useRef([]);
 
@@ -44,23 +46,45 @@ const AdminOtp = () => {
     setStatus('');
     const otpValue = otp.join('');
     if (otpValue.length !== 6) return;
+    setLoading(true);
     try {
-      await axios.post('https://jsonplaceholder.typicode.com/posts', { otp: otpValue });
-      setStatus('success');
+      const response = await axios.post('https://disability-management-api.onrender.com/v1/users/password/verify-otp', { otp: otpValue });
+      const result = response.data;
+      if (result.status === 'success') {
+        localStorage.setItem('reset_otp', otpValue);
+        setStatus('success');
+        Swal.fire({ icon: 'success', title: 'Success', text: result.message || 'OTP verified successfully!' });
+        setTimeout(() => navigate('/admin-reset-password'), 1500);
+      } else {
+        setStatus('error');
+        Swal.fire({ icon: 'error', title: 'Error', text: result.message || 'OTP verification failed. Try again.' });
+      }
     } catch (error) {
       setStatus('error');
+      Swal.fire({ icon: 'error', title: 'Error', text: 'An error occurred during OTP verification.' });
     }
+    setLoading(false);
   };
 
   const handleResend = async (e) => {
     e.preventDefault();
     setStatus('');
+    setResendLoading(true);
     try {
-      await axios.post('https://jsonplaceholder.typicode.com/posts', { resend: true });
-      setStatus('resent');
+      const response = await axios.post('https://disability-management-api.onrender.com/v1/users/password/verify-otp', { resend: true });
+      const result = response.data;
+      if (result.status === 'success') {
+        setStatus('resent');
+        Swal.fire({ icon: 'success', title: 'Success', text: result.message || 'OTP resent! Check your email.' });
+      } else {
+        setStatus('error');
+        Swal.fire({ icon: 'error', title: 'Error', text: result.message || 'Error resending OTP.' });
+      }
     } catch (error) {
       setStatus('error');
+      Swal.fire({ icon: 'error', title: 'Error', text: 'An error occurred while resending OTP.' });
     }
+    setResendLoading(false);
   };
 
   return (
@@ -84,22 +108,28 @@ const AdminOtp = () => {
                 className="w-12 h-12 md:w-14 md:h-14 text-center text-2xl rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 autoFocus={idx === 0}
                 required
+                disabled={loading || resendLoading}
               />
             ))}
           </div>
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
-            disabled={otp.join('').length !== 6}
+            className={`w-full py-2 px-4 font-semibold rounded-lg shadow-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-teal-600 hover:bg-teal-700 text-white'}`}
+            disabled={otp.join('').length !== 6 || loading || resendLoading}
           >
-            Verify OTP
+            {loading ? 'Verifying...' : 'Verify OTP'}
           </button>
         </form>
-        {status === 'success' && <div className="mt-4 text-green-600 text-center">OTP verified successfully!</div>}
-        {status === 'error' && <div className="mt-4 text-red-600 text-center">OTP verification failed. Try again.</div>}
-        {status === 'resent' && <div className="mt-4 text-blue-600 text-center">OTP resent! Check your email.</div>}
+  {/* SweetAlert handles all notifications. No need for status divs. */}
         <div className="mt-6 text-center">
-          <button onClick={handleResend} className="text-teal-600 dark:text-teal-400 hover:underline text-sm">Resend OTP</button>
+          <button
+            type="button"
+            onClick={handleResend}
+            className={`text-teal-600 dark:text-teal-400 hover:underline text-sm ${resendLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
+            disabled={resendLoading || loading}
+          >
+            {resendLoading ? 'Resending...' : 'Resend OTP'}
+          </button>
         </div>
       </div>
     </div>

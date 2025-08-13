@@ -1,3 +1,6 @@
+
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx";
+import ProtectedOfficerRoute from "./components/ProtectedOfficerRoute.jsx";
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
@@ -27,6 +30,7 @@ import UserManagement from "./pages/admin/UserManagement.jsx"
 import AddUser from "./components/admin/AddUser.jsx"
 import EditUser from "./components/admin/EditUser.jsx"
 import Profile from "./pages/admin/profile.jsx"
+import Settings from "./pages/admin/Settings.jsx"
 import OfficerResetPassword from "./components/officer/OfficerResetPassword.jsx"
 import AdminResetPassword from "./components/admin/AdminResetPassword.jsx"
 import OfficerAssistanceTracking from "./pages/officer/Assistance_Tracking.jsx"
@@ -47,33 +51,38 @@ createRoot(document.getElementById('root')).render(
         <Route path="/officer-reset-password" element={<OfficerResetPassword />} />
         <Route path="/admin-reset-password" element={<AdminResetPassword />} />
 
-        {/* Admin dashboard layout and nested routes */}
-        <Route path="/admin-dashboard" element={<AdminDashboardLayout />}>
-          <Route index element={<DashboardHome />} />
-          <Route path="register-pwd" element={<RegisterPWD />} />
-          <Route path="records" element={<PWDRecords />} />
-          <Route path="records/:id" element={<PWDDetails />} />   
-          <Route path="assistance-tracking" element={<AssistanceTracking />} />
-          <Route path="log-assistance" element={<LogAssistance />} />
-          <Route path="view-assistance/:id" element={<AssistanceDetails />} />
-          <Route path="reports" element={<ReportsAnalytics />} />
-          <Route path="user-management" element={<UserManagement />} />
-          <Route path="add-user" element={<AddUser />} />
-          <Route path="edit-user/:id" element={<EditUser />} />
-          <Route path="profile" element={<Profile />} />          
-        </Route>
+        {/* Admin dashboard protected route */}
+        {/* <Route element={<ProtectedAdminRoute />}> */}
+          <Route path="/admin-dashboard" element={<AdminDashboardLayout />}>
+            <Route index element={<DashboardHome />} />
+            <Route path="register-pwd" element={<RegisterPWD />} />
+            <Route path="records" element={<PWDRecords />} />
+            <Route path="records/:id" element={<PWDDetails />} />   
+            <Route path="assistance-tracking" element={<AssistanceTracking />} />
+            <Route path="log-assistance" element={<LogAssistance />} />
+            <Route path="view-assistance/:id" element={<AssistanceDetails />} />
+            <Route path="reports" element={<ReportsAnalytics />} />
+            <Route path="user-management" element={<UserManagement />} />
+            <Route path="add-user" element={<AddUser />} />
+            <Route path="edit-user/:id" element={<EditUser />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+        {/* </Route> */}
 
-        {/* Officer dashboard layout and nested routes */}
-        <Route path="/officer-dashboard" element={<OfficerDashboardLayout />}>
-          <Route index element={<OfficerDashboard />} />
-          <Route path="register-pwd" element={<OfficerRegisterPWD />} />
-          <Route path="records" element={<OfficerPWDRecords />} />
-          <Route path="records/:id" element={<OfficerPWDDetails />} />
-          <Route path="assistance-tracking" element={<OfficerAssistanceTracking />} />
-          <Route path="log-assistance" element={<OfficerLogAssistance />} />
-          <Route path="view-assistance/:id" element={<OfficerAssistanceDetails />} />       
-          <Route path="profile" element={<Profile />} />   
-        </Route>
+        {/* Officer dashboard protected route */}
+        {/* <Route element={<ProtectedOfficerRoute />}> */}
+          <Route path="/officer-dashboard" element={<OfficerDashboardLayout />}>
+            <Route index element={<OfficerDashboard />} />
+            <Route path="register-pwd" element={<OfficerRegisterPWD />} />
+            <Route path="records" element={<OfficerPWDRecords />} />
+            <Route path="records/:id" element={<OfficerPWDDetails />} />
+            <Route path="assistance-tracking" element={<OfficerAssistanceTracking />} />
+            <Route path="log-assistance" element={<OfficerLogAssistance />} />
+            <Route path="view-assistance/:id" element={<OfficerAssistanceDetails />} />       
+            <Route path="profile" element={<Profile />} />   
+          </Route>
+        {/* </Route> */}
 
         {/* 404 Page */}
         <Route path="/*" element={<Page404 />} />

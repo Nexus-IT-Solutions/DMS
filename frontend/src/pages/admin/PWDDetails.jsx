@@ -42,44 +42,39 @@ const dummyData = [
 export default function PWDDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const record = dummyData.find((r) => r.id === parseInt(id));
+  const [record, setRecord] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [assistances, setAssistances] = useState([]);
+  const [assistLoading, setAssistLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}`)
+      .then(res => res.json())
+      .then(result => {
+        if (result.status === "success" && result.data) {
+          setRecord(result.data);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [id]);
+
+  useEffect(() => {
+    setAssistLoading(true);
+    fetch(`https://disability-management-api.onrender.com/v1/assistance-requests/${id}`)
+      .then(res => res.json())
+      .then(result => {
+        if (result.status === "success" && result.data) {
+          setAssistances(result.data);
+        }
+        setAssistLoading(false);
+      })
+      .catch(() => setAssistLoading(false));
+  }, [id]);
 
   const handleBack = () => {
     navigate("/admin-dashboard/records");
-  };
-
-  const handleApprove = () => {
-    Swal.fire({
-      title: "Approve this record?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Yes, approve",
-      background: "#1f2937",
-      color: "#fff",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire("Approved!", "", "success").then(() => {
-          navigate("/admin-dashboard/records");
-        });
-      }
-    });
-  };
-
-  const handleDisapprove = () => {
-    Swal.fire({
-      title: "Disapprove this record?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, disapprove",
-      background: "#1f2937",
-      color: "#fff",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire("Disapproved!", "", "error").then(() => {
-          navigate("/admin-dashboard/records");
-        });
-      }
-    });
   };
 
   return (
@@ -88,50 +83,57 @@ export default function PWDDetails() {
         <div className="flex items-center mb-8">
           <button
             type="button"
-            onClick={() => navigate("/admin-dashboard/records")}
+            onClick={handleBack}
             className="text-white bg-gray-600 hover:bg-gray-700 px-6 py-3 rounded"
           >
             <IoIosArrowBack className="inline-block mr-2 text-lg -mt-1" />
             Back
           </button>
-
           <div className="text-center ml-[28%] md:relative md:-top-1">
-            <h2 className="text-2xl font-bold mb-2">PWD Records</h2>
+            <h2 className="text-2xl font-bold mb-2">PWD Details</h2>
           </div>
         </div>
-        {record ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-gray-800 p-4 rounded-lg shadow-md">
-              <h3 className="text-lg font-bold mb-2">Personal Details</h3>
-              <p><strong>Name:</strong> {record.name}</p>
-              <p><strong>Sex:</strong> {record.sex}</p>
+        {loading ? (
+          <div className="text-center py-8">Loading PWD details...</div>
+        ) : record ? (
+          <div className="bg-gray-800 p-6 rounded-lg shadow-md space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-lg font-bold mb-2">Personal Details</h3>
+                <p><strong>Name:</strong> {record.name}</p>
+                <p><strong>Sex:</strong> {record.sex}</p>
+                <p><strong>Date of Birth:</strong> {record.date_of_birth}</p>
+                <p><strong>Ghana Card Number:</strong> {record.gh_card_number}</p>
+                <p><strong>NHIS Number:</strong> {record.nhis_number}</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold mb-2">Work Details</h3>
+                <p><strong>Quarter:</strong> {record.quarter}</p>
+                <p><strong>Occupation:</strong> {record.occupation}</p>
+                <p><strong>Community:</strong> {record.community}</p>
+                <p><strong>Registration Date:</strong> {record.registration_date}</p>
+              </div>
             </div>
-            <div className="bg-gray-800 p-4 rounded-lg shadow-md">
-              <h3 className="text-lg font-bold mb-2">Work Details</h3>
-              <p><strong>Quarter:</strong> {record.quarter}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-lg font-bold mb-2">Disability Details</h3>
+                <p><strong>Category:</strong> {record.disability_category}</p>
+                <p><strong>Type:</strong> {record.disability_type}</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold mb-2">Profile Image</h3>
+                {record.profile_image ? (
+                  <img 
+                    src={record.profile_image} 
+                    alt={`${record.name}'s profile`}
+                    className="w-48 h-48 object-cover rounded-lg"
+                  />
+                ) : (
+                  <p>No profile image available</p>
+                )}
+              </div>
             </div>
-            <div className="bg-gray-800 p-4 rounded-lg shadow-md">
-              <h3 className="text-lg font-bold mb-2">Disability Details</h3>
-              <p><strong>Disability Type:</strong> {record.disabilityType}</p>
-            </div>
-            <div className="bg-gray-800 p-4 rounded-lg shadow-md">
-              <h3 className="text-lg font-bold mb-2">Other Details</h3>
-              <p><strong>Community:</strong> {record.community}</p>
-              <p><strong>Registration Date:</strong> {record.registrationDate}</p>
-            </div>
-            <div className="bg-gray-800 p-4 rounded-lg shadow-md">
-              <h3 className="text-lg font-bold mb-2">Profile Image</h3>
-              {record.profileImage ? (
-                <img 
-                  src={record.profileImage} 
-                  alt={`${record.name}'s profile`}
-                  className="w-48 h-48 object-cover rounded-lg"
-                />
-              ) : (
-                <p>No profile image available</p>
-              )}
-            </div>
-            <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+            <div>
               <h3 className="text-lg font-bold mb-2">Documents</h3>
               {record.documents && record.documents.length > 0 ? (
                 <div className="space-y-2">
@@ -154,34 +156,38 @@ export default function PWDDetails() {
                 <p>No documents available</p>
               )}
             </div>
-            <div className="bg-gray-800 p-4 rounded-lg shadow-md col-span-1 md:col-span-2">
+            <div>
               <h3 className="text-lg font-bold mb-2">Record Status</h3>
               <div className={`inline-block px-3 py-1 rounded-full ${
-                 record.status === 'Approved' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500'
-                  }`}>
-                    {record.status}
+                record.status === 'approved' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500'
+              }`}>
+                {record.status}
               </div>
             </div>
-            {record.status !== 'Approved' && (
-              <div className="col-span-1 md:col-span-2 flex space-x-4 mt-4">
-                <button
-                  onClick={handleApprove}
-                  className="flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg shadow"
-                >
-                  <Check className="mr-2" /> Approve
-                </button>
-                <button
-                  onClick={handleDisapprove}
-                  className="flex items-center px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-lg shadow"
-                >
-                  <X className="mr-2" /> Disapprove
-                </button>
-              </div>
-            )}
           </div>
         ) : (
           <p className="text-red-400">Record not found.</p>
         )}
+        {/* Assistance Requests Section */}
+        <div className="mt-10">
+          <h2 className="text-xl font-bold mb-4">Assistance Requests</h2>
+          {assistLoading ? (
+            <div className="text-center py-4">Loading assistance requests...</div>
+          ) : assistances.length === 0 ? (
+            <div className="text-center py-4 text-gray-400">No assistance requests found.</div>
+          ) : (
+            <div className="space-y-4">
+              {assistances.map((assist) => (
+                <div key={assist.id} className="bg-gray-800 p-4 rounded-lg shadow-md">
+                  <p><strong>Type:</strong> {assist.assistance_type}</p>
+                  <p><strong>Status:</strong> {assist.status}</p>
+                  <p><strong>Date Requested:</strong> {assist.request_date}</p>
+                  <p><strong>Description:</strong> {assist.description}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
