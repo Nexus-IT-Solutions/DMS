@@ -33,12 +33,39 @@ const EditUser = () => {
     username: '',
     email: '',
     role: '',
+    profile_image: '',
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (mockUserData[id]) {
-      setFormData(mockUserData[id]);
-    }
+    setLoading(true);
+    fetch(`https://disability-management-api.onrender.com/v1/users/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        setLoading(false);
+        if (data.status === 'success') {
+          setFormData({
+            username: data.data.username,
+            email: data.data.email,
+            role: data.data.role,
+            profile_image: data.data.profile_image || '',
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.message || 'Failed to load user info.',
+          });
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Could not load user info.',
+        });
+      });
   }, [id]);
 
   const handleChange = (e) => {
@@ -47,11 +74,37 @@ const EditUser = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    Swal.fire({
-      icon: 'success',
-      title: 'User Updated',
-      text: `${formData.username}'s info has been updated.`,
-    }).then(() => navigate('/admin-dashboard/user-management'));
+    setLoading(true);
+    fetch(`https://disability-management-api.onrender.com/v1/users/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    })
+      .then(res => res.json())
+      .then(result => {
+        setLoading(false);
+        if (result.status === 'success') {
+          Swal.fire({
+            icon: 'success',
+            title: 'User Updated',
+            text: `${formData.username}'s info has been updated.`,
+          }).then(() => navigate('/admin-dashboard/user-management'));
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: result.message || 'Failed to update user.',
+          });
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Could not update user.',
+        });
+      });
   };
 
   return (
@@ -118,8 +171,9 @@ const EditUser = () => {
               <button
                 type="submit"
                 className="w-full bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-500 focus:ring-opacity-50 text-white font-medium py-3 px-4 rounded-lg transition duration-200 transform hover:scale-[1.02]"
+                disabled={loading}
               >
-                Update User
+                {loading ? 'Saving...' : 'Update User'}
               </button>
             </form>
           </div>

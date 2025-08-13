@@ -207,21 +207,21 @@ const Settings = () => {
   };
 
   return (
-    <div className="bg-[#151c2c] dark:bg-[#101624] text-white rounded-lg shadow-lg p-6 min-h-[500px]">
-      <div className="flex gap-2 border-b border-gray-700 mb-6">
+    <div className="bg-[#151c2c] dark:bg-[#101624] text-white rounded-lg shadow-lg p-8 min-h-[500px] flex flex-col gap-8">
+      <div className="flex gap-2 border-b border-gray-700 mb-8 pb-2">
         {tabs.map(tab => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2 font-semibold rounded-t-lg focus:outline-none transition-colors duration-200 ${activeTab === tab.key ? 'bg-[#232b3e] dark:bg-[#1a2233] text-white' : 'bg-transparent text-gray-400 hover:bg-[#232b3e] hover:text-white'}`}
+            className={`px-6 py-3 font-semibold rounded-t-lg focus:outline-none transition-colors duration-200 ${activeTab === tab.key ? 'bg-[#232b3e] dark:bg-[#1a2233] text-white' : 'bg-transparent text-gray-400 hover:bg-[#232b3e] hover:text-white'}`}
           >
             {tab.label}
           </button>
         ))}
       </div>
-      <div>
+      <div className="flex flex-col md:flex-row gap-8">
         {/* Add new item section */}
-        <div className="mb-6">
+        <div className="flex-1 bg-gray-800 rounded-xl shadow p-6 flex flex-col justify-between gap-4 min-h-[220px]">
           <h2 className="text-lg font-bold mb-2">Add New {tabs.find(t => t.key === activeTab).label}</h2>
           <form
             onSubmit={e => {
@@ -230,39 +230,44 @@ const Settings = () => {
               if (value) handleAdd(activeTab, value);
               e.target.reset();
             }}
-            className="flex gap-2"
+            className="flex gap-3 items-center"
           >
             <input
               name="newItem"
               type="text"
               placeholder={`Enter new ${activeTab}`}
-              className="px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
+              className="px-4 py-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none flex-1"
               required
             />
-            <button type="submit" className="px-4 py-2 bg-teal-600 rounded-lg font-semibold hover:bg-teal-700">Add</button>
+            <button type="submit" className="px-6 py-3 bg-teal-600 rounded-lg font-semibold hover:bg-teal-700">Add</button>
           </form>
         </div>
         {/* List all items section */}
-        <div>
-          <h2 className="text-lg font-bold mb-2">All {tabs.find(t => t.key === activeTab).label}s</h2>
+        <div className="flex-1 bg-gray-800 rounded-xl shadow p-6 min-h-[220px]">
+          <h2 className="text-lg font-bold mb-4">All {tabs.find(t => t.key === activeTab).label}s</h2>
           <table className="w-full text-left">
             <thead>
               <tr>
-                <th className="py-2">Name</th>
-                <th className="py-2">Actions</th>
+                <th className="py-3 px-2">Name</th>
+                <th className="py-3 px-2">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="relative">
               {data[activeTab].length === 0 ? (
-                <tr><td colSpan={2} className="text-gray-400">No data found.</td></tr>
+                <tr><td colSpan={2} className="text-gray-400 py-6 text-center">No data found.</td></tr>
               ) : (
                 data[activeTab].map((item, idx) => (
-                  <tr key={item.id || item.community_id || item.category_id || item.type_id || item.assistance_type_id || idx}>
-                    <td className="bg-[#232b3e] dark:bg-[#1a2233] px-4 py-2 rounded-lg">
+                  <tr
+                    key={item.id || item.community_id || item.category_id || item.type_id || item.assistance_type_id || idx}
+                    className="mb-4"
+                    // style={{ height: '60px' }} // optional: set row height
+                    // style={{ marginBottom: '3rem' }}
+                  >
+                    <td className="bg-[#232b3e] dark:bg-[#1a2233] px-6 py-3 rounded-lg">
                       {item.community_name || item.category_name || item.type_name || item.assistance_type_name || item.name || item}
                     </td>
-                    <td className="px-4 py-2">
-                      <button className="mr-2 text-blue-400 hover:text-blue-600" onClick={() => handleEdit(item)}><FaEdit /></button>
+                    <td className="px-6 py-3 flex gap-2">
+                      <button className="text-blue-400 hover:text-blue-600" onClick={() => handleEdit(item)}><FaEdit /></button>
                       <button className="text-red-400 hover:text-red-600" onClick={() => handleDelete(item)}><FaTrash /></button>
                     </td>
                   </tr>

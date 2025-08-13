@@ -13,7 +13,9 @@ const AddUser = () => {
     email: '',
     password: '',
     role: '',
+    profile_image: '',
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,11 +27,44 @@ const AddUser = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    Swal.fire({
-      icon: 'success',
-      title: 'User Added', 
-      text: `${formData.username} has been successfully added.`,
-    }).then(() => navigate('/admin/user-management'));
+    setLoading(true);
+    const payload = {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      role: formData.role,
+      profile_image: formData.profile_image,
+    };
+    fetch('https://disability-management-api.onrender.com/v1/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(res => res.json())
+      .then(result => {
+        setLoading(false);
+        if (result.status === 'success') {
+          Swal.fire({
+            icon: 'success',
+            title: 'User Added',
+            text: `${formData.username} has been successfully added.`,
+          }).then(() => navigate('/admin-dashboard/user-management'));
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: result.message || 'Failed to add user.',
+          });
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Could not add user.',
+        });
+      });
   };
 
   return (
@@ -132,8 +167,9 @@ const AddUser = () => {
               <button
                 type="submit"
                 className="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 rounded-lg text-white font-medium transition duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+                disabled={loading}
               >
-                Add User
+                {loading ? 'Adding...' : 'Add User'}
               </button>
             </div>
           </form>

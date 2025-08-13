@@ -1,45 +1,45 @@
 // src/components/PWDTable.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, Check, X } from "lucide-react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 
-const dummyData = [
-  {
-    id: 1,
-    name: "Peter James",
-    quarter: "Marketing",
-    sex: "Male", 
-    community: "Accra Central",
-    disabilityType: "Visual Impairment",
-    registrationDate: "2025-01-15",
-    status: "pending",
-    profileImage: "https://randomuser.me/api/portraits/men/44.jpg"
-  },
-  {
-    id: 2,
-    name: "Jacob Adjei",
-    quarter: "Sales",
-    sex: "Female",
-    community: "Kumasi Metropolitan", 
-    disabilityType: "Physical Disability",
-    registrationDate: "2025-02-10",
-    status: "approved",
-    profileImage: "https://randomuser.me/api/portraits/women/42.jpg"
-  },
-  {
-    id: 3,
-    name: "Effah George",
-    quarter: "HR",
-    sex: "Male",
-    community: "Tamale Central",
-    disabilityType: "Hearing Impairment", 
-    registrationDate: "2025-05-18",
-    status: "pending",
-    profileImage: "https://randomuser.me/api/portraits/men/40.jpg"
-  },
-];
+// const dummyData = [
+//   {
+//     id: 1,
+//     name: "Peter James",
+//     quarter: "Marketing",
+//     sex: "Male", 
+//     community: "Accra Central",
+//     disabilityType: "Visual Impairment",
+//     registrationDate: "2025-01-15",
+//     status: "pending",
+//     profileImage: "https://randomuser.me/api/portraits/men/44.jpg"
+//   },
+//   {
+//     id: 2,
+//     name: "Jacob Adjei",
+//     quarter: "Sales",
+//     sex: "Female",
+//     community: "Kumasi Metropolitan", 
+//     disabilityType: "Physical Disability",
+//     registrationDate: "2025-02-10",
+//     status: "approved",
+//     profileImage: "https://randomuser.me/api/portraits/women/42.jpg"
+//   },
+//   {
+//     id: 3,
+//     name: "Effah George",
+//     quarter: "HR",
+//     sex: "Male",
+//     community: "Tamale Central",
+//     disabilityType: "Hearing Impairment", 
+//     registrationDate: "2025-05-18",
+//     status: "pending",
+//     profileImage: "https://randomuser.me/api/portraits/men/40.jpg"
+//   },
+// ];
 
 export default function PWDTable() {
   const [data, setData] = useState([]);

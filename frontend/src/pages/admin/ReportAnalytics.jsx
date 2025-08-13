@@ -1,22 +1,16 @@
 // ReportsAnalytics.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { FaFileAlt, FaChartBar, FaMapMarkedAlt, FaUser } from 'react-icons/fa';
 
-const barData = [
-  { name: 'Q1', Registered: 22, Assisted: 16 },
-  { name: 'Q2', Registered: 18, Assisted: 25 },
-  { name: 'Q3', Registered: 35, Assisted: 30 },
-  { name: 'Q4', Registered: 30, Assisted: 28 },
+// Initial dummy data, will be replaced by backend data
+const initialBarData = [
+  { name: 'Q1', Registered: 0, Assisted: 0 },
+  { name: 'Q2', Registered: 0, Assisted: 0 },
+  { name: 'Q3', Registered: 0, Assisted: 0 },
+  { name: 'Q4', Registered: 0, Assisted: 0 },
 ];
-
-const pieData = [
-  { name: 'Financial Assistance', value: 25 },
-  { name: 'Medical Assessment', value: 15 },
-  { name: 'Vocational Training', value: 20 },
-  { name: 'Assistive Devices', value: 25 },
-  { name: 'Others', value: 15 },
-];
+const initialPieData = [];
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
@@ -44,6 +38,86 @@ const reportCards = [
 ];
 
 const ReportsAnalytics = () => {
+  const [barData, setBarData] = useState(initialBarData);
+  const [pieData, setPieData] = useState(initialPieData);
+  const [loading, setLoading] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
+  useEffect(() => {
+    setLoading(true);
+    // Fetch quarterly statistics
+    fetch('https://disability-management-api.onrender.com/v1/quarterly-statistics')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success' && Array.isArray(data.data)) {
+          // Map backend data to chart format
+          const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
+          const chartData = quarters.map((q, i) => ({
+            name: q,
+            Registered: data.data[i]?.registered || 0,
+            Assisted: data.data[i]?.assisted || 0,
+          }));
+          setBarData(chartData);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+    // Fetch assistance distribution
+    fetch('https://disability-management-api.onrender.com/v1/assistance-types/distribution')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success' && Array.isArray(data.data)) {
+          setPieData(data.data.map(item => ({ name: item.type, value: item.count })));
+        }
+      });
+  }, []);
+
+  const handleGenerateReport = (type) => {
+    setReportLoading(true);
+    let endpoint = '';
+    switch (type) {
+      case 'Quarterly Registration Report':
+        endpoint = 'https://disability-management-api.onrender.com/v1/quarterly-statistics/report';
+        break;
+      case 'Assistance Distribution Report':
+        endpoint = 'https://disability-management-api.onrender.com/v1/assistance-types/report';
+        break;
+      case 'Community-based Beneficiary Report':
+        endpoint = 'https://disability-management-api.onrender.com/v1/communities/report';
+        break;
+      case 'Demographics Summary':
+        endpoint = 'https://disability-management-api.onrender.com/v1/pwd-records/demographics';
+        break;
+      case 'Annual Registration Report':
+        endpoint = 'https://disability-management-api.onrender.com/v1/quarterly-statistics/annual-report';
+        break;
+      default:
+        endpoint = '';
+    }
+    if (!endpoint) return;
+    fetch(endpoint)
+      .then(res => res.json())
+      .then(data => {
+        setReportLoading(false);
+        if (data.status === 'success') {
+          window.open(data.data.url, '_blank');
+        } else {
+          window.Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.message || 'Failed to generate report.',
+          });
+        }
+      })
+      .catch(() => {
+        setReportLoading(false);
+        window.Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Could not generate report.',
+        });
+      });
+  };
+
   return (
     <div className="p-6 text-white bg-gray-900 min-h-screen">
       <h2 className="text-xl font-semibold mb-1">Reports & Analytics</h2>
@@ -60,7 +134,13 @@ const ReportsAnalytics = () => {
                   <p className="text-sm text-gray-400">{card.description}</p>
                 </div>
               </div>
-              <button className="text-sm bg-purple-600 hover:bg-purple-700 text-white hover:text-purple-400 cursor-pointer px-4 py-2 rounded font-medium w-[150px] md:ml-auto">Generate Report</button>
+              <button
+                className="text-sm bg-purple-600 hover:bg-purple-700 text-white hover:text-purple-400 cursor-pointer px-4 py-2 rounded font-medium w-[150px] md:ml-auto"
+                onClick={() => handleGenerateReport(card.title)}
+                disabled={reportLoading}
+              >
+                {reportLoading ? 'Generating...' : 'Generate Report'}
+              </button>
             </div>
           </div>
         ))}
@@ -69,37 +149,45 @@ const ReportsAnalytics = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-gray-800 p-4 rounded-xl border border-gray-700">
           <h3 className="text-lg font-semibold mb-2">Quarterly Assistance Stats</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={barData}>
-              <XAxis dataKey="name" stroke="#ccc" />
-              <YAxis stroke="#ccc" />
-              <Tooltip />
-              <Bar dataKey="Registered" fill="#8884d8" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="Assisted" fill="#00C49F" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          {loading ? (
+            <div className="text-center py-12">Loading chart...</div>
+          ) : (
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={barData}>
+                <XAxis dataKey="name" stroke="#ccc" />
+                <YAxis stroke="#ccc" />
+                <Tooltip />
+                <Bar dataKey="Registered" fill="#8884d8" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Assisted" fill="#00C49F" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
 
         <div className="bg-gray-800 p-4 rounded-xl border border-gray-700">
           <h3 className="text-lg font-semibold mb-2">Assistance Distribution</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie
-                data={pieData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={90}
-                label
-              >
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+          {loading ? (
+            <div className="text-center py-12">Loading chart...</div>
+          ) : (
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={90}
+                  label
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
     </div>
