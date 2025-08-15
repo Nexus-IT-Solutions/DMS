@@ -397,7 +397,7 @@ const RegisterPWD = () => {
                   <label className="block mb-1">Guardian Relationship</label>
                   <input
                     type="text"
-                    name="grade"
+                    name="guardian_relationship"
                     value={formData.guardian_relationship}
                     onChange={handleChange}
                     className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
