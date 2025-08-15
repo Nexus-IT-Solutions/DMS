@@ -13,16 +13,12 @@ const AddUser = () => {
     email: '',
     password: '',
     role: '',
-    profile_image: '',
+    profile_image: '', // This will be a string (URL/path)
   });
   const [loading, setLoading] = useState(false);
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'profile_image') {
-      setFormData({ ...formData, profile_image: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+  const { name, value } = e.target;
+  setFormData({ ...formData, [name]: value });
   };
 
   const togglePasswordVisibility = () => {
@@ -32,19 +28,19 @@ const AddUser = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const payload = new FormData();
-    payload.append('username', formData.username);
-    payload.append('email', formData.email);
-    payload.append('password', formData.password);
-    payload.append('role', formData.role);
-    if (formData.profile_image) {
-      payload.append('profile_image', formData.profile_image);
-    }
-
+    const payload = {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      role: formData.role,
+      profile_image: formData.profile_image // Optional, string path/URL
+    };
     fetch('https://disability-management-api.onrender.com/v1/users', {
       method: 'POST',
-      body: payload
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
     })
       .then(res => res.json())
       .then(result => {
@@ -106,13 +102,14 @@ const AddUser = () => {
 
             <div className="space-y-2">
               <label htmlFor="profile_image" className="block text-sm font-medium text-gray-300">
-                Profile Image
+                Profile Image URL/Path (optional)
               </label>
               <input
                 id="profile_image"
-                type="file"
+                type="text"
                 name="profile_image"
-                accept="image/*"
+                placeholder="Enter image URL or path (optional)"
+                value={formData.profile_image}
                 onChange={handleChange}
                 className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200 text-white"
               />

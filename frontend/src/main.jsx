@@ -40,7 +40,7 @@ import AdminResetPassword from "./components/admin/AdminResetPassword.jsx"
 import OfficerAssistanceTracking from "./pages/officer/Assistance_Tracking.jsx"
 import OfficerAssistanceDetails from "./pages/officer/AssistanceDetails.jsx"
 import OfficerLogAssistance from "./pages/officer/LogAssistance.jsx"
-
+import EditAssistanceRequest from "./pages/admin/EditAssistanceRequest.jsx"
 
 createRoot(document.getElementById('root')).render( 
   <DarkModeProvider>
@@ -70,7 +70,8 @@ createRoot(document.getElementById('root')).render(
             <Route path="user-management" element={<UserManagement />} />
             <Route path="add-user" element={<AddUser />} />
             <Route path="edit-user/:id" element={<EditUser />} />
-            <Route path="profile" element={<Profile />} />
+              <Route path="edit-assistance/:id" element={<EditAssistanceRequest />} />
+              <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         {/* </Route> */}

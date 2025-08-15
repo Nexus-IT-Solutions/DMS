@@ -12,19 +12,19 @@ export default function OfficerProfile() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Replace 2 with actual officer id from context/session
-    fetch('https://disability-management-api.onrender.com/v1/users/2')
-      .then(res => res.json())
-      .then(result => {
-        if (result.status === 'success' && result.data) {
-          setUsername(result.data.username);
-          setEmail(result.data.email);
-          setRole(result.data.role || 'OFFICER');
-          setAvatar(result.data.profile_image || avatar);
-        }
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    const user = JSON.parse(localStorage.getItem('dms_user'));
+    if (user) {
+      setUsername(user.username || 'N/A');
+      setEmail(user.email || 'N/A');
+      setRole(user.role || 'OFFICER');
+      setAvatar(user.profile_image || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y');
+    } else {
+      setUsername('N/A');
+      setEmail('N/A');
+      setRole('OFFICER');
+      setAvatar('https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y');
+    }
+    setLoading(false);
   }, []);
 
   const handleImageUpload = (e) => {
@@ -54,14 +54,27 @@ export default function OfficerProfile() {
       return;
     }
     try {
+      const user = JSON.parse(localStorage.getItem('dms_user'));
+      if (!user || !user.user_id) {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'No user info found!',
+          showConfirmButton: false,
+          timer: 2500,
+          background: '#232b3e',
+          color: '#fff',
+        });
+        return;
+      }
       const payload = {
         username,
         email,
         role: 'officer',
         profile_image: avatar,
       };
-      // Replace 2 with actual officer id from context/session
-      const response = await fetch('https://disability-management-api.onrender.com/v1/users/2', {
+      const response = await fetch(`https://disability-management-api.onrender.com/v1/users/${user.user_id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +105,7 @@ export default function OfficerProfile() {
           color: '#fff',
         });
       }
-    } catch (error) {
+    } catch (err) {
       Swal.fire({
         toast: true,
         position: 'top-end',

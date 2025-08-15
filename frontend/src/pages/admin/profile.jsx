@@ -3,12 +3,27 @@ import Swal from 'sweetalert2';
 
 export default function Profile() {
   const [avatar, setAvatar] = useState('https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y');
-  const [username, setUsername] = useState('System Administrator');
-  const [email, setEmail] = useState('admin@dms.gov.gh');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [role, setRole] = useState('ADMIN');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmOldPassword, setConfirmOldPassword] = useState('');
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('dms_user'));
+    if (user) {
+      setUsername(user.username || 'N/A');
+      setEmail(user.email || 'N/A');
+      setRole(user.role || 'ADMIN');
+      setAvatar(user.profile_image || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y');
+    } else {
+      setUsername('N/A');
+      setEmail('N/A');
+      setRole('ADMIN');
+      setAvatar('https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y');
+    }
+  }, []);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -37,54 +52,67 @@ export default function Profile() {
       return;
     }
     try {
+      const user = JSON.parse(localStorage.getItem('dms_user'));
+      if (!user || !user.user_id) {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'No user info found!',
+          showConfirmButton: false,
+          timer: 2500,
+          background: '#232b3e',
+          color: '#fff',
+        });
+        return;
+      }
       const payload = {
         username,
         email,
-        role: "admin",
+        role: 'admin',
         profile_image: avatar,
       };
-      // Replace 1 with actual user id from context/session
-      const response = await fetch(`https://disability-management-api.onrender.com/v1/users/1`, {
-        method: "PATCH",
+      const response = await fetch(`https://disability-management-api.onrender.com/v1/users/${user.user_id}`, {
+        method: 'PATCH',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
       const result = await response.json();
-      if (result.status === "success") {
+      if (result.status === 'success') {
         Swal.fire({
           toast: true,
-          position: "top-end",
-          icon: "success",
-          title: "Profile Updated!",
+          position: 'top-end',
+          icon: 'success',
+          title: 'Profile Updated!',
           showConfirmButton: false,
           timer: 2500,
-          background: "#232b3e",
-          color: "#fff",
+          background: '#232b3e',
+          color: '#fff',
         });
       } else {
         Swal.fire({
           toast: true,
-          position: "top-end",
-          icon: "error",
-          title: result.message || "Update failed!",
+          position: 'top-end',
+          icon: 'error',
+          title: result.message || 'Update failed!',
           showConfirmButton: false,
           timer: 2500,
-          background: "#232b3e",
-          color: "#fff",
+          background: '#232b3e',
+          color: '#fff',
         });
       }
-    } catch (error) {
+    } catch (err) {
       Swal.fire({
         toast: true,
-        position: "top-end",
-        icon: "error",
-        title: "Network error!",
+        position: 'top-end',
+        icon: 'error',
+        title: 'Network error!',
         showConfirmButton: false,
         timer: 2500,
-        background: "#232b3e",
-        color: "#fff",
+        background: '#232b3e',
+        color: '#fff',
       });
     }
   };
