@@ -5,9 +5,11 @@ const EditSettingsModal = ({ tabKey, item, onClose, onSave }) => {
   const [value, setValue] = useState(
     item.community_name || item.category_name || item.type_name || item.assistance_type_name || item.name || ''
   );
+  const [saving, setSaving] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSaving(true);
     let url = '';
     let body = {};
     let id = item.id || item.community_id || item.category_id || item.type_id || item.assistance_type_id;
@@ -29,6 +31,7 @@ const EditSettingsModal = ({ tabKey, item, onClose, onSave }) => {
         body = { assistance_type_name: value };
         break;
       default:
+        setSaving(false);
         return;
     }
     if (url) {
@@ -38,6 +41,7 @@ const EditSettingsModal = ({ tabKey, item, onClose, onSave }) => {
         body: JSON.stringify(body)
       });
       const result = await res.json();
+      setSaving(false);
       if (result.status === 'success') {
         Swal.fire({
           toast: true,
@@ -62,6 +66,8 @@ const EditSettingsModal = ({ tabKey, item, onClose, onSave }) => {
           color: '#fff',
         });
       }
+    } else {
+      setSaving(false);
     }
   };
 
@@ -79,6 +85,7 @@ const EditSettingsModal = ({ tabKey, item, onClose, onSave }) => {
           />
           <div className="flex gap-3 justify-end">
             <button type="submit" className="px-6 py-3 bg-teal-600 rounded-lg font-semibold hover:bg-teal-700">Save</button>
+            <button type="submit" className="px-6 py-3 bg-teal-600 rounded-lg font-semibold hover:bg-teal-700" disabled={saving}>{saving ? 'Saving...' : 'Save'}</button>
             <button type="button" onClick={onClose} className="px-6 py-3 bg-gray-600 rounded-lg font-semibold hover:bg-gray-700">Cancel</button>
           </div>
         </form>

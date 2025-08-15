@@ -45,7 +45,7 @@ const ReportsAnalytics = () => {
   useEffect(() => {
     setLoading(true);
     // Fetch quarterly statistics
-    fetch('https://disability-management-api.onrender.com/v1/quarterly-statistics')
+    fetch('https://disability-management-api.onrender.com/v1/statistics')
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && Array.isArray(data.data)) {

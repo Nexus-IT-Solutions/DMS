@@ -5,6 +5,10 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
+import RequestAssistance from "./pages/admin/RequestAssistance.jsx"
+import ViewAssistance from "./pages/admin/ViewAssistance.jsx"
+import OfficerRequestAssistance from "./pages/officer/RequestAssistance.jsx"
+import OfficerViewAssistance from "./pages/officer/ViewAssistance.jsx"
 import AdminLogin from "./pages/(auth)/AdminLogin.jsx"
 import Page404 from "./pages/PageNotFound.jsx"
 import { DarkModeProvider } from "./components/ThemedContext"
@@ -59,8 +63,9 @@ createRoot(document.getElementById('root')).render(
             <Route path="records" element={<PWDRecords />} />
             <Route path="records/:id" element={<PWDDetails />} />   
             <Route path="assistance-tracking" element={<AssistanceTracking />} />
+            <Route path="request-assistance" element={<RequestAssistance />} />
             <Route path="log-assistance" element={<LogAssistance />} />
-            <Route path="view-assistance/:id" element={<AssistanceDetails />} />
+            <Route path="view-assistance/:id" element={<ViewAssistance />} />
             <Route path="reports" element={<ReportsAnalytics />} />
             <Route path="user-management" element={<UserManagement />} />
             <Route path="add-user" element={<AddUser />} />
@@ -71,18 +76,19 @@ createRoot(document.getElementById('root')).render(
         {/* </Route> */}
 
         {/* Officer dashboard protected route */}
-        {/* <Route element={<ProtectedOfficerRoute />}> */}
+        <Route element={<ProtectedOfficerRoute />}>
           <Route path="/officer-dashboard" element={<OfficerDashboardLayout />}>
             <Route index element={<OfficerDashboard />} />
             <Route path="register-pwd" element={<OfficerRegisterPWD />} />
             <Route path="records" element={<OfficerPWDRecords />} />
             <Route path="records/:id" element={<OfficerPWDDetails />} />
             <Route path="assistance-tracking" element={<OfficerAssistanceTracking />} />
+            <Route path="request-assistance" element={<OfficerRequestAssistance />} />
             <Route path="log-assistance" element={<OfficerLogAssistance />} />
-            <Route path="view-assistance/:id" element={<OfficerAssistanceDetails />} />       
+            <Route path="view-assistance/:id" element={<OfficerViewAssistance />} />       
             <Route path="profile" element={<Profile />} />   
           </Route>
-        {/* </Route> */}
+        </Route>
 
         {/* 404 Page */}
         <Route path="/*" element={<Page404 />} />

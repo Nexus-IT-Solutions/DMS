@@ -1,30 +1,40 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 const LogAssistance = () => {
   const [form, setForm] = useState({
     type: '',
-    date: '',
-    beneficiaryName: '',
+    beneficiary: '',
     amount: '',
-    ghanaCard: '',
-    assessed: false,
     notes: '',
-    files: []
   });
+  const [assistanceTypes, setAssistanceTypes] = useState([]);
+  const [beneficiaries, setBeneficiaries] = useState([]);
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetch('https://disability-management-api.onrender.com/v1/assistance-types')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success' && Array.isArray(data.data)) {
+          setAssistanceTypes(data.data);
+        }
+      });
+    fetch('https://disability-management-api.onrender.com/v1/pwd-records')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success' && Array.isArray(data.data)) {
+          setBeneficiaries(data.data);
+        }
+      });
+  }, []);
 
   // const beneficiaries = [
   //   'Kwame Asante - GHA-123456789-0',
   //   'Akosua Mensah - GHA-987654321-0', 
   //   'Yaw Boateng - GHA-555777568-0',
   // ];
-
-  const toggleBeneficiary = (name) => {
-    const exists = form.beneficiaries.includes(name);
-    const updated = exists
-      ? form.beneficiaries.filter((n) => n !== name)
-      : [...form.beneficiaries, name];
-    setForm({ ...form, beneficiaries: updated });
-  };
 
   return (
     <div className="dark text-white p-8 max-w-4xl mx-auto rounded-lg">
@@ -45,129 +55,114 @@ const LogAssistance = () => {
           <select
             className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 text-white focus:border-gray-500 focus:ring-2 focus:ring-gray-500 transition-all"
             value={form.type}
-            onChange={(e) => setForm({ ...form, type: e.target.value })}
+            onChange={e => setForm({ ...form, type: e.target.value })}
+            required
           >
             <option value="">Select assistance type</option>
-            <option value="Financial Support">Financial Support</option>
-            <option value="Assistive Devices">Assistive Devices</option>
+            {assistanceTypes.map(type => (
+              <option key={type.assistance_type_id || type.id} value={type.assistance_type_id || type.id}>{type.assistance_type_name}</option>
+            ))}
           </select>
         </div>
 
         <div className="bg-gray-800 p-6 rounded-lg">
-          <label className="block mb-2 font-medium text-white">Date of Approval *</label>
-          <input
-            type="date"
+          <label className="block mb-3 font-medium text-white">Beneficiary *</label>
+          <select
             className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 text-white focus:border-gray-500 focus:ring-2 focus:ring-gray-500 transition-all"
-            value={form.date}
-            onChange={(e) => setForm({ ...form, date: e.target.value })}
+            value={form.beneficiary}
+            onChange={e => {
+              setForm({ ...form, beneficiary: e.target.value });
+              const selected = beneficiaries.find(b => b.pwd_id === e.target.value || b.id === e.target.value);
+              setSelectedBeneficiary(selected);
+            }}
+            required
+          >
+            <option value="">Select beneficiary</option>
+            {beneficiaries.map(b => (
+              <option key={b.pwd_id || b.id} value={b.pwd_id || b.id}>{b.full_name}</option>
+            ))}
+          </select>
+        </div>
+
+        {selectedBeneficiary && (
+          <div className="bg-gray-800 p-6 rounded-lg grid grid-cols-2 gap-4">
+            <div><strong>Gender:</strong> {selectedBeneficiary.gender}</div>
+            <div><strong>Contact:</strong> {selectedBeneficiary.contact}</div>
+            <div><strong>Date of Birth:</strong> {selectedBeneficiary.dob}</div>
+            <div><strong>Age:</strong> {selectedBeneficiary.age}</div>
+            <div><strong>Assistance Needed:</strong> {selectedBeneficiary.support_needs}</div>
+            <div><strong>Disability Category:</strong> {selectedBeneficiary.disability_category_name}</div>
+            <div><strong>Disability Type:</strong> {selectedBeneficiary.disability_type_name}</div>
+          </div>
+        )}
+
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <label className="block mb-2 text-sm text-white font-medium">Amount Needed *</label>
+          <input
+            type="number"
+            className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 text-white focus:border-gray-500 focus:ring-2 focus:ring-gray-500 transition-all"
+            placeholder="Enter amount needed"
+            value={form.amount || ''}
+            onChange={e => setForm({ ...form, amount: e.target.value })}
+            required
           />
         </div>
 
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <label className="block mb-3 font-medium text-white">Beneficiary Details *</label>
-          <div className="space-y-4">
-            <div>
-              <label className="block mb-2 text-sm text-gray-400">Beneficiary Name *</label>
-              <input
-                type="text"
-                className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 text-white focus:border-gray-500 focus:ring-2 focus:ring-gray-500 transition-all"
-                placeholder="Enter beneficiary name"
-                value={form.beneficiaryName || ''}
-                onChange={(e) => setForm({ ...form, beneficiaryName: e.target.value })}
-                required
-              />
-            </div>
-            <div>
-              <label className="block mb-2 text-sm text-gray-400">Ghana Card Number *</label>
-              <input
-                type="text"
-                className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 text-white focus:border-gray-500 focus:ring-2 focus:ring-gray-500 transition-all"
-                placeholder="Enter Ghana card number"
-                value={form.ghanaCard || ''}
-                onChange={(e) => setForm({ ...form, ghanaCard: e.target.value })}
-                pattern="GHA-[0-9]{9}-[0-9]"
-                required
-              />
-            </div>
-          </div>
-        </div>
+        {/* Assessment checkbox removed */}
 
         <div className="bg-gray-800 p-6 rounded-lg">
-              <label className="block mb-2 text-sm text-white font-medium">Amount Needed *</label>
-              <input
-                type="text"
-                className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 text-white focus:border-gray-500 focus:ring-2 focus:ring-gray-500 transition-all"
-                placeholder="Enter amount needed"
-                value={form.amount || ''}
-                onChange={(e) => setForm({ ...form, amount: e.target.value })}
-                required
-              />
-            </div>
-
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <label className="inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={form.assessed}
-              onChange={(e) => setForm({ ...form, assessed: e.target.checked })}
-              className="w-4 h-4 mr-3 text-gray-500 border-gray-600 rounded focus:ring-gray-500"
-            />
-            <span className="text-gray-300">Assessment was conducted before support</span>
-          </label>
-        </div>
-
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <label className="block mb-2 font-medium text-white">Assessment Notes *</label>
+          <label className="block mb-2 font-medium text-white">Description *</label>
           <textarea
             rows="4"
             className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 text-white focus:border-gray-500 focus:ring-2 focus:ring-gray-500 transition-all resize-none"
-            placeholder="Enter assessment notes"
+            placeholder="Enter description"
             value={form.notes}
-            onChange={(e) => setForm({ ...form, notes: e.target.value })}
+            onChange={e => setForm({ ...form, notes: e.target.value })}
+            required
           ></textarea>
         </div>
 
         <div className="bg-gray-800 p-6 rounded-lg">
-          <div className="flex flex-col">
-            <div className="flex-1 mb-6">
-              <label className="block mb-2 font-medium text-white">Supporting Documents</label>
-              <div 
-                className="w-full h-48 border-2 border-dashed border-gray-600 rounded-lg p-4 flex flex-col items-center justify-center bg-gray-700 cursor-pointer hover:border-gray-500 transition-colors"
-                onDrop={(e) => {
-                  e.preventDefault();
-                  setForm({ ...form, files: [...e.dataTransfer.files] });
-                }}
-                onDragOver={(e) => e.preventDefault()}
-              >
-                <input
-                  type="file"
-                  accept=".pdf,.jpg"
-                  multiple
-                  onChange={(e) => setForm({ ...form, files: [...e.target.files] })}
-                  className="hidden"
-                  id="file-upload"
-                />
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  <div className="text-center">
-                    <p className="text-gray-400">Drag and drop files here or click to browse</p>
-                    <p className="text-sm text-gray-500 mt-2">PDF, JPG (Max 10MB each)</p>
-                  </div>
-                </label>
-              </div>
-            </div>
-            
-            <div className="flex justify-end gap-4">
-              <button className="bg-purple-600 hover:bg-purple-700 px-8 py-4 rounded-md font-medium transition-colors min-w-[150px]">
-                Save Assistance Record
-              </button>
-              <button 
-                onClick={() => window.history.back()} 
-                className="px-8 py-4 rounded-md font-medium bg-gray-700 hover:bg-gray-600 transition-colors min-w-[150px]"
-              >
-                Cancel
-              </button>
-              
-            </div>
+          <div className="flex justify-end gap-4 mt-6">
+            <button
+              className="bg-purple-600 hover:bg-purple-700 px-8 py-4 rounded-md font-medium transition-colors min-w-[150px]"
+              onClick={async () => {
+                setLoading(true);
+                if (!form.type || !form.beneficiary || !form.amount || !form.notes) {
+                  Swal.fire({ icon: 'error', title: 'Missing fields', text: 'Please fill all required fields.' });
+                  setLoading(false);
+                  return;
+                }
+                const payload = {
+                  assistance_type_id: form.type,
+                  beneficiary_id: form.beneficiary,
+                  amount_value_cost: form.amount,
+                  description: form.notes,
+                };
+                const res = await fetch('https://disability-management-api.onrender.com/v1/assistance-requests', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                setLoading(false);
+                if (result.status === 'success') {
+                  Swal.fire({ icon: 'success', title: 'Request submitted', text: 'Assistance request logged successfully.' });
+                  window.history.back();
+                } else {
+                  Swal.fire({ icon: 'error', title: 'Error', text: result.message || 'Failed to log assistance.' });
+                }
+              }}
+              disabled={loading}
+            >
+              {loading ? 'Saving...' : 'Save Assistance Record'}
+            </button>
+            <button
+              onClick={() => window.history.back()}
+              className="px-8 py-4 rounded-md font-medium bg-gray-700 hover:bg-gray-600 transition-colors min-w-[150px]"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>

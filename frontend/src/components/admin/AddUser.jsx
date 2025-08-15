@@ -1,5 +1,5 @@
 // AddUser.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBack } from 'react-icons/md';
@@ -16,9 +16,13 @@ const AddUser = () => {
     profile_image: '',
   });
   const [loading, setLoading] = useState(false);
-
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, files } = e.target;
+    if (name === 'profile_image') {
+      setFormData({ ...formData, profile_image: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -28,17 +32,19 @@ const AddUser = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    const payload = {
-      username: formData.username,
-      email: formData.email,
-      password: formData.password,
-      role: formData.role,
-      profile_image: formData.profile_image,
-    };
+
+    const payload = new FormData();
+    payload.append('username', formData.username);
+    payload.append('email', formData.email);
+    payload.append('password', formData.password);
+    payload.append('role', formData.role);
+    if (formData.profile_image) {
+      payload.append('profile_image', formData.profile_image);
+    }
+
     fetch('https://disability-management-api.onrender.com/v1/users', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: payload
     })
       .then(res => res.json())
       .then(result => {
@@ -81,7 +87,7 @@ const AddUser = () => {
         <div className="w-full max-w-lg p-8 space-y-8 bg-gray-800 rounded-lg shadow-xl">
           <h2 className="text-3xl font-bold text-center text-white">Add New User</h2>
           
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
             <div className="space-y-2">
               <label htmlFor="username" className="block text-sm font-medium text-gray-300">
                 Username
@@ -95,6 +101,20 @@ const AddUser = () => {
                 onChange={handleChange}
                 className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200 text-white"
                 required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="profile_image" className="block text-sm font-medium text-gray-300">
+                Profile Image
+              </label>
+              <input
+                id="profile_image"
+                type="file"
+                name="profile_image"
+                accept="image/*"
+                onChange={handleChange}
+                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200 text-white"
               />
             </div>
 
@@ -156,10 +176,10 @@ const AddUser = () => {
                 required
               >
                 <option value="" disabled>Select a role</option>
-                <option value="ADMIN">ADMIN</option>
-                <option value="DATA ENTRY OFFICER">DATA ENTRY OFFICER</option>
-                <option value="ASSISTANCE OFFICER">ASSISTANCE OFFICER</option>
-                <option value="VIEWER">VIEWER</option>
+                <option value="admin">ADMIN</option>
+                <option value="officer">DATA ENTRY OFFICER</option>
+                {/* <option value="ASSISTANCE OFFICER">ASSISTANCE OFFICER</option>
+                <option value="VIEWER">VIEWER</option> */}
               </select>
             </div>
 

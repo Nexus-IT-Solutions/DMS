@@ -125,35 +125,38 @@ const OfficerRegisterPWD = () => {
     }
   };
 
+  const [registering, setRegistering] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Map formData to API request body
+    setRegistering(true);
+
     const payload = {
-      quarter: formData.quarter || `Q${Math.ceil(new Date().getMonth() / 3)}`,
+      quarter: formData.quarter || `Q${Math.ceil((new Date().getMonth() + 1) / 3)}`,
       year: new Date().getFullYear(),
-      gender_id: formData.gender === "male" ? 1 : 2,
+      gender_id: formData.gender,
       full_name: formData.fullName,
       occupation: formData.occupation,
       contact: formData.contact,
       dob: formData.dateOfBirth,
       age: parseInt(formData.age),
-      disability_category_id: 1, // You may want to map category name to ID
-      disability_type_id: 1, // You may want to map type name to ID
+      disability_category_id: formData.disabilityCategory,
+      disability_type_id: formData.disabilityType,
       gh_card_number: formData.ghCardNumber,
       nhis_number: formData.nhisNumber,
-      community_id: 1, // You may want to map community name to ID
+      community_id: formData.community,
       guardian_name: formData.guardianName,
       guardian_occupation: formData.guardianOccupation,
       guardian_phone: formData.guardianPhone,
       guardian_relationship: formData.guardian_relationship,
       education_level: formData.educationLevel,
       school_name: formData.schoolName,
-      assistance_type_needed_id: 1, // You may want to map assistance name to ID
-      support_needs: formData.assistanceNeeded,
+      assistance_type_needed_id: formData.assistanceNeeded,
       supporting_documents: [], // File upload handling needed
       profile_image: "", // File upload handling needed
       role: "officer"
     };
+
     try {
       const response = await fetch("https://disability-management-api.onrender.com/v1/pwd-records", {
         method: "POST",
@@ -168,13 +171,13 @@ const OfficerRegisterPWD = () => {
           toast: true,
           position: "top-end",
           icon: "success",
-          title: "PWD registered successfully!",
+          title: result.message || "PWD registered successfully!",
           showConfirmButton: false,
           timer: 2500,
           background: "#232b3e",
           color: "#fff",
         });
-        navigate(-1);
+        // Optionally reset form or navigate
       } else {
         window.Swal.fire({
           toast: true,
@@ -199,11 +202,12 @@ const OfficerRegisterPWD = () => {
         color: "#fff",
       });
     }
+    setRegistering(false);
   };
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen p-6 text-sm">
-      <div className="flex items-center justify-between mb-8">
+    <div>
+      <div className="flex items-center gap-4 mb-8">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -513,7 +517,7 @@ const OfficerRegisterPWD = () => {
                 onChange={handleChange}
                 accept=".pdf,.doc,.docx"
                 className="w-full p-4 bg-gray-700 border-2 border-dashed border-gray-500 rounded-lg hover:border-blue-500 transition-colors cursor-pointer focus:outline-none focus:border-blue-600 h-[150px]"
-                required
+                
                 onDrop={(e) => {
                   e.preventDefault();
                   const file = e.dataTransfer.files[0];
@@ -531,8 +535,9 @@ const OfficerRegisterPWD = () => {
             <button
               type="submit"
               className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg"
+              disabled={registering}
             >
-              Register PWD
+              {registering ? "Registering..." : "Register PWD"}
             </button>
             <button
               type="button"

@@ -132,27 +132,28 @@ const RegisterPWD = () => {
     const payload = {
       quarter: formData.quarter || `Q${Math.ceil(new Date().getMonth() / 3)}`,
       year: new Date().getFullYear(),
-      gender_id: formData.gender === "male" ? 1 : 2,
+      gender_id: genders.find(g => g.name.toLowerCase() === formData.gender.toLowerCase())?.id || 1,
       full_name: formData.fullName,
       occupation: formData.occupation,
       contact: formData.contact,
       dob: formData.dateOfBirth,
       age: parseInt(formData.age),
-      disability_category_id: 1, // You may want to map category name to ID
-      disability_type_id: 1, // You may want to map type name to ID
+      disability_category_id: formData.disabilityCategory,
+      disability_type_id: formData.disabilityType,
       gh_card_number: formData.ghCardNumber,
       nhis_number: formData.nhisNumber,
-      community_id: 1, // You may want to map community name to ID
+      community_id: formData.community,
       guardian_name: formData.guardianName,
       guardian_occupation: formData.guardianOccupation,
       guardian_phone: formData.guardianPhone,
       guardian_relationship: formData.guardian_relationship,
       education_level: formData.educationLevel,
       school_name: formData.schoolName,
-      assistance_type_needed_id: 1, // You may want to map assistance name to ID
+      assistance_type_needed_id: formData.assistanceNeeded,
       support_needs: formData.assistanceNeeded,
       supporting_documents: [], // File upload handling needed
       profile_image: "", // File upload handling needed
+      role: "admin"
     };
     try {
       const response = await fetch("https://disability-management-api.onrender.com/v1/pwd-records", {
@@ -517,7 +518,7 @@ const RegisterPWD = () => {
                 onChange={handleChange}
                 accept=".pdf,.doc,.docx"
                 className="w-full p-4 bg-gray-700 border-2 border-dashed border-gray-500 rounded-lg hover:border-blue-500 transition-colors cursor-pointer focus:outline-none focus:border-blue-600 h-[150px]"
-                required
+                
                 onDrop={(e) => {
                   e.preventDefault();
                   const file = e.dataTransfer.files[0];

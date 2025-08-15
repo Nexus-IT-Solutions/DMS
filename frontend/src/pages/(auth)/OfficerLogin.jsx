@@ -143,7 +143,7 @@ const OfficerLogin = () => {
               className="w-full py-2 px-4 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
               disabled={!acceptTerms}
             >
-              Sign In
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
         </div>
