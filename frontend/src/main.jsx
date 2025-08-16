@@ -1,4 +1,3 @@
-
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx";
 import ProtectedOfficerRoute from "./components/ProtectedOfficerRoute.jsx";
 import { createRoot } from 'react-dom/client'
@@ -41,6 +40,8 @@ import OfficerAssistanceTracking from "./pages/officer/Assistance_Tracking.jsx"
 import OfficerAssistanceDetails from "./pages/officer/AssistanceDetails.jsx"
 import OfficerLogAssistance from "./pages/officer/LogAssistance.jsx"
 import EditAssistanceRequest from "./pages/admin/EditAssistanceRequest.jsx"
+import EditPWDRecord from "./pages/admin/EditPWDRecord";
+import OfficerEditPWDRecord from "./pages/officer/EditPWDRecord";
 
 createRoot(document.getElementById('root')).render( 
   <DarkModeProvider>
@@ -90,6 +91,10 @@ createRoot(document.getElementById('root')).render(
             <Route path="profile" element={<Profile />} />   
           </Route>
         </Route>
+        <Route path="/admin-dashboard/records/edit/:id" element={<EditPWDRecord />} />
+        <Route path="/officer-dashboard/records/edit/:id" element={<OfficerEditPWDRecord />} />
+        <Route path="/admin-dashboard/request-assistance" element={<RequestAssistance />} />
+        <Route path="/officer-dashboard/request-assistance" element={<OfficerRequestAssistance />} />
 
         {/* 404 Page */}
         <Route path="/*" element={<Page404 />} />

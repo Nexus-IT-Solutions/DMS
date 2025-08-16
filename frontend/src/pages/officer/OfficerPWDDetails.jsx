@@ -1,42 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Eye, Check, X } from "lucide-react";
 import { IoIosArrowBack } from "react-icons/io";
+import { useEffect, useState } from "react";
 
-const dummyData = [
-  {
-    id: 1,
-    name: "Peter James",
-    quarter: "Marketing",
-    sex: "Male", 
-    community: "Accra Central",
-    disabilityType: "Visual Impairment",
-    registrationDate: "2025-01-15",
-    status: "Pending",
-    profileImage: "https://randomuser.me/api/portraits/men/44.jpg"
-  },
-  {
-    id: 2,
-    name: "Jacob Adjei",
-    quarter: "Sales",
-    sex: "Female",
-    community: "Kumasi Metropolitan", 
-    disabilityType: "Physical Disability",
-    registrationDate: "2025-02-10",
-    status: "Approved",
-    profileImage: "https://randomuser.me/api/portraits/women/42.jpg"
-  },
-  {
-    id: 3,
-    name: "Effah George",
-    quarter: "HR",
-    sex: "Male",
-    community: "Tamale Central",
-    disabilityType: "Hearing Impairment", 
-    registrationDate: "2025-05-18",
-    status: "Pending",
-    profileImage: "https://randomuser.me/api/portraits/men/40.jpg"
-  },
-];
+
 
 export default function OfficerPWDDetails() {
   const { id } = useParams();
@@ -96,21 +63,23 @@ export default function OfficerPWDDetails() {
           <div className="text-center py-8">Loading PWD details...</div>
         ) : record ? (
           <div className="bg-gray-800 p-6 rounded-lg shadow-md space-y-6">
+            {/* First Section: Personal & Work Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
+              <div className="space-y-2">
                 <h3 className="text-lg font-bold mb-2">Personal Details</h3>
-                <p><strong>Name:</strong> {record.name}</p>
-                <p><strong>Sex:</strong> {record.sex}</p>
+                <p><strong>Full Name:</strong> {record.full_name}</p>
+                <p><strong>Gender:</strong> {record.gender_name}</p>
                 <p><strong>Date of Birth:</strong> {record.date_of_birth}</p>
                 <p><strong>Ghana Card Number:</strong> {record.gh_card_number}</p>
                 <p><strong>NHIS Number:</strong> {record.nhis_number}</p>
+                <p><strong>Contact:</strong> {record.contact}</p>
               </div>
-              <div>
+              <div className="space-y-2">
                 <h3 className="text-lg font-bold mb-2">Work Details</h3>
-                <p><strong>Quarter:</strong> {record.quarter}</p>
+                <p><strong>Quarter:</strong> {record.quarter ? `Quarter ${record.quarter.replace('Q','')}` : ''}</p>
                 <p><strong>Occupation:</strong> {record.occupation}</p>
-                <p><strong>Community:</strong> {record.community}</p>
-                <p><strong>Registration Date:</strong> {record.registration_date}</p>
+                <p><strong>Community:</strong> {record.community_name}</p>
+                <p><strong>Registration Date:</strong> {record.created_at ? record.created_at.split(' ')[0] : ''}</p>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

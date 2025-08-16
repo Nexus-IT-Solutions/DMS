@@ -130,33 +130,31 @@ const OfficerRegisterPWD = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setRegistering(true);
-
+    const user = JSON.parse(localStorage.getItem('dms_user'));
     const payload = {
-      quarter: formData.quarter || `Q${Math.ceil((new Date().getMonth() + 1) / 3)}`,
-      year: new Date().getFullYear(),
-      gender_id: formData.gender,
-      full_name: formData.fullName,
-      occupation: formData.occupation,
-      contact: formData.contact,
-      dob: formData.dateOfBirth,
-      age: parseInt(formData.age),
-      disability_category_id: formData.disabilityCategory,
-      disability_type_id: formData.disabilityType,
-      gh_card_number: formData.ghCardNumber,
-      nhis_number: formData.nhisNumber,
-      community_id: formData.community,
-      guardian_name: formData.guardianName,
-      guardian_occupation: formData.guardianOccupation,
-      guardian_phone: formData.guardianPhone,
-      guardian_relationship: formData.guardian_relationship,
-      education_level: formData.educationLevel,
-      school_name: formData.schoolName,
-      assistance_type_needed_id: formData.assistanceNeeded,
-      supporting_documents: [], // File upload handling needed
-      profile_image: "", // File upload handling needed
-      role: "officer"
+      quarter: formData.quarter ? formData.quarter : `Q${Math.ceil((new Date().getMonth() + 1) / 3)}`,
+      year: new Date().getFullYear().toString(),
+      gender_id: formData.gender ? formData.gender.toString() : '',
+      full_name: formData.fullName || '',
+      occupation: formData.occupation || '',
+      contact: formData.contact || '',
+      dob: formData.dateOfBirth || '',
+      age: formData.age ? formData.age.toString() : '',
+      disability_category_id: formData.disabilityCategory ? formData.disabilityCategory.toString() : '',
+      disability_type_id: formData.disabilityType ? formData.disabilityType.toString() : '',
+      gh_card_number: formData.ghCardNumber || '',
+      nhis_number: formData.nhisNumber || '',
+      community_id: formData.community ? formData.community.toString() : '',
+      guardian_name: formData.guardianName || '',
+      guardian_occupation: formData.guardianOccupation || '',
+      guardian_phone: formData.guardianPhone || '',
+      guardian_relationship: formData.guardian_relationship || '',
+      education_level: formData.educationLevel || '',
+      school_name: formData.schoolName || '',
+      assistance_type_needed_id: formData.assistanceNeeded ? formData.assistanceNeeded.toString() : '',
+      user_id: user?.user_id ? user.user_id.toString() : '',
+      // profile_image and supporting_documents are omitted for JSON
     };
-
     try {
       const response = await fetch("https://disability-management-api.onrender.com/v1/pwd-records", {
         method: "POST",
@@ -166,6 +164,7 @@ const OfficerRegisterPWD = () => {
         body: JSON.stringify(payload),
       });
       const result = await response.json();
+      setRegistering(false);
       if (result.status === "success") {
         window.Swal.fire({
           toast: true,
@@ -177,7 +176,7 @@ const OfficerRegisterPWD = () => {
           background: "#232b3e",
           color: "#fff",
         });
-        // Optionally reset form or navigate
+        window.location.reload();
       } else {
         window.Swal.fire({
           toast: true,
@@ -189,8 +188,11 @@ const OfficerRegisterPWD = () => {
           background: "#232b3e",
           color: "#fff",
         });
+        window.location.reload();
       }
     } catch (error) {
+      setRegistering(false);
+      console.error("Register PWD error:", error);
       window.Swal.fire({
         toast: true,
         position: "top-end",
@@ -202,11 +204,10 @@ const OfficerRegisterPWD = () => {
         color: "#fff",
       });
     }
-    setRegistering(false);
   };
 
   return (
-    <div>
+    <div className="text-white">
       <div className="flex items-center gap-4 mb-8">
         <button
           type="button"
@@ -238,7 +239,7 @@ const OfficerRegisterPWD = () => {
               >
                 <option value="">Select Quarter</option>
                 {quarters.map(q => (
-                  <option key={q} value={q}>{q}</option>
+                  <option key={q} value={q}>{`Quarter ${q.replace('Q','')}, ${currentYear}`}</option>
                 ))}
               </select>
             </div>
@@ -400,7 +401,7 @@ const OfficerRegisterPWD = () => {
                   <label className="block mb-1">Guardian Relationship</label>
                   <input
                     type="text"
-                    name="grade"
+                    name="guardian_relationship"
                     value={formData.guardian_relationship}
                     onChange={handleChange}
                     className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
@@ -466,14 +467,18 @@ const OfficerRegisterPWD = () => {
 
             <div>
               <label className="block mb-1">Community</label>
-              <input
-                type="text"
+              <select
                 name="community"
                 value={formData.community}
                 onChange={handleChange}
                 className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg"
                 required
-              />
+              >
+                <option value="">Select Community</option>
+                {communities.map(comm => (
+                  <option key={comm.community_id} value={comm.community_id}>{comm.community_name}</option>
+                ))}
+              </select>
             </div>
 
             <div>
@@ -534,7 +539,7 @@ const OfficerRegisterPWD = () => {
           <div className="flex justify-end mt-8 gap-4">
             <button
               type="submit"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg"
+              className={`px-6 py-3 rounded-lg ${registering ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500'}`}
               disabled={registering}
             >
               {registering ? "Registering..." : "Register PWD"}

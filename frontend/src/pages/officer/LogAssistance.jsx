@@ -65,9 +65,17 @@ const LogAssistance = () => {
             className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 text-white focus:border-gray-500 focus:ring-2 focus:ring-gray-500 transition-all"
             value={form.beneficiary}
             onChange={e => {
-              setForm({ ...form, beneficiary: e.target.value });
               const selected = beneficiaries.find(b => b.pwd_id === e.target.value || b.id === e.target.value);
               setSelectedBeneficiary(selected);
+              setForm(f => ({
+                ...f,
+                beneficiary: e.target.value,
+                gender: selected?.gender_name || '',
+                contact: selected?.contact || '',
+                quarter: selected?.quarter || '',
+                disability_category: selected?.disability_category || '',
+                disability_type: selected?.disability_type || ''
+              }));
             }}
             required
           >
@@ -78,17 +86,54 @@ const LogAssistance = () => {
           </select>
         </div>
 
-        {selectedBeneficiary && (
-          <div className="bg-gray-800 p-6 rounded-lg grid grid-cols-2 gap-4">
-            <div><strong>Gender:</strong> {selectedBeneficiary.gender}</div>
-            <div><strong>Contact:</strong> {selectedBeneficiary.contact}</div>
-            <div><strong>Date of Birth:</strong> {selectedBeneficiary.dob}</div>
-            <div><strong>Age:</strong> {selectedBeneficiary.age}</div>
-            <div><strong>Assistance Needed:</strong> {selectedBeneficiary.support_needs}</div>
-            <div><strong>Disability Category:</strong> {selectedBeneficiary.disability_category_name}</div>
-            <div><strong>Disability Type:</strong> {selectedBeneficiary.disability_type_name}</div>
+        {/* Always show additional info fields */}
+        <div className="bg-gray-800 p-6 rounded-lg grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-white mb-1">Gender</label>
+            <input
+              type="text"
+              className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
+              value={form.gender || ''}
+              disabled
+            />
           </div>
-        )}
+          <div>
+            <label className="block text-white mb-1">Contact</label>
+            <input
+              type="text"
+              className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
+              value={form.contact || ''}
+              disabled
+            />
+          </div>
+          <div>
+            <label className="block text-white mb-1">Quarter</label>
+            <input
+              type="text"
+              className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
+              value={form.quarter ? `Quarter ${form.quarter.replace('Q','')}` : ''}
+              disabled
+            />
+          </div>
+          <div>
+            <label className="block text-white mb-1">Disability Category</label>
+            <input
+              type="text"
+              className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
+              value={form.disability_category || ''}
+              disabled
+            />
+          </div>
+          <div>
+            <label className="block text-white mb-1">Disability Type</label>
+            <input
+              type="text"
+              className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
+              value={form.disability_type || ''}
+              disabled
+            />
+          </div>
+        </div>
 
         <div className="bg-gray-800 p-6 rounded-lg">
           <label className="block mb-2 text-sm text-white font-medium">Amount Needed *</label>
@@ -102,9 +147,9 @@ const LogAssistance = () => {
           />
         </div>
 
-        <div className="bg-gray-800 p-6 rounded-lg">
-          {/* Assessment checkbox removed */}
-        </div>
+        {/* <div className="bg-gray-800 p-6 rounded-lg">
+          {/* Assessment checkbox removed *}
+        </div> */}
 
         <div className="bg-gray-800 p-6 rounded-lg">
           <label className="block mb-2 font-medium text-white">Description *</label>

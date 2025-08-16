@@ -126,34 +126,35 @@ const RegisterPWD = () => {
     }
   };
 
+  const [registering, setRegistering] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Map formData to API request body
+    setRegistering(true);
+    const user = JSON.parse(localStorage.getItem('dms_user'));
     const payload = {
-      quarter: formData.quarter || `Q${Math.ceil(new Date().getMonth() / 3)}`,
-      year: new Date().getFullYear(),
-      gender_id: genders.find(g => g.name.toLowerCase() === formData.gender.toLowerCase())?.id || 1,
-      full_name: formData.fullName,
-      occupation: formData.occupation,
-      contact: formData.contact,
-      dob: formData.dateOfBirth,
-      age: parseInt(formData.age),
-      disability_category_id: formData.disabilityCategory,
-      disability_type_id: formData.disabilityType,
-      gh_card_number: formData.ghCardNumber,
-      nhis_number: formData.nhisNumber,
-      community_id: formData.community,
-      guardian_name: formData.guardianName,
-      guardian_occupation: formData.guardianOccupation,
-      guardian_phone: formData.guardianPhone,
-      guardian_relationship: formData.guardian_relationship,
-      education_level: formData.educationLevel,
-      school_name: formData.schoolName,
-      assistance_type_needed_id: formData.assistanceNeeded,
-      support_needs: formData.assistanceNeeded,
-      supporting_documents: [], // File upload handling needed
-      profile_image: "", // File upload handling needed
-      role: "admin"
+      quarter: formData.quarter ? formData.quarter : `Q${Math.ceil(new Date().getMonth() / 3)}`,
+      year: new Date().getFullYear().toString(),
+      gender_id: genders.find(g => g.id.toString() === formData.gender.toString())?.id?.toString() || '',
+      full_name: formData.fullName || '',
+      occupation: formData.occupation || '',
+      contact: formData.contact || '',
+      dob: formData.dateOfBirth || '',
+      age: formData.age ? formData.age.toString() : '',
+      disability_category_id: formData.disabilityCategory ? formData.disabilityCategory.toString() : '',
+      disability_type_id: formData.disabilityType ? formData.disabilityType.toString() : '',
+      gh_card_number: formData.ghCardNumber || '',
+      nhis_number: formData.nhisNumber || '',
+      community_id: formData.community ? formData.community.toString() : '',
+      guardian_name: formData.guardianName || '',
+      guardian_occupation: formData.guardianOccupation || '',
+      guardian_phone: formData.guardianPhone || '',
+      guardian_relationship: formData.guardian_relationship || '',
+      education_level: formData.educationLevel || '',
+      school_name: formData.schoolName || '',
+      assistance_type_needed_id: formData.assistanceNeeded ? formData.assistanceNeeded.toString() : '',
+      support_needs: formData.assistanceNeeded || '',
+      user_id: user?.user_id ? user.user_id.toString() : '',
+      // profile_image and supporting_documents are omitted for JSON
     };
     try {
       const response = await fetch("https://disability-management-api.onrender.com/v1/pwd-records", {
@@ -164,6 +165,8 @@ const RegisterPWD = () => {
         body: JSON.stringify(payload),
       });
       const result = await response.json();
+      console.log(result);
+      setRegistering(false);
       if (result.status === "success") {
         Swal.fire({
           toast: true,
@@ -189,6 +192,8 @@ const RegisterPWD = () => {
         });
       }
     } catch (error) {
+      setRegistering(false);
+      console.error("Register PWD error:", error);
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -200,7 +205,7 @@ const RegisterPWD = () => {
         color: "#fff",
       });
     }
-  };
+  }
 
   return (
     <div className="bg-gray-900 text-white min-h-screen p-6 text-sm">
@@ -535,9 +540,10 @@ const RegisterPWD = () => {
           <div className="flex justify-end mt-8 gap-4">
             <button
               type="submit"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg"
+              className={`px-6 py-3 rounded-lg ${registering ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500'}`}
+              disabled={registering}
             >
-              Register PWD
+              {registering ? "Registering..." : "Register PWD"}
             </button>
             <button
               type="button"
@@ -552,6 +558,7 @@ const RegisterPWD = () => {
       </div>
     </div>
   );
+
 };
 
 export default RegisterPWD;

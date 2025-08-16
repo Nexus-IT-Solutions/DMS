@@ -22,9 +22,21 @@ const AdminLogin = () => {
         body: JSON.stringify({ username, password })
       });
       const result = await res.json();
-      if (result.status === 'success' && result.data) {
-        localStorage.setItem('dms_user', JSON.stringify(result.data));
-        window.location.href = '/admin-dashboard';
+      if (result.status === 'success' && result.user) {
+        localStorage.setItem('dms_user', JSON.stringify(result.user));
+        window.Swal && Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: result.message || 'Login successful',
+          showConfirmButton: false,
+          timer: 2000,
+          background: '#232b3e',
+          color: '#fff',
+        });
+        setTimeout(() => {
+          window.location.href = '/admin-dashboard';
+        }, 1200);
       } else {
         setError(result.message || 'Login failed');
       }
