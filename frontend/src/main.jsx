@@ -57,7 +57,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/admin-reset-password" element={<AdminResetPassword />} />
 
         {/* Admin dashboard protected route */}
-        {/* <Route element={<ProtectedAdminRoute />}> */}
+        <Route element={<ProtectedAdminRoute />}>
           <Route path="/admin-dashboard" element={<AdminDashboardLayout />}>
             <Route index element={<DashboardHome />} />
             <Route path="register-pwd" element={<RegisterPWD />} />
@@ -75,7 +75,7 @@ createRoot(document.getElementById('root')).render(
               <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
           </Route>
-        {/* </Route> */}
+        </Route>
 
         {/* Officer dashboard protected route */}
         <Route element={<ProtectedOfficerRoute />}>

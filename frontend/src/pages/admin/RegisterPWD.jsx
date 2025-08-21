@@ -180,6 +180,16 @@ const RegisterPWD = () => {
         });
         navigate(-1);
       } else {
+        // Swal.fire({
+        //   toast: true,
+        //   position: "top-end",
+        //   icon: "success",
+        //   title: "PWD registered successfully!",
+        //   showConfirmButton: false,
+        //   timer: 2500,
+        //   background: "#232b3e",
+        //   color: "#fff",
+        // });
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -194,6 +204,16 @@ const RegisterPWD = () => {
     } catch (error) {
       setRegistering(false);
       console.error("Register PWD error:", error);
+      // Swal.fire({
+      //     toast: true,
+      //     position: "top-end",
+      //     icon: "success",
+      //     title: "PWD registered successfully!",
+      //     showConfirmButton: false,
+      //     timer: 2500,
+      //     background: "#232b3e",
+      //     color: "#fff",
+      //   });
       Swal.fire({
         toast: true,
         position: "top-end",

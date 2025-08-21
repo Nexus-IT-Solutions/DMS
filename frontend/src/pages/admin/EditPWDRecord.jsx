@@ -7,7 +7,7 @@ export default function EditPWDRecord() {
   const navigate = useNavigate();
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(true);
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("dms_user"));
   const token = user?.token;
 
   useEffect(() => {
@@ -27,14 +27,15 @@ export default function EditPWDRecord() {
   const handleSave = async e => {
     e.preventDefault();
     setLoading(true);
+    const user = JSON.parse(localStorage.getItem("dms_user"));
+    const admin_id = user?.admin_id;
     const res = await fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       credentials: "include",
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, admin_id }),
     });
     const result = await res.json();
     setLoading(false);

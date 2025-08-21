@@ -64,18 +64,35 @@ const LogAssistance = () => {
           <select
             className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 text-white focus:border-gray-500 focus:ring-2 focus:ring-gray-500 transition-all"
             value={form.beneficiary}
-            onChange={e => {
-              const selected = beneficiaries.find(b => b.pwd_id === e.target.value || b.id === e.target.value);
-              setSelectedBeneficiary(selected);
-              setForm(f => ({
-                ...f,
-                beneficiary: e.target.value,
-                gender: selected?.gender_name || '',
-                contact: selected?.contact || '',
-                quarter: selected?.quarter || '',
-                disability_category: selected?.disability_category || '',
-                disability_type: selected?.disability_type || ''
-              }));
+            onChange={async e => {
+              const beneficiaryId = e.target.value;
+              setForm(f => ({ ...f, beneficiary: beneficiaryId }));
+              if (!beneficiaryId) {
+                setSelectedBeneficiary(null);
+                setForm(f => ({ ...f, gender: '', contact: '', quarter: '', disability_category: '', disability_type: '' }));
+                return;
+              }
+              try {
+                const res = await fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${beneficiaryId}`);
+                const data = await res.json();
+                if (data.status === 'success' && data.data) {
+                  setSelectedBeneficiary(data.data);
+                  setForm(f => ({
+                    ...f,
+                    gender: data.data.gender_name || '',
+                    contact: data.data.contact || '',
+                    quarter: data.data.quarter || '',
+                    disability_category: data.data.disability_category || '',
+                    disability_type: data.data.disability_type || ''
+                  }));
+                } else {
+                  setSelectedBeneficiary(null);
+                  setForm(f => ({ ...f, gender: '', contact: '', quarter: '', disability_category: '', disability_type: '' }));
+                }
+              } catch {
+                setSelectedBeneficiary(null);
+                setForm(f => ({ ...f, gender: '', contact: '', quarter: '', disability_category: '', disability_type: '' }));
+              }
             }}
             required
           >
@@ -174,11 +191,14 @@ const LogAssistance = () => {
                   setLoading(false);
                   return;
                 }
+                const user = JSON.parse(localStorage.getItem("dms_user"));
+                const officer_id = user?.officer_id;
                 const payload = {
                   assistance_type_id: form.type,
                   beneficiary_id: form.beneficiary,
                   amount_value_cost: form.amount,
                   description: form.notes,
+                  user_id: officer_id,
                 };
                 const res = await fetch('https://disability-management-api.onrender.com/v1/assistance-requests', {
                   method: 'POST',

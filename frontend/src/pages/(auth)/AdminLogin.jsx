@@ -22,8 +22,8 @@ const AdminLogin = () => {
         body: JSON.stringify({ username, password })
       });
       const result = await res.json();
-      if (result.status === 'success' && result.user) {
-        localStorage.setItem('dms_user', JSON.stringify(result.user));
+      if (result.status === 'success' && result.data) {
+        localStorage.setItem('dms_user', JSON.stringify(result.data));
         window.Swal && Swal.fire({
           toast: true,
           position: 'top-end',

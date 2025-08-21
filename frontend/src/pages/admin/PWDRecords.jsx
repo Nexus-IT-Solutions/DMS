@@ -96,43 +96,44 @@ export default function PWDTable() {
       color: '#fff',
     });
     if (confirm.isConfirmed) {
-      setLoading(true);
-      const user = JSON.parse(localStorage.getItem("user"));
-      const token = user?.token;
-      fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}`, {
-        method: 'DELETE',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-        credentials: "include",
-      })
-        .then(res => res.json())
-        .then(result => {
-          if (result.status === 'success') {
-            Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'success',
-              title: 'Record deleted!',
-              showConfirmButton: false,
-              timer: 2000,
-              background: '#232b3e',
-              color: '#fff',
-            });
-            setData(data.filter(r => r.pwd_id !== id));
-          } else {
-            Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'error',
-              title: result.message || 'Delete failed!',
-              showConfirmButton: false,
-              timer: 2000,
-              background: '#232b3e',
-              color: '#fff',
-            });
-          }
-          setLoading(false);
+        setLoading(true);
+        const user = JSON.parse(localStorage.getItem("dms_user"));
+        const admin_id = user?.admin_id;
+        fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}`, {
+          method: 'DELETE',
+          credentials: "include",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_id }),
         })
-        .catch(() => setLoading(false));
+          .then(res => res.json())
+          .then(result => {
+            if (result.status === 'success') {
+              Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Record deleted!',
+                showConfirmButton: false,
+                timer: 2000,
+                background: '#232b3e',
+                color: '#fff',
+              });
+              setData(prev => prev.filter(r => r.pwd_id !== id));
+            } else {
+              Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: result.message || 'Delete failed!',
+                showConfirmButton: false,
+                timer: 2000,
+                background: '#232b3e',
+                color: '#fff',
+              });
+            }
+            setLoading(false);
+          })
+          .catch(() => setLoading(false));
     }
   };
 
@@ -218,7 +219,7 @@ export default function PWDTable() {
                 >
                   <td className="px-4 py-3">
                     <img 
-                      src={record.profile_image ? record.profile_image : "https://ui-avatars.com/api/?name=" + encodeURIComponent(record.full_name)}
+                      src={record.profile_image ? `https://disability-management-api.onrender.com/${record.profile_image}` : "https://ui-avatars.com/api/?name=" + encodeURIComponent(record.full_name)}
                       alt={record.full_name}
                       className="w-10 h-10 rounded-full object-cover"
                     />

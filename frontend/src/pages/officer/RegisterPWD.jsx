@@ -178,6 +178,7 @@ const OfficerRegisterPWD = () => {
         });
         window.location.reload();
       } else {
+
         window.Swal.fire({
           toast: true,
           position: "top-end",
@@ -193,6 +194,16 @@ const OfficerRegisterPWD = () => {
     } catch (error) {
       setRegistering(false);
       console.error("Register PWD error:", error);
+      // Swal.fire({
+      //           toast: true,
+      //           position: "top-end",
+      //           icon: "success",
+      //           title: "PWD registered successfully!",
+      //           showConfirmButton: false,
+      //           timer: 2500,
+      //           background: "#232b3e",
+      //           color: "#fff",
+      //         });
       window.Swal.fire({
         toast: true,
         position: "top-end",
