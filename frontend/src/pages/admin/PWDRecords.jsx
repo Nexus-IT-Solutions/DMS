@@ -101,8 +101,8 @@ export default function PWDTable() {
         const admin_id = user?.admin_id;
         fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}`, {
           method: 'DELETE',
-          credentials: "include",
-          headers: { 'Content-Type': 'application/json' },
+          // credentials: "include",
+          // headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ admin_id }),
         })
           .then(res => res.json())

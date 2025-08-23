@@ -220,13 +220,6 @@ export default function OfficerPWDRecords() {
                     >
                       <Edit size={20} />
                     </button>
-                    <button
-                      onClick={() => handleDelete(record.pwd_id)}
-                      className="hover:text-red-400"
-                      title="Delete"
-                    >
-                      <Trash size={20} />
-                    </button>
                   </td>
                 </tr>
               ))

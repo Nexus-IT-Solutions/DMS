@@ -99,7 +99,22 @@ const ReportsAnalytics = () => {
       .then(data => {
         setReportLoading(false);
         if (data.status === 'success') {
-          window.open(data.data.url, '_blank');
+          // If backend returns a URL, open it
+          if (data.data && data.data.url) {
+            window.open(data.data.url, '_blank');
+          } else if (typeof data.data === 'string') {
+            // If backend returns a string, treat as CSV and download
+            const csvContent = data.data;
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${type.replace(/\s+/g, '_').toLowerCase()}_report.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+          }
         } else {
           window.Swal.fire({
             icon: 'error',
