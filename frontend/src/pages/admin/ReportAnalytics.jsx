@@ -42,6 +42,7 @@ const ReportsAnalytics = () => {
   const [pieData, setPieData] = useState(initialPieData);
   const [loading, setLoading] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
+  const [activeReport, setActiveReport] = useState(null);
   useEffect(() => {
     setLoading(true);
     // Fetch quarterly statistics
@@ -72,7 +73,8 @@ const ReportsAnalytics = () => {
   }, []);
 
   const handleGenerateReport = (type) => {
-    setReportLoading(true);
+  setReportLoading(true);
+  setActiveReport(type);
     let endpoint = '';
     switch (type) {
       case 'Quarterly Registration Report':
@@ -98,6 +100,7 @@ const ReportsAnalytics = () => {
       .then(res => res.json())
       .then(data => {
         setReportLoading(false);
+  setActiveReport(null);
         if (data.status === 'success') {
           // If backend returns a URL, open it
           if (data.data && data.data.url) {
@@ -152,9 +155,9 @@ const ReportsAnalytics = () => {
               <button
                 className="text-sm bg-purple-600 hover:bg-purple-700 text-white hover:text-purple-400 cursor-pointer px-4 py-2 rounded font-medium w-[150px] md:ml-auto"
                 onClick={() => handleGenerateReport(card.title)}
-                disabled={reportLoading}
+                disabled={reportLoading && activeReport !== card.title}
               >
-                {reportLoading ? 'Generating...' : 'Generate Report'}
+                {reportLoading && activeReport === card.title ? 'Generating...' : 'Generate Report'}
               </button>
             </div>
           </div>
