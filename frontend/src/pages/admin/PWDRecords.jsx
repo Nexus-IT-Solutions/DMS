@@ -98,12 +98,12 @@ export default function PWDTable() {
     if (confirm.isConfirmed) {
         setLoading(true);
         const user = JSON.parse(localStorage.getItem("dms_user"));
-        const admin_id = user?.admin_id;
+        const user_id = user?.user_id;
         fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}`, {
           method: 'DELETE',
           // credentials: "include",
           // headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin_id }),
+          body: JSON.stringify({ user_id }),
         })
           .then(res => res.json())
           .then(result => {

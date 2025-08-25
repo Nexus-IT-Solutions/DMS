@@ -27,10 +27,10 @@ const ViewAssistance = () => {
       <h2 className="text-2xl font-bold mb-6">Assistance Request Details</h2>
       <div className="bg-gray-800 rounded-xl shadow p-6">
         <div className="mb-4"><strong>Beneficiary:</strong> {data.beneficiary_name}</div>
-        <div className="mb-4"><strong>Type:</strong> {data.assistance_type}</div>
+        <div className="mb-4"><strong>Type:</strong> {data.assistance_type_name}</div>
         <div className="mb-4"><strong>Amount:</strong> {data.amount_value_cost}</div>
         <div className="mb-4"><strong>Status:</strong> {data.status}</div>
-        <div className="mb-4"><strong>Date:</strong> {data.request_date}</div>
+        <div className="mb-4"><strong>Date:</strong> {data.created_at}</div>
         <div className="mb-4"><strong>Description:</strong> {data.description}</div>
         {/* Add more fields as needed based on API response */}
       </div>

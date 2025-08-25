@@ -204,13 +204,13 @@ const OfficerRegisterPWD = () => {
       //           background: "#232b3e",
       //           color: "#fff",
       //         });
-      window.Swal.fire({
+      Swal.fire({
         toast: true,
         position: "top-end",
         icon: "error",
         title: "Network error!",
         showConfirmButton: false,
-        timer: 2500,
+        timer: 2000,
         background: "#232b3e",
         color: "#fff",
       });

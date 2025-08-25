@@ -165,7 +165,6 @@ const RegisterPWD = () => {
         body: JSON.stringify(payload),
       });
       const result = await response.json();
-      console.log(result);
       setRegistering(false);
       if (result.status === "success") {
         Swal.fire({
@@ -174,29 +173,21 @@ const RegisterPWD = () => {
           icon: "success",
           title: "PWD registered successfully!",
           showConfirmButton: false,
-          timer: 2500,
+          timer: 2000,
           background: "#232b3e",
           color: "#fff",
         });
-        navigate(-1);
+        setTimeout(() => {
+          navigate(-1);
+        }, 1200);
       } else {
-        // Swal.fire({
-        //   toast: true,
-        //   position: "top-end",
-        //   icon: "success",
-        //   title: "PWD registered successfully!",
-        //   showConfirmButton: false,
-        //   timer: 2500,
-        //   background: "#232b3e",
-        //   color: "#fff",
-        // });
         Swal.fire({
           toast: true,
           position: "top-end",
           icon: "error",
           title: result.message || "Registration failed!",
           showConfirmButton: false,
-          timer: 2500,
+          timer: 2000,
           background: "#232b3e",
           color: "#fff",
         });
@@ -204,23 +195,13 @@ const RegisterPWD = () => {
     } catch (error) {
       setRegistering(false);
       console.error("Register PWD error:", error);
-      // Swal.fire({
-      //     toast: true,
-      //     position: "top-end",
-      //     icon: "success",
-      //     title: "PWD registered successfully!",
-      //     showConfirmButton: false,
-      //     timer: 2500,
-      //     background: "#232b3e",
-      //     color: "#fff",
-      //   });
       Swal.fire({
         toast: true,
         position: "top-end",
         icon: "error",
         title: "Network error!",
         showConfirmButton: false,
-        timer: 2500,
+        timer: 2000,
         background: "#232b3e",
         color: "#fff",
       });

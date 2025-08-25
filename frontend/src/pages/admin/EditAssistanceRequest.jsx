@@ -85,10 +85,10 @@ const EditAssistanceRequest = () => {
       <h2 className="text-2xl font-bold mb-6">Edit Assistance Request</h2>
       <div className="bg-gray-800 rounded-xl shadow p-6 mb-6">
         <div className="mb-4"><strong>Beneficiary:</strong> {request.beneficiary_name || 'N/A'}</div>
-        <div className="mb-4"><strong>Type:</strong> {request.assistance_type || 'N/A'}</div>
+        <div className="mb-4"><strong>Type:</strong> {request.assistance_type_name || 'N/A'}</div>
         <div className="mb-4"><strong>Amount:</strong> {request.amount_value_cost || 'N/A'}</div>
         <div className="mb-4"><strong>Status:</strong> <span className="font-bold">{request.status || 'pending'}</span></div>
-        <div className="mb-4"><strong>Date:</strong> {request.request_date || 'N/A'}</div>
+        <div className="mb-4"><strong>Date:</strong> {request.created_at || 'N/A'}</div>
         {/* Add more fields as needed */}
       </div>
       <div className="flex gap-4 flex-wrap">

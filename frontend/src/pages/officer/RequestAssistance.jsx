@@ -13,12 +13,29 @@ const RequestAssistance = () => {
     fetch('https://disability-management-api.onrender.com/v1/assistance-requests')
       .then(res => res.json())
       .then(data => {
-        if (data.status === 'success' && Array.isArray(data.data)) {
+        if (data.status === 'success' && data.data && Array.isArray(data.data)) {
           setRequests(data.data);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.message || 'Failed to fetch assistance requests.',
+            background: '#232b3e',
+            color: '#fff',
+          });
         }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Could not fetch assistance requests.',
+          background: '#232b3e',
+          color: '#fff',
+        });
+      });
   }, []);
 
   return (
@@ -53,14 +70,14 @@ const RequestAssistance = () => {
                 <tr><td colSpan={6} className="text-gray-400 py-6 text-center">No requests found.</td></tr>
               ) : (
                 requests.map(req => (
-                  <tr key={req.id}>
+                  <tr key={req.request_id}>
                     <td>{req.beneficiary_name}</td>
-                    <td>{req.assistance_type}</td>
+                    <td>{req.assistance_type_name}</td>
                     <td>{req.amount_value_cost}</td>
                     <td>{req.status}</td>
-                    <td>{req.request_date}</td>
+                    <td>{req.created_at}</td>
                     <td>
-                      <button className="text-blue-400 hover:text-blue-600" onClick={() => navigate(`/officer-dashboard/view-assistance/${req.id}`)}><FaEye /></button>
+                      <button className="text-blue-400 hover:text-blue-600" onClick={() => req.request_id && navigate(`/officer-dashboard/view-assistance/${req.request_id}`)}><FaEye /></button>
                     </td>
                   </tr>
                 ))

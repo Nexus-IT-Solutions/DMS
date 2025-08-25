@@ -24,7 +24,7 @@ const OfficerLogin = () => {
       const result = await res.json();
       if (result.status === 'success' && result.user) {
         localStorage.setItem('dms_user', JSON.stringify(result.user));
-        window.Swal && Swal.fire({
+        Swal.fire({
           toast: true,
           position: 'top-end',
           icon: 'success',
@@ -38,9 +38,29 @@ const OfficerLogin = () => {
           window.location.href = '/officer-dashboard';
         }, 1200);
       } else {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: result.message || 'Login failed',
+          showConfirmButton: false,
+          timer: 2000,
+          background: '#232b3e',
+          color: '#fff',
+        });
         setError(result.message || 'Login failed');
       }
     } catch (err) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Network error',
+        showConfirmButton: false,
+        timer: 2000,
+        background: '#232b3e',
+        color: '#fff',
+      });
       setError('Network error');
     }
     setLoading(false);

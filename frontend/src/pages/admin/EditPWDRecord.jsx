@@ -28,7 +28,7 @@ export default function EditPWDRecord() {
     e.preventDefault();
     setLoading(true);
     const user = JSON.parse(localStorage.getItem("dms_user"));
-    const user_id = user?.admin_id;
+    const user_id = user?.user_id;
     const res = await fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}`, {
       method: "PATCH",
       headers: {

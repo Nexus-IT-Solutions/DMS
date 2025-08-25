@@ -17,12 +17,29 @@ const AssistanceTracking = () => {
     fetch('https://disability-management-api.onrender.com/v1/assistance-requests')
       .then(res => res.json())
       .then(data => {
-        if (data.status === 'success' && Array.isArray(data.data)) {
+        if (data.status === 'success' && data.data && Array.isArray(data.data)) {
           setRequests(data.data);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.message || 'Failed to fetch assistance requests.',
+            background: '#232b3e',
+            color: '#fff',
+          });
         }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Could not fetch assistance requests.',
+          background: '#232b3e',
+          color: '#fff',
+        });
+      });
   }, []);
 
   const filtered = requests.filter(
@@ -32,6 +49,7 @@ const AssistanceTracking = () => {
   );
 
   const handleDelete = async (id) => {
+    const user = JSON.parse(localStorage.getItem('dms_user'));
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: 'You want to delete this assistance request?',
@@ -45,7 +63,11 @@ const AssistanceTracking = () => {
       setDeleting(id);
       try {
         const res = await fetch(`https://disability-management-api.onrender.com/v1/assistance-requests/${id}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id: user?.user_id })
         });
         const result = await res.json();
         if (result.status === 'success') {
@@ -59,7 +81,7 @@ const AssistanceTracking = () => {
             background: '#232b3e',
             color: '#fff',
           });
-          setRequests(prev => prev.filter(r => r.id !== id));
+          setRequests(prev => prev.filter(r => r.request_id !== id));
         } else {
           Swal.fire({
             toast: true,
@@ -121,31 +143,31 @@ const AssistanceTracking = () => {
               <tr><td colSpan={5} className="text-gray-400 py-8 text-center">No requests found.</td></tr>
             ) : (
               filtered.map((req) => (
-                <tr key={req.id} className="border-b border-gray-700 hover:bg-gray-700 transition duration-150">
-                  <td className="p-4 font-medium">{req.request_date || 'N/A'}</td>
-                  <td className="p-4 font-medium">{req.assistance_type || 'N/A'}</td>
+                <tr key={req.request_id} className="border-b border-gray-700 hover:bg-gray-700 transition duration-150">
+                  <td className="p-4 font-medium">{req.created_at || 'N/A'}</td>
+                  <td className="p-4 font-medium">{req.assistance_type_name || 'N/A'}</td>
                   <td className="p-4 font-medium">{req.beneficiary_name || 'N/A'}</td>
                   <td className="p-4 font-medium">{req.status || 'pending'}</td>
                   <td className="p-4 flex gap-2">
                     <button
-                      onClick={() => navigate(`/admin-dashboard/view-assistance/${req.id}`)}
+                      onClick={() => req.request_id && navigate(`/admin-dashboard/view-assistance/${req.request_id}`)}
                       className="text-white hover:text-purple-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
                       title="View Details"
                     >
                       <FaEye />
                     </button>
                     <button
-                      onClick={() => navigate(`/admin-dashboard/edit-assistance/${req.id}`)}
+                      onClick={() => req.request_id && navigate(`/admin-dashboard/edit-assistance/${req.request_id}`)}
                       className="text-white hover:text-blue-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
                       title="Edit Request"
                     >
-                      <FaCheck />
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0l-10 10A2 2 0 004 15.414V18a1 1 0 001 1h2.586a2 2 0 001.414-.586l10-10a2 2 0 000-2.828l-2-2zM5 16v-1.586l10-10L16.586 6l-10 10H5zm2.586 1H5v-2.586l10-10L18.586 7l-10 10z" /></svg>
                     </button>
                     <button
-                      onClick={() => handleDelete(req.id)}
+                      onClick={() => handleDelete(req.request_id)}
                       className="text-white hover:text-red-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
                       title="Delete Request"
-                      disabled={deleting === req.id}
+                      disabled={deleting === req.request_id}
                     >
                       <FaTimes />
                     </button>

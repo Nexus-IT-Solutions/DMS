@@ -196,13 +196,13 @@ const LogAssistance = () => {
                   return;
                 }
                 const user = JSON.parse(localStorage.getItem("dms_user"));
-                const admin_id = user?.admin_id;
+                const user_id = user?.user_id;
                 const payload = {
                   assistance_type_id: form.type,
                   beneficiary_id: form.beneficiary,
                   amount_value_cost: form.amount,
                   description: form.notes,
-                  user_id: admin_id,
+                  user_id: user_id,
                 };
                 const res = await fetch('https://disability-management-api.onrender.com/v1/assistance-requests', {
                   method: 'POST',
