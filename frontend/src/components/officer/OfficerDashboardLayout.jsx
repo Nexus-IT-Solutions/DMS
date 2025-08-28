@@ -31,6 +31,11 @@ const OfficerDashboardLayout = () => {
     }
   }, []);
 
+  const handleLogout = () => {
+  localStorage.removeItem("dms_user");
+  window.location.href = "/";
+};
+
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900 overflow-hidden text-sm">
       {/* Sidebar */}
@@ -58,7 +63,7 @@ const OfficerDashboardLayout = () => {
         <div className="border-t border-gray-700 pt-4">
           <div className="text-xs text-gray-400 px-4 mb-3">Data Entry Officer</div>
           <button
-            onClick={() => navigate('/logout')}
+            onClick={handleLogout}
             className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-lg text-sm text-gray-300 hover:bg-[#232b3e] dark:hover:bg-[#1a2233] hover:text-white transition-colors duration-200"
           >
             <RiLogoutBoxLine className="w-5 h-5 flex-shrink-0" />

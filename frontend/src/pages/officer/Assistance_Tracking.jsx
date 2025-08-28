@@ -1,112 +1,49 @@
-import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react"
 import Swal from 'sweetalert2';
-import { FaEye, FaCheck, FaTimes } from 'react-icons/fa';
-
-const data = [
-  {
-    date: '3/2/2025', 
-    type: 'Financial Support',
-    beneficiary: 'Kwame Asante',
-    assessment: 'Assessed',
-  },
-  {
-    date: '3/12/2025',
-    type: 'Assistive Devices', 
-    beneficiary: 'Akosua Mensah',
-    assessment: 'Assessed',
-  },
-  {
-    date: '8/24/2025',
-    type: 'Assistive Devices',
-    beneficiary: 'Adwoa Dora', 
-    assessment: 'Not Assessed',
-  },
-];
+import { FaEye } from 'react-icons/fa';
 
 const AssistanceTracking = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filtered = data.filter(
+  useEffect(() => {
+    setLoading(true);
+    fetch('https://disability-management-api.onrender.com/v1/assistance-requests')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success' && data.data && Array.isArray(data.data)) {
+          setRequests(data.data);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.message || 'Failed to fetch assistance requests.',
+            background: '#232b3e',
+            color: '#fff',
+          });
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Could not fetch assistance requests.',
+          background: '#232b3e',
+          color: '#fff',
+        });
+      });
+  }, []);
+
+  const filtered = requests.filter(
     (entry) =>
-      entry.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.beneficiary.toLowerCase().includes(searchTerm.toLowerCase())
+      (entry.assistance_type_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (entry.beneficiary_name || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const handleApprove = async (id) => {
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: "You want to approve this assessment?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#9333EA',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, approve it!'
-    });
-
-    if (result.isConfirmed) {
-      try {
-        // Placeholder API call
-        const response = await fetch(`/api/assessments/${id}/approve`, {
-          method: 'PUT'
-        });
-
-        if (response.ok) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Assessment Approved!',
-            text: 'The assessment has been successfully approved',
-            confirmButtonColor: '#9333EA'
-          });
-        }
-      } catch (error) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Something went wrong while approving the assessment',
-          confirmButtonColor: '#9333EA'
-        });
-      }
-    }
-  };
-
-  const handleDisapprove = async (id) => {
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: "You want to disapprove this assessment?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#9333EA',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, disapprove it!'
-    });
-
-    if (result.isConfirmed) {
-      try {
-        // Placeholder API call
-        const response = await fetch(`/api/assessments/${id}/disapprove`, {
-          method: 'PUT'
-        });
-
-        if (response.ok) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Assessment Disapproved',
-            text: 'The assessment has been disapproved',
-            confirmButtonColor: '#9333EA'
-          });
-        }
-      } catch (error) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Something went wrong while disapproving the assessment',
-          confirmButtonColor: '#9333EA'
-        });
-      }
-    }
-  };
 
   return (
     <div className="dark text-white p-8 max-w-7xl mx-auto">
@@ -129,57 +66,45 @@ const AssistanceTracking = () => {
             <tr className="bg-gray-900 border-b border-gray-700">
               <th className="p-4 text-left font-semibold">Date</th>
               <th className="p-4 text-left font-semibold">Assistance Type</th>
-              <th className="p-4 text-left font-semibold">Beneficiaries</th>
-              <th className="p-4 text-left font-semibold">Assessment</th>
+              <th className="p-4 text-left font-semibold">Beneficiary</th>
+              <th className="p-4 text-left font-semibold">Status</th>
               <th className="p-4 text-left font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((entry, idx) => (
-              <tr key={idx} className="border-b border-gray-700 hover:bg-gray-700 transition duration-150">
-                <td className="p-4 font-medium">{entry.date}</td>
-                <td className="p-4 font-medium">{entry.type}</td>
-                <td className="p-4 font-medium">{entry.beneficiary}</td>
-                <td className="p-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      entry.assessment === 'Assessed' 
-                        ? 'bg-green-600 text-green-100' 
-                        : 'bg-gray-600 text-gray-100'
-                    }`}
-                  >
-                    {entry.assessment}
-                  </span>
-                </td>
-                <td className="p-4 flex gap-2">
-                  <button
-                    onClick={() => navigate(`/officer-dashboard/view-assistance/${idx}`)}
-                    className="text-white hover:text-purple-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
-                    title="View Details"
-                  >
-                    <FaEye />
-                  </button>
-                  {/* {entry.assessment !== 'Assessed' && (
-                    <>
-                      <button
-                        onClick={() => handleApprove(idx)}
-                        className="text-white hover:text-green-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
-                        title="Approve Assessment"
-                      >
-                        <FaCheck />
-                      </button>
-                      <button
-                        onClick={() => handleDisapprove(idx)}
-                        className="text-white hover:text-red-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
-                        title="Disapprove Assessment"
-                      >
-                        <FaTimes />
-                      </button>
-                    </>
-                  )} */}
-                </td>
-              </tr>
-            ))}
+            {loading ? (
+              <tr><td colSpan={5} className="text-center py-8">Loading...</td></tr>
+            ) : filtered.length === 0 ? (
+              <tr><td colSpan={5} className="text-gray-400 py-8 text-center">No requests found.</td></tr>
+            ) : (
+              filtered.map((req) => (
+                <tr key={req.request_id} className="border-b border-gray-700 hover:bg-gray-700 transition duration-150">
+                  <td className="p-4 font-medium">{new Date(req.created_at).toLocaleDateString() || 'N/A'}</td>
+                  <td className="p-4 font-medium">{req.assistance_type_name || 'N/A'}</td>
+                  <td className="p-4 font-medium">{req.beneficiary_name || 'N/A'}</td>
+                  <td className="p-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        req.status === 'assessed' 
+                          ? 'bg-green-600 text-green-100' 
+                          : 'bg-gray-600 text-gray-100'
+                      }`}
+                    >
+                      {req.status}
+                    </span>
+                  </td>
+                  <td className="p-4 flex gap-2">
+                    <button
+                      onClick={() => navigate(`/officer-dashboard/view-assistance/${req.request_id}`)}
+                      className="text-white hover:text-purple-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
+                      title="View Details"
+                    >
+                      <FaEye />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -188,4 +113,3 @@ const AssistanceTracking = () => {
 };
 
 export default AssistanceTracking;
-

@@ -90,7 +90,7 @@ const ReportsAnalytics = () => {
         endpoint = 'https://disability-management-api.onrender.com/v1/pwd-records/demographics';
         break;
       case 'Annual Registration Report':
-        endpoint = 'https://disability-management-api.onrender.com/v1/quarterly-statistics/annual-report';
+        endpoint = 'https://disability-management-api.onrender.com/v1/statistics/current-year';
         break;
       default:
         endpoint = '';

@@ -12,8 +12,7 @@ export default function EditPWDRecord() {
 
   useEffect(() => {
     fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}`, {
-      // headers: token ? { Authorization: `Bearer ${token}` } : {},
-      // credentials: "include",
+
     })
       .then(res => res.json())
       .then(result => {

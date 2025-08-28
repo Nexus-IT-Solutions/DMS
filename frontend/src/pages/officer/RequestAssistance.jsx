@@ -75,7 +75,7 @@ const RequestAssistance = () => {
                     <td>{req.assistance_type_name}</td>
                     <td>{req.amount_value_cost}</td>
                     <td>{req.status}</td>
-                    <td>{req.created_at}</td>
+                    <td>{new Date(req.created_at).toLocaleDateString()}</td>
                     <td>
                       <button className="text-blue-400 hover:text-blue-600" onClick={() => req.request_id && navigate(`/officer-dashboard/view-assistance/${req.request_id}`)}><FaEye /></button>
                     </td>

@@ -67,7 +67,9 @@ const AssistanceTracking = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ user_id: user?.user_id })
+          body: JSON.stringify({ user_id: user?.user_id }),
+          mode: 'cors',
+          credentials: 'include'
         });
         const result = await res.json();
         if (result.status === 'success') {
@@ -144,7 +146,7 @@ const AssistanceTracking = () => {
             ) : (
               filtered.map((req) => (
                 <tr key={req.request_id} className="border-b border-gray-700 hover:bg-gray-700 transition duration-150">
-                  <td className="p-4 font-medium">{req.created_at || 'N/A'}</td>
+                  <td className="p-4 font-medium">{new Date(req.created_at).toLocaleDateString() || 'N/A'}</td>
                   <td className="p-4 font-medium">{req.assistance_type_name || 'N/A'}</td>
                   <td className="p-4 font-medium">{req.beneficiary_name || 'N/A'}</td>
                   <td className="p-4 font-medium">{req.status || 'pending'}</td>
@@ -183,4 +185,3 @@ const AssistanceTracking = () => {
 };
 
 export default AssistanceTracking;
-
