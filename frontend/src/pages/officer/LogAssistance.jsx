@@ -192,7 +192,7 @@ const LogAssistance = () => {
                   return;
                 }
                 const user = JSON.parse(localStorage.getItem("dms_user"));
-                const officer_id = user?.officer_id;
+                const officer_id = user?.user_id;
                 const payload = {
                   assistance_type_id: form.type,
                   beneficiary_id: form.beneficiary,

@@ -5,33 +5,35 @@ import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { RiCloseCircleLine } from "react-icons/ri";
 
+const initialFormData = {
+  quarter: "",
+  gender: "",
+  fullName: "",
+  contact: "",
+  disabilityType: "",
+  disabilityCategory: "",
+  dateOfBirth: "",
+  age: "",
+  ghCardNumber: "",
+  nhisNumber: "",
+  community: "",
+  occupation: "",
+  userImage: null,
+  documents: null,
+  guardianName: "",
+  guardianOccupation: "",
+  guardianPhone: "",
+  educationLevel: "",
+  schoolName: "",
+  guardian_relationship: "",
+  assistanceNeeded: "",
+};
+
 const RegisterPWD = () => {
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
 
-  const [formData, setFormData] = useState({
-    quarter: "",
-    gender: "",
-    fullName: "",
-    contact: "",
-    disabilityType: "",
-    disabilityCategory: "",
-    dateOfBirth: "",
-    age: "",
-    ghCardNumber: "",
-    nhisNumber: "",
-    community: "",
-    occupation: "",
-    userImage: null,
-    documents: null,
-    guardianName: "",
-    guardianOccupation: "",
-    guardianPhone: "",
-    educationLevel: "",
-    schoolName: "",
-    guardian_relationship: "",
-    assistanceNeeded: "",
-  });
+  const [formData, setFormData] = useState(initialFormData);
 
   const [quarters] = useState(["Q1", "Q2", "Q3", "Q4"]);
   const [communities, setCommunities] = useState([]);

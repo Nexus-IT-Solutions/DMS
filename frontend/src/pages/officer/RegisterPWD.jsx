@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import formOptions from "../../data/pwdRegistrationData.json";
 import { IoIosArrowBack } from "react-icons/io";
 import { RiCloseCircleLine } from "react-icons/ri";
+import Swal from 'sweetalert2';
 
 const OfficerRegisterPWD = () => {
   const navigate = useNavigate();

@@ -11,11 +11,7 @@ const OfficerDashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch('https://disability-management-api.onrender.com/v1/pwd-records/total', {
-          headers: {
-            'Authorization': `Bearer ${user.token}`
-          }
-        });
+        const response = await fetch('https://disability-management-api.onrender.com/v1/pwd-records/total');
         if (!response.ok) {
           throw new Error('Failed to fetch dashboard data');
         }
@@ -28,10 +24,13 @@ const OfficerDashboard = () => {
       }
     };
 
-    if (user && user.token) {
-        fetchDashboardData();
+    if (user) {
+      fetchDashboardData();
+    } else {
+      setLoading(false);
+      setError("You are not logged in.");
     }
-  }, [user.token]);
+  }, [user]);
 
   const getIconComponent = (iconName, color = "currentColor") => {
     const iconClasses = "w-6 h-6";
