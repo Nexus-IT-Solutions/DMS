@@ -40,8 +40,7 @@ const EditAssistanceRequest = () => {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status, admin_notes, user_id }),
-        mode: 'cors',
-        credentials: 'include'
+        mode: 'cors'
       });
       const result = await res.json();
       if (result.status === 'success') {

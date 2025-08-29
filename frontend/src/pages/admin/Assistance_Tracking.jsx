@@ -64,12 +64,11 @@ const AssistanceTracking = () => {
       try {
         const res = await fetch(`https://disability-management-api.onrender.com/v1/assistance-requests/${id}`, {
           method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          // headers: {
+          //   'Content-Type': 'application/json',
+          // },
           body: JSON.stringify({ user_id: user?.user_id }),
-          mode: 'cors',
-          credentials: 'include'
+          // mode: 'cors'
         });
         const result = await res.json();
         if (result.status === 'success') {
