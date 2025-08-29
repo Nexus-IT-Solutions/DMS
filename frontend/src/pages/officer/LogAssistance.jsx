@@ -30,12 +30,6 @@ const LogAssistance = () => {
       });
   }, []);
 
-  // const beneficiaries = [
-  //   'Kwame Asante - GHA-123456789-0',
-  //   'Akosua Mensah - GHA-987654321-0', 
-  //   'Yaw Boateng - GHA-555777568-0',
-  // ];
-
   return (
     <div className="dark text-white p-8 max-w-4xl mx-auto rounded-lg">
       <div className="flex items-center justify-between mb-6">
@@ -44,7 +38,7 @@ const LogAssistance = () => {
         </button>
         <div className="text-center flex-1">
           <h2 className="text-2xl font-bold mb-2 text-white">Log New Assistance</h2>
-          <p className="text-gray-400">Record details of assistance provided to PWDS</p>
+          <p className="text-gray-400">Record details of assistance provided to persons with disabilities</p>
         </div>
         <div className="w-[100px]"></div>
       </div>
@@ -170,7 +164,9 @@ const LogAssistance = () => {
           />
         </div>
 
-        {/* Assessment checkbox removed */}
+        {/* <div className="bg-gray-800 p-6 rounded-lg">
+          {/* Assessment checkbox removed *}
+        </div> */}
 
         <div className="bg-gray-800 p-6 rounded-lg">
           <label className="block mb-2 font-medium text-white">Description *</label>
@@ -196,13 +192,13 @@ const LogAssistance = () => {
                   return;
                 }
                 const user = JSON.parse(localStorage.getItem("dms_user"));
-                const user_id = user?.user_id;
+                const officer_id = user?.user_id;
                 const payload = {
                   assistance_type_id: form.type,
                   beneficiary_id: form.beneficiary,
                   amount_value_cost: form.amount,
                   description: form.notes,
-                  user_id: user_id,
+                  user_id: officer_id,
                 };
                 const res = await fetch('https://disability-management-api.onrender.com/v1/assistance-requests', {
                   method: 'POST',

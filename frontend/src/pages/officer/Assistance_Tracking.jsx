@@ -1,16 +1,13 @@
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from "react"
 import Swal from 'sweetalert2';
-import { FaEye, FaCheck, FaTimes } from 'react-icons/fa';
-
-
+import { FaEye } from 'react-icons/fa';
 
 const AssistanceTracking = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [deleting, setDeleting] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -44,73 +41,9 @@ const AssistanceTracking = () => {
 
   const filtered = requests.filter(
     (entry) =>
-      (entry.assistance_type || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (entry.assistance_type_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (entry.beneficiary_name || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const handleDelete = async (id) => {
-    const user = JSON.parse(localStorage.getItem('dms_user'));
-    user_id: user?.user_id;
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'You want to delete this assistance request?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
-    });
-    if (result.isConfirmed) {
-      setDeleting(id);
-      try {
-        const res = await fetch(`https://disability-management-api.onrender.com/v1/assistance-requests/${id}`, {
-          method: 'DELETE',
-          // headers: {
-          //   'Content-Type': 'application/json',
-          // },
-          body: JSON.stringify({ user_id }),
-          // mode: 'cors'
-        });
-        const result = await res.json();
-        if (result.status === 'success') {
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: 'Deleted successfully!',
-            showConfirmButton: false,
-            timer: 2000,
-            background: '#232b3e',
-            color: '#fff',
-          });
-          setRequests(prev => prev.filter(r => r.request_id !== id));
-        } else {
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'error',
-            title: result.message || 'Delete failed!',
-            showConfirmButton: false,
-            timer: 2000,
-            background: '#232b3e',
-            color: '#fff',
-          });
-        }
-      } catch (err) {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'error',
-          title: 'Network error!',
-          showConfirmButton: false,
-          timer: 2000,
-          background: '#232b3e',
-          color: '#fff',
-        });
-      }
-      setDeleting(null);
-    }
-  };
 
   return (
     <div className="dark text-white p-8 max-w-7xl mx-auto">
@@ -119,12 +52,12 @@ const AssistanceTracking = () => {
           <h2 className="text-2xl font-bold mb-2">Assistance Tracking</h2>
           <p className="text-gray-400">Log and manage assistance provided to PWDS</p>
         </div>
-        {/* <button
-          onClick={() => navigate('/admin-dashboard/log-assistance')}
+        <button
+          onClick={() => navigate('/officer-dashboard/log-assistance')}
           className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition duration-200 ease-in-out transform hover:scale-105"
         >
           + Log New Assistance
-        </button> */}
+        </button>
       </div>
 
       <div className="bg-gray-800 rounded-lg overflow-hidden shadow-xl">
@@ -149,29 +82,24 @@ const AssistanceTracking = () => {
                   <td className="p-4 font-medium">{new Date(req.created_at).toLocaleDateString() || 'N/A'}</td>
                   <td className="p-4 font-medium">{req.assistance_type_name || 'N/A'}</td>
                   <td className="p-4 font-medium">{req.beneficiary_name || 'N/A'}</td>
-                  <td className="p-4 font-medium">{req.status || 'pending'}</td>
+                  <td className="p-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        req.status === 'assessed' 
+                          ? 'bg-green-600 text-green-100' 
+                          : 'bg-gray-600 text-gray-100'
+                      }`}
+                    >
+                      {req.status}
+                    </span>
+                  </td>
                   <td className="p-4 flex gap-2">
                     <button
-                      onClick={() => req.request_id && navigate(`/admin-dashboard/view-assistance/${req.request_id}`)}
+                      onClick={() => navigate(`/officer-dashboard/view-assistance/${req.request_id}`)}
                       className="text-white hover:text-purple-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
                       title="View Details"
                     >
                       <FaEye />
-                    </button>
-                    <button
-                      onClick={() => req.request_id && navigate(`/admin-dashboard/edit-assistance/${req.request_id}`)}
-                      className="text-white hover:text-blue-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
-                      title="Edit Request"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0l-10 10A2 2 0 004 15.414V18a1 1 0 001 1h2.586a2 2 0 001.414-.586l10-10a2 2 0 000-2.828l-2-2zM5 16v-1.586l10-10L16.586 6l-10 10H5zm2.586 1H5v-2.586l10-10L18.586 7l-10 10z" /></svg>
-                    </button>
-                    <button
-                      onClick={() => handleDelete(req.request_id)}
-                      className="text-white hover:text-red-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
-                      title="Delete Request"
-                      disabled={deleting === req.request_id}
-                    >
-                      <FaTimes />
                     </button>
                   </td>
                 </tr>

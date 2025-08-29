@@ -12,9 +12,11 @@ const navItems = [
   { label: 'Dashboard', path: '/admin-dashboard', icon: RiDashboardLine },
   { label: 'Register PWD', path: '/admin-dashboard/register-pwd', icon: RiUserAddLine },
   { label: 'PWD Records', path: '/admin-dashboard/records', icon: RiFileListLine },
+  { label: 'Request Assistance', path: '/admin-dashboard/request-assistance', icon: RiFileWarningLine },
   { label: 'Assistance Tracking', path: '/admin-dashboard/assistance-tracking', icon: RiFileWarningLine },
-  { label: 'Reports', path: '/admin-dashboard/reports', icon: SiSimpleanalytics }, 
+  { label: 'Reports', path: '/admin-dashboard/reports', icon: SiSimpleanalytics },
   { label: 'User Management', path: '/admin-dashboard/user-management', icon: RiUserSettingsLine },
+  { label: 'Settings', path: '/admin-dashboard/settings', icon: RiUserSettingsLine },
   { label: 'Profile', path: '/admin-dashboard/profile', icon: RiUserLine },
 ]
 
@@ -30,13 +32,18 @@ const AdminDashboardLayout = () => {
     }
   }, []);
 
+  const handleLogout = () => {
+  localStorage.removeItem("dms_user");
+  window.location.href = "/admin";
+};
+
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900 overflow-hidden text-sm">
       {/* Sidebar */}
       <aside className={`fixed md:relative z-30 h-full w-64 bg-[#151c2c] dark:bg-[#101624] flex flex-col justify-between py-6 px-4 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}>
         <div className="flex-1">
-          <div className="text-white tracking-widest text-lg font-bold mb-8">DMS</div>
-          <nav className="flex flex-col gap-2">
+          <div className="text-white tracking-widest text-lg font-bold mb-5">DMS</div>
+          <nav className="flex flex-col gap-1">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
               return (
@@ -54,11 +61,11 @@ const AdminDashboardLayout = () => {
           </nav>
         </div>
 
-        <div className="border-t border-gray-700 pt-4">
-          <div className="text-xs text-gray-400 px-4 mb-3">Administrator</div>
+        <div className="border-t border-gray-700 mt-4 pt-3">
+          <div className="text-xs text-gray-400 px-4 mb-2">Administrator</div>
           <button
-            onClick={() => navigate('/logout')}
-            className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-lg text-sm text-gray-300 hover:bg-[#232b3e] dark:hover:bg-[#1a2233] hover:text-white transition-colors duration-200"
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full text-left px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-[#232b3e] dark:hover:bg-[#1a2233] hover:text-white transition-colors duration-200"
           >
             <RiLogoutBoxLine className="w-5 h-5 flex-shrink-0" />
             <span>Sign Out</span>

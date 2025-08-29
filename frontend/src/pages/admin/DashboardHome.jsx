@@ -1,18 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import dashboardData from '../../data/adminDashboardData.json';
 
 const DashboardHome = () => {
-  const [data, setData] = useState(dashboardData);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Simulate API call - replace with actual API call later
+  const user = JSON.parse(localStorage.getItem('dms_user'));
+
   useEffect(() => {
-    // This would be replaced with actual API call
-    // fetch('/api/admin-dashboard')
-    //   .then(response => response.json())
-    //   .then(data => setData(data))
-    //   .catch(error => console.error('Error fetching dashboard data:', error));
-  }, []);
+    const fetchDashboardData = async () => {
+      try {
+        const response = await fetch('https://disability-management-api.onrender.com/v1/pwd-records/total', {
+          // headers: {
+          //   'Authorization': `Bearer ${user.token}`
+          // }
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch dashboard data');
+        }
+        const result = await response.json();
+        setDashboardData(result);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+        fetchDashboardData();
+    }
+  }, [user.token]);
 
   const getIconComponent = (iconName, color = "currentColor") => {
     const iconClasses = "w-6 h-6";
@@ -36,18 +55,6 @@ const DashboardHome = () => {
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
           </svg>
         );
-      case 'hand-heart':
-        return (
-          <svg className={iconClasses} fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558-.107 1.282.725 1.282m0 0c.61 0 1.029.574.944 1.109a5.514 5.514 0 0 1-2.446 3.986A4.998 4.998 0 0 0 9.75 15.75c0 .195-.022.39-.064.574a.75.75 0 0 1-1.486.235 6.5 6.5 0 0 1-1.5-4.5c0-3.314 2.686-6 6-6Z" />
-          </svg>
-        );
-      case 'graduation-cap':
-        return (
-          <svg className={iconClasses} fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
-          </svg>
-        );
       default:
         return null;
     }
@@ -61,10 +68,46 @@ const DashboardHome = () => {
         return 'bg-purple-500';
       case 'orange':
         return 'bg-orange-500';
-      case 'green':
-        return 'bg-green-500';
       default:
         return 'bg-gray-500';
+    }
+  };
+
+  if (loading) {
+    return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-white">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-red-500">Error: {error}</div>;
+  }
+
+  if (!dashboardData) {
+    return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-white">No dashboard data found.</div>;
+  }
+
+  const { total_pwd, current_quarter_additions, total_assessed_beneficiaries, current_period } = dashboardData;
+
+  const metrics = {
+    totalPwd: {
+      title: 'Total PWDs',
+      value: total_pwd,
+      description: `As of ${current_period.quarter} ${current_period.year}`,
+      icon: 'users',
+      color: 'blue'
+    },
+    quarterlyAdditions: {
+      title: 'Quarterly Additions',
+      value: current_quarter_additions,
+      description: 'New PWDs this quarter',
+      icon: 'user-plus',
+      color: 'purple'
+    },
+    assessedBeneficiaries: {
+      title: 'Assessed Beneficiaries',
+      value: total_assessed_beneficiaries,
+      description: 'Beneficiaries assessed for support',
+      icon: 'heart',
+      color: 'orange'
     }
   };
 
@@ -73,7 +116,7 @@ const DashboardHome = () => {
       {/* Welcome Section */}
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          Welcome back, {data.adminInfo.name}!
+          Welcome back, {user.username}!
         </h1>
         <p className="text-gray-600 dark:text-gray-300">
           Here's an overview of your services and requests. We're here to support you every step of the way.
@@ -82,7 +125,7 @@ const DashboardHome = () => {
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-        {Object.entries(data.metrics).map(([key, metric]) => (
+        {Object.entries(metrics).map(([key, metric]) => (
           <div key={key} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm md:flex md:flex-row md:justify-between">
             <div className="flex items-center justify-between mb-4 md:mb-0 md:order-2 md:-mt-10">
               <div className={`p-3 rounded-lg ${getColorClasses(metric.color)}`}>
@@ -106,35 +149,6 @@ const DashboardHome = () => {
 
       {/* Bottom Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Activities */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Recent Activities
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                Latest system activities
-              </p>
-            </div>
-          </div>
-          <div className="space-y-4">
-            {data.recentActivities.map((activity) => (
-              <div key={activity.id} className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${getColorClasses(activity.color)}`}></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {activity.activity}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {activity.time}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Quick Actions */}
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
@@ -148,25 +162,38 @@ const DashboardHome = () => {
             </div>
           </div>
           <div className="space-y-3">
-            {data.quickActions.map((action) => (
-              <Link
-                key={action.id}
-                to={action.link}
+            <Link
+                to="register-pwd"
                 className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700">
-                  {getIconComponent(action.icon)}
+                  {getIconComponent('user-plus')}
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {action.title}
+                    Register a new PWD
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {action.description}
+                    Add a new person with disability to the records
                   </p>
                 </div>
               </Link>
-            ))}
+              <Link
+                to="records"
+                className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700">
+                  {getIconComponent('users')}
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    View PWD Records
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Browse and manage all PWD records
+                  </p>
+                </div>
+              </Link>
           </div>
         </div>
       </div>
@@ -174,4 +201,4 @@ const DashboardHome = () => {
   );
 };
 
-export default DashboardHome; 
+export default DashboardHome;

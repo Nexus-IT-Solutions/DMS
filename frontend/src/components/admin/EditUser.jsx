@@ -3,28 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-const mockUserData = {
-  1: {
-    username: 'System Administrator',
-    email: 'admin@dms.gov.gh', 
-    role: 'ADMIN',
-  },
-  2: {
-    username: 'Data Entry Officer',
-    email: 'data@dms.gov.gh',
-    role: 'DATA ENTRY OFFICER',
-  },
-  3: {
-    username: 'Assistance Coordinator', 
-    email: 'coordinator@dms.gov.gh',
-    role: 'ASSISTANCE OFFICER',
-  },
-  4: {
-    username: 'Report Viewer',
-    email: 'viewer@dms.gov.gh',
-    role: 'VIEWER',
-  },
-};
 
 const EditUser = () => {
   const { id } = useParams();
@@ -33,12 +11,39 @@ const EditUser = () => {
     username: '',
     email: '',
     role: '',
+    profile_image: '',
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (mockUserData[id]) {
-      setFormData(mockUserData[id]);
-    }
+    setLoading(true);
+    fetch(`https://disability-management-api.onrender.com/v1/users/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        setLoading(false);
+        if (data.status === 'success') {
+          setFormData({
+            username: data.user.username,
+            email: data.user.email,
+            role: data.user.role,
+            profile_image: data.user.profile_image || '',
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.message || 'Failed to load user info.',
+          });
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Could not load user info.',
+        });
+      });
   }, [id]);
 
   const handleChange = (e) => {
@@ -47,11 +52,37 @@ const EditUser = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    Swal.fire({
-      icon: 'success',
-      title: 'User Updated',
-      text: `${formData.username}'s info has been updated.`,
-    }).then(() => navigate('/admin-dashboard/user-management'));
+    setLoading(true);
+    fetch(`https://disability-management-api.onrender.com/v1/users/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    })
+      .then(res => res.json())
+      .then(result => {
+        setLoading(false);
+        if (result.status === 'success') {
+          Swal.fire({
+            icon: 'success',
+            title: 'User Updated',
+            text: `${formData.username}'s info has been updated.`,
+          }).then(() => navigate('/admin-dashboard/user-management'));
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: result.message || 'Failed to update user.',
+          });
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Could not update user.',
+        });
+      });
   };
 
   return (
@@ -108,18 +139,19 @@ const EditUser = () => {
                   required
                 >
                   <option value="">Select Role</option>
-                  <option value="ADMIN">ADMIN</option>
-                  <option value="DATA ENTRY OFFICER">DATA ENTRY OFFICER</option>
-                  <option value="ASSISTANCE OFFICER">ASSISTANCE OFFICER</option>
-                  <option value="VIEWER">VIEWER</option>
+                  <option value="admin">ADMIN</option>
+                  <option value="officer">DATA ENTRY OFFICER</option>
+                  {/* <option value="ASSISTANCE OFFICER">ASSISTANCE OFFICER</option>
+                  <option value="VIEWER">VIEWER</option> */}
                 </select>
               </div>
 
               <button
                 type="submit"
                 className="w-full bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-500 focus:ring-opacity-50 text-white font-medium py-3 px-4 rounded-lg transition duration-200 transform hover:scale-[1.02]"
+                disabled={loading}
               >
-                Update User
+                {loading ? 'Saving...' : 'Update User'}
               </button>
             </form>
           </div>

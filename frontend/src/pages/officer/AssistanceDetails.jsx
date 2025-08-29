@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import { IoIosArrowBack } from 'react-icons/io';
 
 const AssistanceDetails = () => {
@@ -32,64 +31,8 @@ const AssistanceDetails = () => {
       }
     };
 
-    if (user && user.token) {
-        fetchAssistanceDetails();
-    }
+    fetchAssistanceDetails();
   }, [id, user.token]);
-
-  const handleStatusUpdate = async (status, admin_notes) => {
-    try {
-      const response = await fetch(`https://disability-management-api.onrender.com/v1/assistance-requests/${id}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.token}`
-        },
-        body: JSON.stringify({ status, admin_notes, user_id: user.user_id })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to update status to ${status}`);
-      }
-
-      const result = await response.json();
-
-      Swal.fire({
-        icon: 'success',
-        title: `Assessment ${status}`,
-        text: `The assessment has been successfully updated to ${status}`,
-      });
-
-      setAssistanceDetails(result.data);
-
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: error.message,
-      });
-    }
-  };
-
-  const openStatusModal = (status) => {
-    Swal.fire({
-      title: `Add a note for changing status to "${status}"`,
-      input: 'textarea',
-      inputPlaceholder: 'Enter your notes here...',
-      showCancelButton: true,
-      confirmButtonText: 'Update Status',
-      customClass: {
-        popup: 'bg-white rounded-lg',
-        title: 'text-gray-900',
-        input: 'swal2-input',
-      },
-      background: 'rgba(0,0,0,0)'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handleStatusUpdate(status, result.value);
-      }
-    });
-  }
 
   if (loading) {
     return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-white">Loading...</div>;
@@ -187,15 +130,6 @@ const AssistanceDetails = () => {
               )}
             </div>
           </div>
-
-          <div className="flex flex-wrap gap-4 justify-end">
-            <button onClick={() => openStatusModal('pending')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">Set to Pending</button>
-            <button onClick={() => openStatusModal('review')} className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">Set to Review</button>
-            <button onClick={() => openStatusModal('ready_to_access')} className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors">Set to Ready to Access</button>
-            <button onClick={() => openStatusModal('assessed')} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">Set to Assessed</button>
-            <button onClick={() => open_status_modal('declined')} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">Set to Declined</button>
-          </div>
-
         </div>
       </div>
     </div>
@@ -203,3 +137,4 @@ const AssistanceDetails = () => {
 };
 
 export default AssistanceDetails;
+

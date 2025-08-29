@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import Swal from 'sweetalert2';
 import { DarkModeContext } from '../../components/ThemedContext';
 
 const AdminLogin = () => {
@@ -6,12 +7,65 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { isDark, toggleDarkMode } = useContext(DarkModeContext);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     if (!acceptTerms) return;
-    // Add login logic here
+    setLoading(true);
+    try {
+      const res = await fetch('https://disability-management-api.onrender.com/v1/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const result = await res.json();
+      if (result.status === 'success' && result.user) {
+        localStorage.setItem('dms_user', JSON.stringify(result.user));
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: result.message || 'Login successful',
+          showConfirmButton: false,
+          timer: 2000,
+          background: '#232b3e',
+          color: '#fff',
+        });
+        setLoading(false);
+        setTimeout(() => {
+          window.location.href = '/admin-dashboard';
+        }, 1200);
+      } else {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: result.message || 'Login failed',
+          showConfirmButton: false,
+          timer: 2000,
+          background: '#232b3e',
+          color: '#fff',
+        });
+        setError(result.message || 'Login failed');
+      }
+    } catch (err) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Network error',
+        showConfirmButton: false,
+        timer: 2000,
+        background: '#232b3e',
+        color: '#fff',
+      });
+      setError('Network error');
+    }
+    setLoading(false);
   };
 
   return (
@@ -117,12 +171,13 @@ const AdminLogin = () => {
                 I agree to the <a href="#" className="underline text-teal-600 dark:text-teal-400">Terms and Conditions</a>
               </label>
             </div>
+            {/* {error && <div className="text-red-500 text-center text-sm">{error}</div>} */}
             <button
               type="submit"
-              className="w-full py-2 px-4 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
-              disabled={!acceptTerms}
+              className={`w-full py-2 px-4 font-semibold rounded-lg shadow-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-teal-600 hover:bg-teal-700 text-white'}`}
+              disabled={loading || !acceptTerms}
             >
-              Sign In
+              {loading ? 'Logging in...' : 'Sign In'}
             </button>
           </form>
         </div>

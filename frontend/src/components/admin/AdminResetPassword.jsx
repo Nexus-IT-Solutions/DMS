@@ -1,13 +1,18 @@
 
 // AdminResetPassword.js
 import { useState } from 'react';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 const AdminResetPassword = () => {
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    username: '',
     newPassword: '',
     confirmPassword: ''
   });
+  
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -16,27 +21,45 @@ const AdminResetPassword = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+    if (e.target.name === 'otp') {
+      localStorage.setItem('reset_otp', e.target.value);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setMessage('');
-
     if (formData.newPassword !== formData.confirmPassword) {
-      setMessage('Passwords do not match');
-      setLoading(false);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Passwords do not match' });
       return;
     }
-
-    try {
-      // API call would go here
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated API call
-      setMessage('Password reset successful');
-    } catch (error) {
-      setMessage('Error resetting password');
+    const otp = localStorage.getItem('reset_otp');
+    if (!otp) {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'OTP not found. Please request a new one.' });
+      return;
     }
-    setLoading(false);
+    setLoading(true);
+    try {
+      const res = await fetch('https://disability-management-api.onrender.com/v1/users/password/reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          otp,
+          new_password: formData.newPassword
+        })
+      });
+      const result = await res.json();
+      if (result.status === 'success') {
+        Swal.fire({ icon: 'success', title: 'Success', text: result.message || 'Password reset successful' });
+        setTimeout(() => navigate('/admin'), 1500);
+      } else {
+        Swal.fire({ icon: 'error', title: 'Error', text: result.message || 'Error resetting password' });
+      }
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Error resetting password' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,27 +73,11 @@ const AdminResetPassword = () => {
             Enter your username and new password below
           </p>
         </div>
-
+        {/* <form className="mt-8 space-y-6" onSubmit={handleSubmit}> */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Username
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 transition duration-150 ease-in-out"
-                placeholder="Enter your username"
-                value={formData.username}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 mt-4">
                 New Password
               </label>
               <input
@@ -82,9 +89,9 @@ const AdminResetPassword = () => {
                 placeholder="Enter new password"
                 value={formData.newPassword}
                 onChange={handleChange}
+                disabled={loading}
               />
             </div>
-
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Confirm Password
@@ -98,21 +105,20 @@ const AdminResetPassword = () => {
                 placeholder="Confirm new password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
+                disabled={loading}
               />
             </div>
           </div>
-
           {message && (
             <div className={`text-sm text-center p-2 rounded-lg ${message.includes('Error') ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
               {message}
             </div>
           )}
-
           <div>
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition duration-150 ease-in-out transform hover:scale-[1.02]"
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2  transition duration-200 disabled:bg-gray-600 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center">
@@ -133,4 +139,4 @@ const AdminResetPassword = () => {
   );
 };
 
-export default AdminResetPassword;
+export default AdminResetPassword;  
