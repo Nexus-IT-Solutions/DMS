@@ -11,7 +11,7 @@ const DashboardHome = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch('https://disability-management-api.onrender.com/v1/pwd-records/total', {
+        const response = await fetch('http://app.dms-api.com/v1/pwd-records/total', {
           // headers: {
           //   'Authorization': `Bearer ${user.token}`
           // }

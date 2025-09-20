@@ -11,7 +11,7 @@ const AssistanceTracking = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch('https://disability-management-api.onrender.com/v1/assistance-requests')
+    fetch('http://app.dms-api.com/v1/assistance-requests')
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && data.data && Array.isArray(data.data)) {

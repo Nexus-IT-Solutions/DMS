@@ -46,21 +46,21 @@ const OfficerRegisterPWD = () => {
   ]);
 
   useEffect(() => {
-    fetch("https://disability-management-api.onrender.com/v1/communities")
+    fetch("http://app.dms-api.com/v1/communities")
       .then(res => res.json())
       .then(data => {
         if (data.status === "success" && data.data) {
           setCommunities(data.data);
         }
       });
-    fetch("https://disability-management-api.onrender.com/v1/assistance-types")
+    fetch("http://app.dms-api.com/v1/assistance-types")
       .then(res => res.json())
       .then(data => {
         if (data.status === "success" && data.data) {
           setAssistanceTypes(data.data);
         }
       });
-    fetch("https://disability-management-api.onrender.com/v1/disability-categories")
+    fetch("http://app.dms-api.com/v1/disability-categories")
       .then(res => res.json())
       .then(data => {
         if (data.status === "success" && data.data) {
@@ -71,7 +71,7 @@ const OfficerRegisterPWD = () => {
 
   useEffect(() => {
     if (formData.disabilityCategory) {
-      fetch(`https://disability-management-api.onrender.com/v1/disability-categories/${formData.disabilityCategory}/types`)
+      fetch(`http://app.dms-api.com/v1/disability-categories/${formData.disabilityCategory}/types`)
         .then(res => res.json())
         .then(data => {
           if (data.status === "success" && data.data) {
@@ -157,7 +157,7 @@ const OfficerRegisterPWD = () => {
       // profile_image and supporting_documents are omitted for JSON
     };
     try {
-      const response = await fetch("https://disability-management-api.onrender.com/v1/pwd-records", {
+      const response = await fetch("http://app.dms-api.com/v1/pwd-records", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
