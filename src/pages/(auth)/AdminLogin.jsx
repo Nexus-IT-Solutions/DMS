@@ -156,8 +156,7 @@ const AdminLogin = () => {
                 </button>
               </div>
               <div className="flex justify-end items-center mt-2">
-                <a href="/admin-forgot-password" className="text-sm text-teal-600 hover:underline dark:text-teal-400">Forgot password?</a>
-  <Link to="/admin-forgot-password" className="text-sm text-teal-600 hover:underline dark:text-teal-400">Forgot password?</Link>
+                
   <Link to="/admin-forgot-password" className="text-sm text-teal-600 hover:underline dark:text-teal-400">Forgot password?</Link>
               </div>
             </div>
@@ -171,8 +170,7 @@ const AdminLogin = () => {
                 className="accent-teal-600 w-4 h-4"
               />
               <label htmlFor="terms" className="text-sm text-gray-700 dark:text-gray-300 select-none">
-                I agree to the <a href="#" className="underline text-teal-600 dark:text-teal-400">Terms and Conditions</a>
-  I agree to the <Link to="#" className="underline text-teal-600 dark:text-teal-400">Terms and Conditions</Link>
+                
   I agree to the <Link to="#" className="underline text-teal-600 dark:text-teal-400">Terms and Conditions</Link>
               </label>
             </div>
