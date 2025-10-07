@@ -11,7 +11,7 @@ const OfficerDashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch('http://app.dms-api.com/v1/pwd-records/total');
+        const response = await fetch('https://app.dms-api.com/v1/pwd-records/total');
         if (!response.ok) {
           throw new Error('Failed to fetch dashboard data');
         }

@@ -15,7 +15,7 @@ export default function PWDDetails() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://app.dms-api.com/v1/pwd-records/${id}`)
+    fetch(`https://app.dms-api.com/v1/pwd-records/${id}`)
       .then(res => res.json())
       .then(result => {
         if (result.status === "success" && result.data) {
@@ -28,7 +28,7 @@ export default function PWDDetails() {
 
   useEffect(() => {
     setAssistLoading(true);
-    fetch(`http://app.dms-api.com/v1/assistance-requests/${id}`)
+    fetch(`https://app.dms-api.com/v1/assistance-requests/${id}`)
       .then(res => res.json())
       .then(result => {
         if (result.status === "success" && result.data) {
@@ -76,7 +76,7 @@ export default function PWDDetails() {
                 <div className="mt-4">
                   <h3 className="text-lg font-bold mb-2">Profile Image</h3>
                   <img
-                    src={record.profile_image ? `http://app.dms-api.com${record.profile_image}` : "/default-avatar.png"}
+                    src={record.profile_image ? `https://app.dms-api.com${record.profile_image}` : "/default-avatar.png"}
                     alt="Profile"
                     className="w-32 h-32 rounded-full object-cover"
                   />

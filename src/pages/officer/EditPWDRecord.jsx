@@ -11,7 +11,7 @@ export default function EditPWDRecord() {
   const token = user?.token;
 
   useEffect(() => {
-    fetch(`http://app.dms-api.com/v1/pwd-records/${id}`, {
+    fetch(`https://app.dms-api.com/v1/pwd-records/${id}`, {
       // headers: token ? { Authorization: `Bearer ${token}` } : {},
       // credentials: "include",
     })
@@ -29,7 +29,7 @@ export default function EditPWDRecord() {
     setLoading(true);
     const user = JSON.parse(localStorage.getItem("dms_user"));
     const user_id = user?.user_id;
-    const res = await fetch(`http://app.dms-api.com/v1/pwd-records/${id}`, {
+    const res = await fetch(`https://app.dms-api.com/v1/pwd-records/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

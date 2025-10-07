@@ -9,7 +9,7 @@ export default function UserManagement() {
 
   useEffect(() => {
     setLoading(true);
-    fetch('http://app.dms-api.com/v1/users', {
+    fetch('https://app.dms-api.com/v1/users', {
       method: "GET",
       headers: { 'Content-Type': 'application/json' }
     })
@@ -35,7 +35,7 @@ export default function UserManagement() {
     });
     if (confirmed.isConfirmed) {
       try {
-        const res = await fetch(`http://app.dms-api.com/v1/users/${id}`, { method: 'DELETE' });
+        const res = await fetch(`https://app.dms-api.com/v1/users/${id}`, { method: 'DELETE' });
         const result = await res.json();
         if (result.status === 'success') {
           setUsers(users.filter(user => user.user_id !== id));

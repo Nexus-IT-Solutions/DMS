@@ -15,7 +15,7 @@ const AssistanceDetails = () => {
   useEffect(() => {
     const fetchAssistanceDetails = async () => {
       try {
-        const response = await fetch(`http://app.dms-api.com/v1/assistance-requests/${id}`, {
+        const response = await fetch(`https://app.dms-api.com/v1/assistance-requests/${id}`, {
           headers: {
             'Authorization': `Bearer ${user.token}`
           }
@@ -39,7 +39,7 @@ const AssistanceDetails = () => {
 
   const handleStatusUpdate = async (status, admin_notes) => {
     try {
-      const response = await fetch(`http://app.dms-api.com/v1/assistance-requests/${id}/status`, {
+      const response = await fetch(`https://app.dms-api.com/v1/assistance-requests/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

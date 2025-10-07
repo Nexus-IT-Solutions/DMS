@@ -10,7 +10,7 @@ const ViewAssistance = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://app.dms-api.com/v1/assistance-requests/${id}`)
+    fetch(`https://app.dms-api.com/v1/assistance-requests/${id}`)
       .then(res => res.json())
       .then(result => {
         if (result.status === 'success') {

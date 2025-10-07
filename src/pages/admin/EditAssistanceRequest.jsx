@@ -22,7 +22,7 @@ const EditAssistanceRequest = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://app.dms-api.com/v1/assistance-requests/${id}`)
+    fetch(`https://app.dms-api.com/v1/assistance-requests/${id}`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && data.data) {
@@ -36,7 +36,7 @@ const EditAssistanceRequest = () => {
   const handleStatusUpdate = async (status, admin_notes) => {
     setUpdating(true);
     try {
-      const res = await fetch(`http://app.dms-api.com/v1/assistance-requests/${id}/status`, {
+      const res = await fetch(`https://app.dms-api.com/v1/assistance-requests/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status, admin_notes, user_id }),

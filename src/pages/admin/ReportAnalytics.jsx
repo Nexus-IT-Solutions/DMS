@@ -46,7 +46,7 @@ const ReportsAnalytics = () => {
   useEffect(() => {
     setLoading(true);
     // Fetch quarterly statistics
-    fetch('http://app.dms-api.com/v1/statistics')
+    fetch('https://app.dms-api.com/v1/statistics')
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && Array.isArray(data.data)) {
@@ -63,7 +63,7 @@ const ReportsAnalytics = () => {
       })
       .catch(() => setLoading(false));
     // Fetch assistance distribution
-    fetch('http://app.dms-api.com/v1/assistance-types/distribution')
+    fetch('https://app.dms-api.com/v1/assistance-types/distribution')
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && Array.isArray(data.data)) {
@@ -78,19 +78,19 @@ const ReportsAnalytics = () => {
     let endpoint = '';
     switch (type) {
       case 'Quarterly Registration Report':
-        endpoint = 'http://app.dms-api.com/v1/quarterly-statistics/report';
+        endpoint = 'https://app.dms-api.com/v1/quarterly-statistics/report';
         break;
       case 'Assistance Distribution Report':
-        endpoint = 'http://app.dms-api.com/v1/assistance-types/report';
+        endpoint = 'https://app.dms-api.com/v1/assistance-types/report';
         break;
       case 'Community-based Beneficiary Report':
-        endpoint = 'http://app.dms-api.com/v1/communities/report';
+        endpoint = 'https://app.dms-api.com/v1/communities/report';
         break;
       case 'Demographics Summary':
-        endpoint = 'http://app.dms-api.com/v1/pwd-records/demographics';
+        endpoint = 'https://app.dms-api.com/v1/pwd-records/demographics';
         break;
       case 'Annual Registration Report':
-        endpoint = 'http://app.dms-api.com/v1/statistics/current-year';
+        endpoint = 'https://app.dms-api.com/v1/statistics/current-year';
         break;
       default:
         endpoint = '';

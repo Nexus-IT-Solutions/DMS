@@ -35,7 +35,7 @@ const AddUser = () => {
       role: formData.role,
       profile_image: formData.profile_image // Optional, string path/URL
     };
-    fetch('http://app.dms-api.com/v1/users', {
+    fetch('https://app.dms-api.com/v1/users', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
