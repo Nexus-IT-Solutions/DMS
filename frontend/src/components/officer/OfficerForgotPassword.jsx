@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import React, { useState, useContext } from 'react';
 import Swal from 'sweetalert2';
 import { DarkModeContext } from '../ThemedContext';
@@ -63,6 +64,8 @@ const OfficerForgotPassword = () => {
   {/* SweetAlert handles notifications */}
         <div className="mt-6 text-center">
           <a href="/" className="text-teal-600 dark:text-teal-400 hover:underline">Back to Login</a>
+          <Link to="/" className="text-teal-600 dark:text-teal-400 hover:underline">Back to Login</Link>
+          <Link to="/" className="text-teal-600 dark:text-teal-400 hover:underline">Back to Login</Link>
         </div>
       </div>
     </div>

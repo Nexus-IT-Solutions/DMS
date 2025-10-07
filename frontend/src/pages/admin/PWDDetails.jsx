@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useParams, useNavigate } from "react-router-dom";
 import { Eye, Check, X } from "lucide-react";
 import Swal from "sweetalert2";
@@ -115,15 +116,15 @@ export default function PWDDetails() {
                   {record.documents.map((doc, index) => (
                     <div key={index} className="flex items-center justify-between p-2 bg-gray-700 rounded">
                       <span>{doc.name}</span>
-                      <a 
-                        href={doc.url}
+                      <Link
+                        to={doc.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center text-blue-400 hover:text-blue-300"
                       >
                         <Eye className="w-4 h-4 mr-1" />
                         View
-                      </a>
+                      </Link>
                     </div>
                   ))}
                 </div>

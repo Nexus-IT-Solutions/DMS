@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import React, { useState, useContext } from 'react';
 import Swal from 'sweetalert2';
 import { DarkModeContext } from '../../components/ThemedContext';
@@ -156,6 +157,8 @@ const AdminLogin = () => {
               </div>
               <div className="flex justify-end items-center mt-2">
                 <a href="/admin-forgot-password" className="text-sm text-teal-600 hover:underline dark:text-teal-400">Forgot password?</a>
+  <Link to="/admin-forgot-password" className="text-sm text-teal-600 hover:underline dark:text-teal-400">Forgot password?</Link>
+  <Link to="/admin-forgot-password" className="text-sm text-teal-600 hover:underline dark:text-teal-400">Forgot password?</Link>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -169,6 +172,8 @@ const AdminLogin = () => {
               />
               <label htmlFor="terms" className="text-sm text-gray-700 dark:text-gray-300 select-none">
                 I agree to the <a href="#" className="underline text-teal-600 dark:text-teal-400">Terms and Conditions</a>
+  I agree to the <Link to="#" className="underline text-teal-600 dark:text-teal-400">Terms and Conditions</Link>
+  I agree to the <Link to="#" className="underline text-teal-600 dark:text-teal-400">Terms and Conditions</Link>
               </label>
             </div>
             {/* {error && <div className="text-red-500 text-center text-sm">{error}</div>} */}
