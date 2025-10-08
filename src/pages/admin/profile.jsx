@@ -72,7 +72,7 @@ export default function Profile() {
         role: 'admin',
         profile_image: avatar,
       };
-      const response = await fetch(`https://app.dms-api.com/v1/users/${user.user_id}`, {
+      const response = await fetch(`https://disability-management-api.onrender.com/v1/users/${user.user_id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

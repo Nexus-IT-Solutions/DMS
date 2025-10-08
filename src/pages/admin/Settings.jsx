@@ -31,14 +31,14 @@ const Settings = () => {
       let url = '';
       switch (activeTab) {
         case 'communities':
-          url = 'https://app.dms-api.com/v1/communities';
+          url = 'https://disability-management-api.onrender.com/v1/communities';
           break;
         case 'category':
-          url = 'https://app.dms-api.com/v1/disability-categories';
+          url = 'https://disability-management-api.onrender.com/v1/disability-categories';
           break;
         case 'type':
           if (selectedCategory) {
-            url = `https://app.dms-api.com/v1/disability-types/category/${selectedCategory}`;
+            url = `https://disability-management-api.onrender.com/v1/disability-types/category/${selectedCategory}`;
           } else {
             setData(prev => ({ ...prev, type: [] }));
             setLoading(false);
@@ -46,7 +46,7 @@ const Settings = () => {
           }
           break;
         case 'assistance':
-          url = 'https://app.dms-api.com/v1/assistance-types';
+          url = 'https://disability-management-api.onrender.com/v1/assistance-types';
           break;
         case 'gender':
           setData(prev => ({
@@ -80,11 +80,11 @@ const Settings = () => {
     let body = {};
     switch (tabKey) {
       case 'communities':
-        url = 'https://app.dms-api.com/v1/communities';
+        url = 'https://disability-management-api.onrender.com/v1/communities';
         body = { community_name: value };
         break;
       case 'category':
-        url = 'https://app.dms-api.com/v1/disability-categories';
+        url = 'https://disability-management-api.onrender.com/v1/disability-categories';
         body = { category_name: value };
         break;
       case 'type':
@@ -97,11 +97,11 @@ const Settings = () => {
           setIsAdding(false);
           return;
         }
-        url = 'https://app.dms-api.com/v1/disability-types';
+        url = 'https://disability-management-api.onrender.com/v1/disability-types';
         body = { category_id: Number(selectedCategory), type_name: value };
         break;
       case 'assistance':
-        url = 'https://app.dms-api.com/v1/assistance-types';
+        url = 'https://disability-management-api.onrender.com/v1/assistance-types';
         body = { assistance_type_name: value };
         break;
       default:
@@ -152,18 +152,18 @@ const Settings = () => {
     let body = {};
     const id = editItem.id || editItem.type_id;
     if (activeTab === 'type') {
-      url = `https://app.dms-api.com/v1/disability-types/${id}`;
+      url = `https://disability-management-api.onrender.com/v1/disability-types/${id}`;
       body = {};
       if (newCategoryId) body.category_id = Number(newCategoryId);
       if (newValue) body.type_name = newValue;
     } else if (activeTab === 'communities') {
-      url = `https://app.dms-api.com/v1/communities/${editItem.community_id || editItem.id}`;
+      url = `https://disability-management-api.onrender.com/v1/communities/${editItem.community_id || editItem.id}`;
       body = { community_name: newValue };
     } else if (activeTab === 'category') {
-      url = `https://app.dms-api.com/v1/disability-categories/${editItem.category_id || editItem.id}`;
+      url = `https://disability-management-api.onrender.com/v1/disability-categories/${editItem.category_id || editItem.id}`;
       body = { category_name: newValue };
     } else if (activeTab === 'assistance') {
-      url = `https://app.dms-api.com/v1/assistance-types/${editItem.assistance_type_id || editItem.id}`;
+      url = `https://disability-management-api.onrender.com/v1/assistance-types/${editItem.assistance_type_id || editItem.id}`;
       body = { assistance_type_name: newValue };
     }
     if (url) {
@@ -231,16 +231,16 @@ const Settings = () => {
       let id = item.id || item.community_id || item.category_id || item.type_id || item.assistance_type_id;
       switch (activeTab) {
         case 'communities':
-          url = `https://app.dms-api.com/v1/communities/${id}`;
+          url = `https://disability-management-api.onrender.com/v1/communities/${id}`;
           break;
         case 'category':
-          url = `https://app.dms-api.com/v1/disability-categories/${id}`;
+          url = `https://disability-management-api.onrender.com/v1/disability-categories/${id}`;
           break;
         case 'type':
-          url = `https://app.dms-api.com/v1/disability-categories/${selectedCategory}/types/${id}`;
+          url = `https://disability-management-api.onrender.com/v1/disability-categories/${selectedCategory}/types/${id}`;
           break;
         case 'assistance':
-          url = `https://app.dms-api.com/v1/assistance-types/${id}`;
+          url = `https://disability-management-api.onrender.com/v1/assistance-types/${id}`;
           break;
         default:
           return;

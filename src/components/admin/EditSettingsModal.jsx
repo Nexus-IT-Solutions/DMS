@@ -15,19 +15,19 @@ const EditSettingsModal = ({ tabKey, item, onClose, onSave }) => {
     let id = item.id || item.community_id || item.category_id || item.type_id || item.assistance_type_id;
     switch (tabKey) {
       case 'communities':
-        url = `https://app.dms-api.com/v1/communities/${id}`;
+        url = `https://disability-management-api.onrender.com/v1/communities/${id}`;
         body = { community_name: value };
         break;
       case 'category':
-        url = `https://app.dms-api.com/v1/disability-categories/${id}`;
+        url = `https://disability-management-api.onrender.com/v1/disability-categories/${id}`;
         body = { category_name: value };
         break;
       case 'type':
-        url = `https://app.dms-api.com/v1/disability-types/${id}`;
+        url = `https://disability-management-api.onrender.com/v1/disability-types/${id}`;
         body = { type_name: value };
         break;
       case 'assistance':
-        url = `https://app.dms-api.com/v1/assistance-types/${id}`;
+        url = `https://disability-management-api.onrender.com/v1/assistance-types/${id}`;
         body = { assistance_type_name: value };
         break;
       default:

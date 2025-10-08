@@ -14,7 +14,7 @@ const AssistanceDetails = () => {
   useEffect(() => {
     const fetchAssistanceDetails = async () => {
       try {
-        const response = await fetch(`https://app.dms-api.com/v1/assistance-requests/${id}`, {
+        const response = await fetch(`https://disability-management-api.onrender.com/v1/assistance-requests/${id}`, {
           headers: {
             'Authorization': `Bearer ${user.token}`
           }
