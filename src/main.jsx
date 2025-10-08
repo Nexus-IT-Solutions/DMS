@@ -1,14 +1,13 @@
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx";
 import ProtectedOfficerRoute from "./components/ProtectedOfficerRoute.jsx";
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './index.css'
-import App from './App.jsx'
+import Login from './pages/Login.jsx'
 import RequestAssistance from "./pages/admin/RequestAssistance.jsx"
 import ViewAssistance from "./pages/admin/ViewAssistance.jsx"
 import OfficerRequestAssistance from "./pages/officer/RequestAssistance.jsx"
 import OfficerViewAssistance from "./pages/officer/ViewAssistance.jsx"
-import AdminLogin from "./pages/(auth)/AdminLogin.jsx"
 import Page404 from "./pages/PageNotFound.jsx"
 import { DarkModeProvider } from "./components/ThemedContext"
 import OfficerForgotPassword from "./components/officer/OfficerForgotPassword.jsx"
@@ -48,8 +47,10 @@ createRoot(document.getElementById('root')).render(
   <DarkModeProvider>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/admin" element={<Navigate to="/login" replace />} />
+        <Route path="/officer" element={<Navigate to="/login" replace />} />
         <Route path="/officer-forgot-password" element={<OfficerForgotPassword />} />
         <Route path="/admin-forgot-password" element={<AdminForgotPassword />} />
         <Route path="/officer-otp" element={<OfficerOtp />} />
