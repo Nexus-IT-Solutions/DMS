@@ -12,6 +12,8 @@ const LogAssistance = () => {
   const [beneficiaries, setBeneficiaries] = useState([]);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [beneficiarySearch, setBeneficiarySearch] = useState('');
+  const [showBeneficiaryResults, setShowBeneficiaryResults] = useState(false);
 
   useEffect(() => {
     fetch('https://disability-management-api.onrender.com/v1/assistance-types')
@@ -30,11 +32,41 @@ const LogAssistance = () => {
       });
   }, []);
 
-  // const beneficiaries = [
-  //   'Kwame Asante - GHA-123456789-0',
-  //   'Akosua Mensah - GHA-987654321-0', 
-  //   'Yaw Boateng - GHA-555777568-0',
-  // ];
+  const handleBeneficiarySelect = async (beneficiaryId) => {
+    setForm(f => ({ ...f, beneficiary: beneficiaryId }));
+    if (!beneficiaryId) {
+      setSelectedBeneficiary(null);
+      setForm(f => ({ ...f, gender: '', contact: '', quarter: '', disability_category: '', disability_type: '' }));
+      return;
+    }
+    try {
+      const res = await fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${beneficiaryId}`);
+      const data = await res.json();
+      if (data.status === 'success' && data.data) {
+        setSelectedBeneficiary(data.data);
+        setForm(f => ({
+          ...f,
+          gender: data.data.gender_name || '',
+          contact: data.data.contact || '',
+          quarter: data.data.quarter || '',
+          disability_category: data.data.disability_category || '',
+          disability_type: data.data.disability_type || ''
+        }));
+      } else {
+        setSelectedBeneficiary(null);
+        setForm(f => ({ ...f, gender: '', contact: '', quarter: '', disability_category: '', disability_type: '' }));
+      }
+    } catch {
+      setSelectedBeneficiary(null);
+      setForm(f => ({ ...f, gender: '', contact: '', quarter: '', disability_category: '', disability_type: '' }));
+    }
+  };
+
+  const filteredBeneficiaries = beneficiarySearch
+    ? beneficiaries.filter(b =>
+        b.full_name.toLowerCase().includes(beneficiarySearch.toLowerCase())
+      )
+    : [];
 
   return (
     <div className="dark text-white p-8 max-w-4xl mx-auto rounded-lg">
@@ -67,46 +99,43 @@ const LogAssistance = () => {
 
         <div className="bg-gray-800 p-6 rounded-lg">
           <label className="block mb-3 font-medium text-white">Beneficiary *</label>
-          <select
-            className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 text-white focus:border-gray-500 focus:ring-2 focus:ring-gray-500 transition-all"
-            value={form.beneficiary}
-            onChange={async e => {
-              const beneficiaryId = e.target.value;
-              setForm(f => ({ ...f, beneficiary: beneficiaryId }));
-              if (!beneficiaryId) {
-                setSelectedBeneficiary(null);
-                setForm(f => ({ ...f, gender: '', contact: '', quarter: '', disability_category: '', disability_type: '' }));
-                return;
-              }
-              try {
-                const res = await fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${beneficiaryId}`);
-                const data = await res.json();
-                if (data.status === 'success' && data.data) {
-                  setSelectedBeneficiary(data.data);
-                  setForm(f => ({
-                    ...f,
-                    gender: data.data.gender_name || '',
-                    contact: data.data.contact || '',
-                    quarter: data.data.quarter || '',
-                    disability_category: data.data.disability_category || '',
-                    disability_type: data.data.disability_type || ''
-                  }));
-                } else {
-                  setSelectedBeneficiary(null);
-                  setForm(f => ({ ...f, gender: '', contact: '', quarter: '', disability_category: '', disability_type: '' }));
+          <div className="relative">
+            <input
+              type="text"
+              className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 text-white focus:border-gray-500 focus:ring-2 focus:ring-gray-500 transition-all"
+              placeholder="Search beneficiary..."
+              value={beneficiarySearch}
+              onChange={e => {
+                setBeneficiarySearch(e.target.value);
+                setShowBeneficiaryResults(true);
+                if (!e.target.value) {
+                  handleBeneficiarySelect('');
                 }
-              } catch {
-                setSelectedBeneficiary(null);
-                setForm(f => ({ ...f, gender: '', contact: '', quarter: '', disability_category: '', disability_type: '' }));
-              }
-            }}
-            required
-          >
-            <option value="">Select beneficiary</option>
-            {beneficiaries.map(b => (
-              <option key={b.pwd_id || b.id} value={b.pwd_id || b.id}>{b.full_name}</option>
-            ))}
-          </select>
+              }}
+              onBlur={() => setTimeout(() => setShowBeneficiaryResults(false), 200)}
+            />
+            {showBeneficiaryResults && beneficiarySearch && (
+              <div className="absolute z-10 w-full mt-1 bg-gray-700 border border-gray-600 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                {filteredBeneficiaries.length > 0 ? (
+                  filteredBeneficiaries.map(b => (
+                    <div
+                      key={b.pwd_id || b.id}
+                      className="p-3 hover:bg-gray-600 cursor-pointer"
+                      onMouseDown={() => {
+                        setBeneficiarySearch(b.full_name);
+                        handleBeneficiarySelect(b.pwd_id || b.id);
+                        setShowBeneficiaryResults(false);
+                      }}
+                    >
+                      {b.full_name}
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-3 text-gray-400">No matching beneficiaries found.</div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Always show additional info fields */}

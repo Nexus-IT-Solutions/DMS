@@ -90,7 +90,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="records/edit/:id" element={<OfficerEditPWDRecord />} />
             <Route path="assistance-tracking" element={<OfficerAssistanceTracking />} />
             <Route path="request-assistance" element={<OfficerRequestAssistance />} />
-            <Route path="log-assistance" element={<OfficerLogAssistance />} />
+            <Route path="log-assistance" element={<LogAssistance />} />
             <Route path="view-assistance/:id" element={<OfficerViewAssistance />} />       
             <Route path="profile" element={<Profile />} />   
           </Route>

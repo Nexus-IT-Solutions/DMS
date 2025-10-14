@@ -71,12 +71,12 @@ const RequestAssistance = () => {
               ) : (
                 requests.map(req => (
                   <tr key={req.request_id}>
-                    <td>{req.beneficiary_name}</td>
-                    <td>{req.assistance_type_name}</td>
-                    <td>{req.amount_value_cost}</td>
-                    <td>{req.status}</td>
-                    <td>{new Date(req.created_at).toLocaleDateString()}</td>
-                    <td>
+                    <td className="py-3 px-2">{req.beneficiary_name}</td>
+                    <td className="py-3 px-2">{req.assistance_type_name}</td>
+                    <td className="py-3 px-2">{req.amount_value_cost}</td>
+                    <td className="py-3 px-2">{req.status}</td>
+                    <td className="py-3 px-2">{new Date(req.created_at).toLocaleDateString()}</td>
+                    <td className="py-3 px-2">
                       <button className="text-blue-400 hover:text-blue-600" onClick={() => req.request_id && navigate(`/admin-dashboard/view-assistance/${req.request_id}`)}><FaEye /></button>
                     </td>
                   </tr>
