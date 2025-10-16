@@ -133,38 +133,41 @@ const RegisterPWD = () => {
     e.preventDefault();
     setRegistering(true);
     const user = JSON.parse(localStorage.getItem('dms_user'));
-    const payload = {
-      quarter: formData.quarter ? formData.quarter : `Q${Math.ceil((new Date().getMonth() + 1) / 3)}`,
-      year: new Date().getFullYear().toString(),
-      gender_id: genders.find(g => g.id.toString() === formData.gender.toString())?.id?.toString() || '',
-      full_name: formData.fullName || '',
-      occupation: formData.occupation || '',
-      contact: formData.contact || '',
-      dob: formData.dateOfBirth || '',
-      age: formData.age ? formData.age.toString() : '',
-      disability_category_id: formData.disabilityCategory ? formData.disabilityCategory.toString() : '',
-      disability_type_id: formData.disabilityType ? formData.disabilityType.toString() : '',
-      gh_card_number: formData.ghCardNumber || '',
-      nhis_number: formData.nhisNumber || '',
-      community_id: formData.community ? formData.community.toString() : '',
-      guardian_name: formData.guardianName || '',
-      guardian_occupation: formData.guardianOccupation || '',
-      guardian_phone: formData.guardianPhone || '',
-      guardian_relationship: formData.guardian_relationship || '',
-      education_level: formData.educationLevel || '',
-      school_name: formData.schoolName || '',
-      assistance_type_needed_id: formData.assistanceNeeded ? formData.assistanceNeeded.toString() : '',
-      support_needs: formData.assistanceNeeded || '',
-      user_id: user?.user_id ? user.user_id.toString() : '',
-      // profile_image and supporting_documents are omitted for JSON
-    };
+    const payload = new FormData();
+    payload.append('quarter', formData.quarter ? formData.quarter : `Q${Math.ceil((new Date().getMonth() + 1) / 3)}`);
+    payload.append('year', new Date().getFullYear().toString());
+    payload.append('gender_id', genders.find(g => g.id.toString() === formData.gender.toString())?.id?.toString() || '');
+    payload.append('full_name', formData.fullName || '');
+    payload.append('occupation', formData.occupation || '');
+    payload.append('contact', formData.contact || '');
+    payload.append('dob', formData.dateOfBirth || '');
+    payload.append('age', formData.age ? formData.age.toString() : '');
+    payload.append('disability_category_id', formData.disabilityCategory ? formData.disabilityCategory.toString() : '');
+    payload.append('disability_type_id', formData.disabilityType ? formData.disabilityType.toString() : '');
+    payload.append('gh_card_number', formData.ghCardNumber || '');
+    payload.append('nhis_number', formData.nhisNumber || '');
+    payload.append('community_id', formData.community ? formData.community.toString() : '');
+    payload.append('guardian_name', formData.guardianName || '');
+    payload.append('guardian_occupation', formData.guardianOccupation || '');
+    payload.append('guardian_phone', formData.guardianPhone || '');
+    payload.append('guardian_relationship', formData.guardian_relationship || '');
+    payload.append('education_level', formData.educationLevel || '');
+    payload.append('school_name', formData.schoolName || '');
+    payload.append('assistance_type_needed_id', formData.assistanceNeeded ? formData.assistanceNeeded.toString() : '');
+    payload.append('support_needs', formData.assistanceNeeded || '');
+    payload.append('user_id', user?.user_id ? user.user_id.toString() : '');
+
+    if (formData.userImage) {
+      payload.append('profile_image', formData.userImage);
+    }
+    if (formData.documents) {
+      payload.append('supporting_documents', formData.documents);
+    }
+
     try {
       const response = await fetch("https://disability-management-api.onrender.com/v1/pwd-records", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+        body: payload,
       });
       const result = await response.json();
       setRegistering(false);
