@@ -508,7 +508,7 @@ const RegisterPWD = () => {
                 onChange={handleChange}
                 accept="image/*"
                 className="w-full p-4 bg-gray-700 border-2 border-dashed border-gray-500 rounded-lg hover:border-blue-500 transition-colors cursor-pointer focus:outline-none focus:border-blue-600 h-[150px]"
-                required
+                
                 onDrop={(e) => {
                   e.preventDefault();
                   const file = e.dataTransfer.files[0];
