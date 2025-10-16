@@ -39,8 +39,8 @@ const EditAssistanceRequest = () => {
       const res = await fetch(`https://disability-management-api.onrender.com/v1/assistance-requests/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status, admin_notes, user_id }),
-        mode: 'cors'
+        body: JSON.stringify({ status, admin_notes, user_id })
+        // mode: 'cors'
       });
       const result = await res.json();
       if (result.status === 'success') {

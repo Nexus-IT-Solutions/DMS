@@ -1,5 +1,5 @@
-import React, { useState, useContext, useRef } from 'react';
-import { DarkModeContext } from '../ThemedContext';
+import React, { useState, useRef } from 'react';
+import { useDarkMode } from '../ThemedContext';
 import axios from 'axios';
 
 const AdminOtp = () => {
@@ -7,7 +7,7 @@ const AdminOtp = () => {
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
-  const { isDark } = useContext(DarkModeContext);
+  const { isDark } = useDarkMode();
   const inputsRef = useRef([]);
 
   const handleChange = (e, idx) => {

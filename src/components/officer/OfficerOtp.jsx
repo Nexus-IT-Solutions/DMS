@@ -1,5 +1,5 @@
-import React, { useState, useContext, useRef, useEffect } from 'react';
-import { DarkModeContext } from '../ThemedContext';
+import React, { useState, useRef, useEffect } from 'react';
+import { useDarkMode } from '../ThemedContext';
 import axios from 'axios';
 
   
@@ -17,7 +17,7 @@ const OfficerOtp = () => {
   }, [countdown]);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [status, setStatus] = useState('');
-  const { isDark } = useContext(DarkModeContext);
+  const { isDark } = useDarkMode();
   const inputsRef = useRef([]);
 
   const handleChange = (e, idx) => {

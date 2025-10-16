@@ -1,6 +1,6 @@
-import { useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Outlet } from 'react-router-dom';
-import { DarkModeContext } from '../ThemedContext';
+import { useDarkMode } from '../ThemedContext';
 import {
   RiDashboardLine, RiUserAddLine, RiFileListLine, RiFileWarningLine,
   RiUserSettingsLine, RiLogoutBoxLine, RiMenuLine, RiSearchLine,
@@ -21,7 +21,7 @@ const navItems = [
 ]
 
 const AdminDashboardLayout = () => {
-  const { isDark, toggleDarkMode } = useContext(DarkModeContext);
+  const { isDark, toggleDarkMode } = useDarkMode();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import { DarkModeContext } from '../ThemedContext';
+import { useDarkMode } from '../ThemedContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -10,7 +10,7 @@ const OfficerForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
-  const { isDark } = useContext(DarkModeContext);
+  const { isDark } = useDarkMode();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
