@@ -89,16 +89,38 @@ const EditAssistanceRequest = () => {
       inputPlaceholder: 'Enter your notes here...',
       showCancelButton: true,
       confirmButtonText: 'Update Status',
+      showLoaderOnConfirm: true,
+      preConfirm: (admin_notes) => {
+        return handleStatusUpdate(status, admin_notes)
+          .then((result) => {
+            if (result && result.status === 'success') {
+              Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: `Status updated to ${status}!`,
+                showConfirmButton: false,
+                timer: 2000,
+                background: '#232b3e',
+                color: '#fff',
+              });
+              setRequest(result.data);
+            } else {
+              Swal.showValidationMessage(result && result.message ? result.message : 'Update failed!');
+            }
+            return result;
+          })
+          .catch(() => {
+            Swal.showValidationMessage('Network error!');
+          });
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
       customClass: {
         popup: 'bg-white rounded-lg',
         title: 'text-gray-900',
         input: 'swal2-input',
       },
       background: 'rgb(255, 255, 255)'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handleStatusUpdate(status, result.value);
-      }
     });
   }
 
@@ -152,9 +174,9 @@ const EditAssistanceRequest = () => {
                             <button
                                 key={status}
                                 className={`px-5 py-2 rounded-lg font-semibold transition-colors duration-200 ${
-                                    request.status === status
-                                        ? 'bg-teal-500 text-white cursor-not-allowed'
-                                        : 'bg-gray-700 text-gray-200 hover:bg-teal-600'
+                                  request.status === status
+                                    ? 'bg-teal-500 text-white cursor-not-allowed'
+                                    : 'bg-gray-700 text-gray-200 hover:bg-teal-600'
                                 }`}
                                 disabled={updating || request.status === status}
                                 onClick={() => openStatusModal(status)}
@@ -163,11 +185,10 @@ const EditAssistanceRequest = () => {
                             </button>
                         ))}
                     </div>
-                </div>
             </div>
+          </div>
         </div>
-    </div>
-  );
-};
-
+      </div>
+      );
+    };
 export default EditAssistanceRequest;

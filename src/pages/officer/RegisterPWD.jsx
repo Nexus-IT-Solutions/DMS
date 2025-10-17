@@ -163,6 +163,10 @@ const OfficerRegisterPWD = () => {
     try {
       const response = await fetch("https://disability-management-api.onrender.com/v1/pwd-records", {
         method: "POST",
+        headers: {
+          // 'Content-Type': 'multipart/form-data', // Let browser set this for FormData
+          'Accept': 'application/json',
+        },
         body: payload,
       });
       const result = await response.json();
