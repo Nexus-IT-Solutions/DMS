@@ -40,46 +40,14 @@ const EditAssistanceRequest = () => {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status, admin_notes, user_id })
-        // mode: 'cors'
       });
       const result = await res.json();
-      if (result.status === 'success') {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: `Status updated to ${status}!`,
-          showConfirmButton: false,
-          timer: 2000,
-          background: '#232b3e',
-          color: '#fff',
-        });
-        setRequest(result.data);
-      } else {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'error',
-          title: result.message || 'Update failed!',
-          showConfirmButton: false,
-          timer: 2000,
-          background: '#232b3e',
-          color: '#fff',
-        });
-      }
+      setUpdating(false);
+      return result;
     } catch (err) {
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'error',
-        title: 'Network error!',
-        showConfirmButton: false,
-        timer: 2000,
-        background: '#232b3e',
-        color: '#fff',
-      });
+      setUpdating(false);
+      throw err;
     }
-    setUpdating(false);
   };
 
   const openStatusModal = (status) => {

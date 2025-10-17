@@ -1,5 +1,7 @@
 // ReportsAnalytics.jsx
 import React, { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { FaFileAlt, FaChartBar, FaMapMarkedAlt, FaUser } from 'react-icons/fa';
 
@@ -43,6 +45,74 @@ const ReportsAnalytics = () => {
   const [loading, setLoading] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   const [activeReport, setActiveReport] = useState(null);
+
+  // Helper: PDF download
+  const downloadPDF = (title, columns, rows) => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text(title, 14, 18);
+    doc.autoTable({
+      startY: 28,
+      head: [columns],
+      body: rows,
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [44,62,80] },
+    });
+    doc.save(title.replace(/\s+/g, '_').toLowerCase() + '_report.pdf');
+  };
+
+  // Helper: PDF for Demographics Summary
+  const generateDemographicsPDF = (data) => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text('Demographics Summary Report', 14, 18);
+    let y = 28;
+    // Age Groups
+    doc.setFontSize(13);
+    doc.text('A. Age Group Analysis', 14, y);
+    y += 4;
+    doc.autoTable({
+      startY: y + 2,
+      head: [['Age Group', 'Count']],
+      body: (data.age_groups || []).map(row => [row.age_group, row.count]),
+      styles: { fontSize: 10 },
+    });
+    y = doc.lastAutoTable.finalY + 8;
+    doc.text('B. Gender Analysis', 14, y);
+    doc.autoTable({
+      startY: y + 2,
+      head: [['Gender', 'Count']],
+      body: (data.genders || []).map(row => [row.gender, row.count]),
+      styles: { fontSize: 10 },
+    });
+    y = doc.lastAutoTable.finalY + 8;
+    doc.text('C. Disability Type Analysis', 14, y);
+    doc.autoTable({
+      startY: y + 2,
+      head: [['Disability Type', 'Count']],
+      body: (data.disability_types || []).map(row => [row.disability_type, row.count]),
+      styles: { fontSize: 10 },
+    });
+    doc.save('demographics_summary_report.pdf');
+  };
+
+  // Helper: PDF for Annual Registration
+  const generateAnnualRegistrationPDF = (data) => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text('Annual Registration Report', 14, 18);
+    doc.autoTable({
+      startY: 28,
+      head: [['Metric', 'Value']],
+      body: [
+        ['Total Registrations (Current Year)', data.total_registrations ?? data.totalRegistrations ?? data.total_registered ?? 0],
+        ['Total Assisted (Current Year)', data.total_assisted ?? data.totalAssisted ?? data.total_assisted_pwd ?? 0],
+        ['Pending Assistance Requests', data.pending_requests ?? data.pendingAssistanceRequests ?? data.pending_requests_count ?? 0],
+      ],
+      styles: { fontSize: 10 },
+    });
+    doc.save('annual_registration_report.pdf');
+  };
   useEffect(() => {
     setLoading(true);
     // Fetch quarterly statistics
@@ -73,50 +143,62 @@ const ReportsAnalytics = () => {
   }, []);
 
   const handleGenerateReport = (type) => {
-  setReportLoading(true);
-  setActiveReport(type);
+    setReportLoading(true);
+    setActiveReport(type);
     let endpoint = '';
+    // Ensure endpoints match backend
     switch (type) {
       case 'Quarterly Registration Report':
-        endpoint = 'https://disability-management-api.onrender.com/v1/quarterly-statistics/report';
+        endpoint = '/v1/quarterly-statistics/report';
         break;
       case 'Assistance Distribution Report':
-        endpoint = 'https://disability-management-api.onrender.com/v1/assistance-types/report';
+        endpoint = '/v1/assistance-types/report';
         break;
       case 'Community-based Beneficiary Report':
-        endpoint = 'https://disability-management-api.onrender.com/v1/communities/report';
+        endpoint = '/v1/communities/report';
         break;
       case 'Demographics Summary':
-        endpoint = 'https://disability-management-api.onrender.com/v1/pwd-records/demographics';
+        endpoint = '/v1/pwd-records/demographics';
         break;
       case 'Annual Registration Report':
-        endpoint = 'https://disability-management-api.onrender.com/v1/statistics/current-year';
+        endpoint = '/v1/statistics/current-year';
         break;
       default:
         endpoint = '';
     }
     if (!endpoint) return;
-    fetch(endpoint)
+  // Use relative endpoint for local dev, or prepend API base if needed
+  const apiBase = process.env.REACT_APP_API_BASE || 'https://disability-management-api.onrender.com';
+  fetch(apiBase + endpoint)
       .then(res => res.json())
       .then(data => {
         setReportLoading(false);
-  setActiveReport(null);
+        setActiveReport(null);
         if (data.status === 'success') {
-          // If backend returns a URL, open it
-          if (data.data && data.data.url) {
-            window.open(data.data.url, '_blank');
-          } else if (typeof data.data === 'string') {
-            // If backend returns a string, treat as CSV and download
-            const csvContent = data.data;
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${type.replace(/\s+/g, '_').toLowerCase()}_report.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
+          // PDF generation for each report type (all 5)
+          if (type === 'Quarterly Registration Report') {
+            const columns = ['Quarter', 'Total Registered', 'Total Assessed', 'Pending'];
+            const rows = (data.data || []).map(row => [row.quarter, row.total_registered_pwd, row.total_assessed, row.pending]);
+            downloadPDF('Quarterly Registration Report', columns, rows);
+          } else if (type === 'Assistance Distribution Report') {
+            const columns = ['Assistance Type', 'Total Usage'];
+            const rows = (data.data || []).map(row => [row.assistance_type_name, row.total_usage]);
+            downloadPDF('Assistance Distribution Report', columns, rows);
+          } else if (type === 'Community-based Beneficiary Report') {
+            const columns = ['Community', 'Beneficiary Count'];
+            const rows = (data.data || []).map(row => [row.community_name, row.beneficiary_count]);
+            downloadPDF('Community-based Beneficiary Report', columns, rows);
+          } else if (type === 'Demographics Summary') {
+            generateDemographicsPDF(data.data || {});
+          } else if (type === 'Annual Registration Report') {
+            generateAnnualRegistrationPDF(data.data || {});
+          } else {
+            // fallback: show JSON as PDF
+            const doc = new jsPDF();
+            doc.text(type, 14, 18);
+            doc.setFontSize(10);
+            doc.text(JSON.stringify(data.data, null, 2), 14, 28);
+            doc.save(type.replace(/\s+/g, '_').toLowerCase() + '_report.pdf');
           }
         } else {
           window.Swal.fire({
@@ -156,6 +238,8 @@ const ReportsAnalytics = () => {
                 className="text-sm bg-purple-600 hover:bg-purple-700 text-white hover:text-purple-400 cursor-pointer px-4 py-2 rounded font-medium w-[150px] md:ml-auto"
                 onClick={() => handleGenerateReport(card.title)}
                 disabled={reportLoading && activeReport !== card.title}
+                type="button"
+                aria-label={`Generate ${card.title} PDF`}
               >
                 {reportLoading && activeReport === card.title ? 'Generating...' : 'Generate Report'}
               </button>
