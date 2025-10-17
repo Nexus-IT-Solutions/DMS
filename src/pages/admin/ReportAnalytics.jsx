@@ -143,7 +143,7 @@ const ReportsAnalytics = () => {
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && Array.isArray(data.data)) {
-          setPieData(data.data.map(item => ({ name: item.type, value: item.count })));
+          setPieData(data.data.map(item => ({ name: item.assistance_type_name, value: item.total_usage })));
         } else {
           window.Swal && window.Swal.fire({ icon: 'error', title: 'Assistance Report Error', text: data.message || 'No data for assistance report.' });
         }
