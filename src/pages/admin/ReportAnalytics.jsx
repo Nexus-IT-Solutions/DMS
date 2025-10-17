@@ -45,6 +45,7 @@ const ReportsAnalytics = () => {
   const [loading, setLoading] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   const [activeReport, setActiveReport] = useState(null);
+  const [demographicsData, setDemographicsData] = useState({ age_groups: [], genders: [], disability_types: [] });
 
   // Helper: PDF download
   const downloadPDF = (title, columns, rows) => {
@@ -120,7 +121,6 @@ const ReportsAnalytics = () => {
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && Array.isArray(data.data)) {
-          // Map backend data to chart format
           const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
           const chartData = quarters.map((q, i) => ({
             name: q,
@@ -128,17 +128,49 @@ const ReportsAnalytics = () => {
             Assisted: data.data[i]?.assisted || 0,
           }));
           setBarData(chartData);
+        } else {
+          window.Swal && window.Swal.fire({ icon: 'error', title: 'Quarterly Stats Error', text: data.message || 'No data for quarterly stats.' });
         }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setLoading(false);
+        window.Swal && window.Swal.fire({ icon: 'error', title: 'Network Error', text: 'Could not fetch quarterly stats.' });
+      });
+
     // Fetch assistance distribution
-    fetch('https://disability-management-api.onrender.com/v1/assistance-types/distribution')
+    fetch('https://disability-management-api.onrender.com/v1/assistance-types/report')
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && Array.isArray(data.data)) {
           setPieData(data.data.map(item => ({ name: item.type, value: item.count })));
+        } else {
+          window.Swal && window.Swal.fire({ icon: 'error', title: 'Assistance Report Error', text: data.message || 'No data for assistance report.' });
         }
+      })
+      .catch(() => {
+        window.Swal && window.Swal.fire({ icon: 'error', title: 'Network Error', text: 'Could not fetch assistance report.' });
+      });
+
+    // Fetch demographics summary for graphs
+    fetch('https://disability-management-api.onrender.com/v1/pwd-records/demographics')
+      .then(res => {
+        if (!res.ok) throw new Error('Endpoint not found');
+        return res.json();
+      })
+      .then(data => {
+        if (data.status === 'success' && data.data) {
+          setDemographicsData({
+            age_groups: data.data.age_groups || [],
+            genders: data.data.genders || [],
+            disability_types: data.data.disability_types || [],
+          });
+        } else {
+          window.Swal && window.Swal.fire({ icon: 'error', title: 'Demographics Error', text: data.message || 'No data for demographics.' });
+        }
+      })
+      .catch(() => {
+        window.Swal && window.Swal.fire({ icon: 'error', title: 'Demographics Endpoint Error', text: 'Demographics endpoint not found or failed.' });
       });
   }, []);
 
@@ -166,11 +198,18 @@ const ReportsAnalytics = () => {
       default:
         endpoint = '';
     }
-    if (!endpoint) return;
-  // Use relative endpoint for local dev, or prepend API base if needed
-  const apiBase = process.env.REACT_APP_API_BASE || 'https://disability-management-api.onrender.com';
-  fetch(apiBase + endpoint)
-      .then(res => res.json())
+    if (!endpoint) {
+      window.Swal && window.Swal.fire({ icon: 'error', title: 'Report Error', text: 'No endpoint for this report.' });
+      setReportLoading(false);
+      setActiveReport(null);
+      return;
+    }
+    const apiBase = 'https://disability-management-api.onrender.com';
+    fetch(apiBase + endpoint)
+      .then(res => {
+        if (!res.ok) throw new Error('Endpoint not found');
+        return res.json();
+      })
       .then(data => {
         setReportLoading(false);
         setActiveReport(null);
@@ -180,18 +219,23 @@ const ReportsAnalytics = () => {
             const columns = ['Quarter', 'Total Registered', 'Total Assessed', 'Pending'];
             const rows = (data.data || []).map(row => [row.quarter, row.total_registered_pwd, row.total_assessed, row.pending]);
             downloadPDF('Quarterly Registration Report', columns, rows);
+            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: 'Quarterly Registration Report generated.' });
           } else if (type === 'Assistance Distribution Report') {
             const columns = ['Assistance Type', 'Total Usage'];
             const rows = (data.data || []).map(row => [row.assistance_type_name, row.total_usage]);
             downloadPDF('Assistance Distribution Report', columns, rows);
+            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: 'Assistance Distribution Report generated.' });
           } else if (type === 'Community-based Beneficiary Report') {
             const columns = ['Community', 'Beneficiary Count'];
             const rows = (data.data || []).map(row => [row.community_name, row.beneficiary_count]);
             downloadPDF('Community-based Beneficiary Report', columns, rows);
+            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: 'Community-based Beneficiary Report generated.' });
           } else if (type === 'Demographics Summary') {
             generateDemographicsPDF(data.data || {});
+            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: 'Demographics Summary Report generated.' });
           } else if (type === 'Annual Registration Report') {
             generateAnnualRegistrationPDF(data.data || {});
+            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: 'Annual Registration Report generated.' });
           } else {
             // fallback: show JSON as PDF
             const doc = new jsPDF();
@@ -199,22 +243,16 @@ const ReportsAnalytics = () => {
             doc.setFontSize(10);
             doc.text(JSON.stringify(data.data, null, 2), 14, 28);
             doc.save(type.replace(/\s+/g, '_').toLowerCase() + '_report.pdf');
+            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: `${type} generated.` });
           }
         } else {
-          window.Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: data.message || 'Failed to generate report.',
-          });
+          window.Swal && window.Swal.fire({ icon: 'error', title: 'Report Error', text: data.message || 'Failed to generate report.' });
         }
       })
-      .catch(() => {
+      .catch((err) => {
         setReportLoading(false);
-        window.Swal.fire({
-          icon: 'error',
-          title: 'Network Error',
-          text: 'Could not generate report.',
-        });
+        setActiveReport(null);
+        window.Swal && window.Swal.fire({ icon: 'error', title: 'Endpoint Error', text: `Could not generate report. ${err.message}` });
       });
   };
 
@@ -248,7 +286,7 @@ const ReportsAnalytics = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-gray-800 p-4 rounded-xl border border-gray-700">
           <h3 className="text-lg font-semibold mb-2">Quarterly Assistance Stats</h3>
           {loading ? (
@@ -284,6 +322,75 @@ const ReportsAnalytics = () => {
                 >
                   {pieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div> */}
+
+      {/* Demographics Graphs */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div className="bg-gray-800 p-4 rounded-xl border border-gray-700">
+          <h3 className="text-lg font-semibold mb-2">Age Group Analysis</h3>
+          {demographicsData.age_groups.length === 0 ? (
+            <div className="text-center py-12">No data available</div>
+          ) : (
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={demographicsData.age_groups}>
+                <XAxis dataKey="age_group" stroke="#ccc" />
+                <YAxis stroke="#ccc" />
+                <Tooltip />
+                <Bar dataKey="count" fill="#FFBB28" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+        <div className="bg-gray-800 p-4 rounded-xl border border-gray-700">
+          <h3 className="text-lg font-semibold mb-2">Gender Analysis</h3>
+          {demographicsData.genders.length === 0 ? (
+            <div className="text-center py-12">No data available</div>
+          ) : (
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie
+                  data={demographicsData.genders}
+                  dataKey="count"
+                  nameKey="gender"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label
+                >
+                  {demographicsData.genders.map((entry, index) => (
+                    <Cell key={`cell-gender-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+        <div className="bg-gray-800 p-4 rounded-xl border border-gray-700">
+          <h3 className="text-lg font-semibold mb-2">Disability Type Analysis</h3>
+          {demographicsData.disability_types.length === 0 ? (
+            <div className="text-center py-12">No data available</div>
+          ) : (
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie
+                  data={demographicsData.disability_types}
+                  dataKey="count"
+                  nameKey="disability_type"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label
+                >
+                  {demographicsData.disability_types.map((entry, index) => (
+                    <Cell key={`cell-disability-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip />

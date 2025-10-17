@@ -49,8 +49,8 @@ const AssistanceTracking = () => {
   );
 
   const handleDelete = async (id) => {
-    const user = JSON.parse(localStorage.getItem('dms_user'));
-    user_id: user?.user_id;
+  const user = JSON.parse(localStorage.getItem('dms_user'));
+  const user_id = user?.user_id;
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: 'You want to delete this assistance request?',
@@ -65,11 +65,10 @@ const AssistanceTracking = () => {
       try {
         const res = await fetch(`https://disability-management-api.onrender.com/v1/assistance-requests/${id}`, {
           method: 'DELETE',
-          // headers: {
-          //   'Content-Type': 'application/json',
-          // },
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({ user_id }),
-          // mode: 'cors'
         });
         const result = await res.json();
         if (result.status === 'success') {
