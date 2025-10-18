@@ -65,17 +65,17 @@ export default function OfficerPWDDetails() {
         ) : record ? (
           <div className="bg-gray-800 p-6 rounded-lg shadow-md space-y-6">
             {/* First Section: Personal & Work Details */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4">
                 <h3 className="text-lg font-bold mb-2">Personal Details</h3>
                 <p><strong>Full Name:</strong> {record.full_name}</p>
                 <p><strong>Gender:</strong> {record.gender_name}</p>
-                <p><strong>Date of Birth:</strong> {record.date_of_birth}</p>
+                <p><strong>Date of Birth:</strong> {record.dob}</p>
                 <p><strong>Ghana Card Number:</strong> {record.gh_card_number}</p>
                 <p><strong>NHIS Number:</strong> {record.nhis_number}</p>
                 <p><strong>Contact:</strong> {record.contact}</p>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <h3 className="text-lg font-bold mb-2">Work Details</h3>
                 <p><strong>Quarter:</strong> {record.quarter ? `Quarter ${record.quarter.replace('Q','')}` : ''}</p>
                 <p><strong>Occupation:</strong> {record.occupation}</p>
@@ -83,17 +83,17 @@ export default function OfficerPWDDetails() {
                 <p><strong>Registration Date:</strong> {record.created_at ? record.created_at.split(' ')[0] : ''}</p>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+              <div className="space-y-4">
                 <h3 className="text-lg font-bold mb-2">Disability Details</h3>
                 <p><strong>Category:</strong> {record.disability_category}</p>
                 <p><strong>Type:</strong> {record.disability_type}</p>
               </div>
-              <div>
+              <div className="space-y-4">
                 <h3 className="text-lg font-bold mb-2">Profile Image</h3>
-                {record.profile_image ? (
+                {record.profile_image && record.profile_image !=null ? (
                   <img 
-                    src={record.profile_image} 
+                    src={`https://disability-management-api.onrender.com${record.profile_image}`} 
                     alt={`${record.name}'s profile`}
                     className="w-48 h-48 object-cover rounded-lg"
                   />
@@ -102,10 +102,10 @@ export default function OfficerPWDDetails() {
                 )}
               </div>
             </div>
-            <div>
-              <h3 className="text-lg font-bold mb-2">Documents</h3>
+            <div className="mt-8">
+              <h3 className="text-lg font-bold mb-4">Documents</h3>
               {record.documents && record.documents.length > 0 ? (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {record.documents.map((doc, index) => (
                     <div key={index} className="flex items-center justify-between p-2 bg-gray-700 rounded">
                       <span>{doc.name}</span>
@@ -125,9 +125,9 @@ export default function OfficerPWDDetails() {
                 <p>No documents available</p>
               )}
             </div>
-            <div>
-              <h3 className="text-lg font-bold mb-2">Record Status</h3>
-              <div className={`inline-block px-3 py-1 rounded-full ${
+            <div className="mt-8">
+              <h3 className="text-lg font-bold mb-4">Record Status</h3>
+              <div className={`inline-block px-4 py-2 rounded-full text-base ${
                 record.status === 'approved' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500'
               }`}>
                 {record.status}

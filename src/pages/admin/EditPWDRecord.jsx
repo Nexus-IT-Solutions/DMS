@@ -38,17 +38,26 @@ export default function EditPWDRecord() {
     });
     const result = await res.json();
     setLoading(false);
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-      icon: result.status === "success" ? "success" : "error",
-      title: result.message,
-      showConfirmButton: false,
-      timer: 2000,
-      background: "#232b3e",
-      color: "#fff",
-    });
-    if (result.status === "success") navigate("/admin-dashboard/records");
+    if (result.status === "success") {
+      await Swal.fire({
+        icon: "success",
+        title: "Record updated",
+        text: result.message || "PWD record updated successfully.",
+        background: "#232b3e",
+        color: "#fff",
+        confirmButtonColor: "#6366f1",
+      });
+      navigate("/admin-dashboard/records");
+    } else {
+      await Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: result.message || "Failed to update record.",
+        background: "#232b3e",
+        color: "#fff",
+        confirmButtonColor: "#6366f1",
+      });
+    }
   };
 
   if (loading) return <div className="text-center py-10 text-white">Loading...</div>;

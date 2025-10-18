@@ -21,16 +21,17 @@ const navItems = [
 ]
 
 const AdminDashboardLayout = () => {
-  const { isDark, toggleDarkMode } = useDarkMode();
+  const { isDark, toggleDarkMode, setDarkMode } = useDarkMode();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
+    setDarkMode(true); // Always default to dark mode
     if (location.pathname === '/admin-dashboard' || location.pathname === '/admin-dashboard/') {
       navigate('/admin-dashboard');
     }
-  }, []);
+  }, [setDarkMode, location.pathname, navigate]);
 
   const handleLogout = () => {
   localStorage.removeItem("dms_user");
@@ -73,9 +74,13 @@ const AdminDashboardLayout = () => {
         </div>
       </aside>
 
-      {/* Mobile overlay */}
+      {/* Overlay for mobile: clicking outside sidebar closes it, but does not darken content */}
       {sidebarOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden" onClick={() => setSidebarOpen(false)} />
+        <div
+          className="fixed inset-0 z-20 md:hidden"
+          style={{ background: 'transparent' }}
+          onClick={() => setSidebarOpen(false)}
+        />
       )}
 
       {/* Main Content */}

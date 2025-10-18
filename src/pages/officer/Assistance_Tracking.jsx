@@ -45,6 +45,82 @@ const AssistanceTracking = () => {
       (entry.beneficiary_name || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleDelete = async (id) => {
+    const user = JSON.parse(localStorage.getItem('dms_user'));
+    const user_id = user?.user_id;
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'You want to delete this assistance request?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    });
+    if (result.isConfirmed) {
+      setDeleting(id);
+      Swal.fire({
+        title: 'Deleting...',
+        text: 'Please wait while the request is being deleted.',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        background: '#232b3e',
+        color: '#fff',
+      });
+      try {
+        const res = await fetch(`https://disability-management-api.onrender.com/v1/assistance-requests/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id }),
+        });
+        const result = await res.json();
+        Swal.close();
+        if (result.status === 'success') {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Deleted successfully!',
+            showConfirmButton: false,
+            timer: 2000,
+            background: '#232b3e',
+            color: '#fff',
+          });
+          setRequests(prev => prev.filter(r => r.request_id !== id));
+        } else {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: result.message || 'Delete failed!',
+            showConfirmButton: false,
+            timer: 2000,
+            background: '#232b3e',
+            color: '#fff',
+          });
+        }
+      } catch (err) {
+        Swal.close();
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Network error!',
+          showConfirmButton: false,
+          timer: 2000,
+          background: '#232b3e',
+          color: '#fff',
+        });
+      }
+      setDeleting(null);
+    }
+  };
+
   return (
     <div className="dark text-white p-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8 bg-gray-800 p-6 rounded-lg">
@@ -100,6 +176,14 @@ const AssistanceTracking = () => {
                       title="View Details"
                     >
                       <FaEye />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(req.request_id)}
+                      className="text-white hover:text-red-300 transition duration-200 p-2 hover:bg-gray-600 rounded-full"
+                      title="Delete Request"
+                      disabled={deleting === req.request_id}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M6 2a1 1 0 00-1 1v1H3a1 1 0 000 2h1v10a2 2 0 002 2h6a2 2 0 002-2V6h1a1 1 0 100-2h-2V3a1 1 0 00-1-1H6zm2 2h4v1H6V4zm-1 3h6v9a1 1 0 01-1 1H6a1 1 0 01-1-1V7z" /></svg>
                     </button>
                   </td>
                 </tr>

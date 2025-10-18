@@ -10,7 +10,10 @@ const OfficerLogin = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { isDark, toggleDarkMode } = useDarkMode();
+  const { isDark, toggleDarkMode, setDarkMode } = useDarkMode();
+  React.useEffect(() => {
+    setDarkMode(true);
+  }, [setDarkMode]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -62,6 +62,17 @@ const AssistanceTracking = () => {
     });
     if (result.isConfirmed) {
       setDeleting(id);
+      Swal.fire({
+        title: 'Deleting...',
+        text: 'Please wait while the request is being deleted.',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        background: '#232b3e',
+        color: '#fff',
+      });
       try {
         const res = await fetch(`https://disability-management-api.onrender.com/v1/assistance-requests/${id}`, {
           method: 'DELETE',
@@ -71,6 +82,7 @@ const AssistanceTracking = () => {
           body: JSON.stringify({ user_id }),
         });
         const result = await res.json();
+        Swal.close();
         if (result.status === 'success') {
           Swal.fire({
             toast: true,
@@ -96,6 +108,7 @@ const AssistanceTracking = () => {
           });
         }
       } catch (err) {
+        Swal.close();
         Swal.fire({
           toast: true,
           position: 'top-end',

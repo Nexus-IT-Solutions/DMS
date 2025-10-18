@@ -1,8 +1,20 @@
 // ReportsAnalytics.jsx
 import React, { useState, useEffect } from 'react';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+// Use jsPDF and autoTable from CDN via window.jspdf and window.jspdfAutoTable
 import { BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+// Custom label for pie slices
+const renderPieLabel = (dataKey, nameKey) => ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, ...props }) => {
+  const RADIAN = Math.PI / 180;
+  const radius = innerRadius + (outerRadius - innerRadius) * 1.15;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  const entry = props.payload;
+  return (
+    <text x={x} y={y} fill="#fff" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={12} fontWeight="bold">
+      {entry[nameKey]} ({entry[dataKey]})
+    </text>
+  );
+};
 import { FaFileAlt, FaChartBar, FaMapMarkedAlt, FaUser } from 'react-icons/fa';
 
 // Initial dummy data, will be replaced by backend data
@@ -46,10 +58,15 @@ const ReportsAnalytics = () => {
   const [reportLoading, setReportLoading] = useState(false);
   const [activeReport, setActiveReport] = useState(null);
   const [demographicsData, setDemographicsData] = useState({ age_groups: [], genders: [], disability_types: [] });
+  const [demographicsLoading, setDemographicsLoading] = useState(true);
 
   // Helper: PDF download
   const downloadPDF = (title, columns, rows) => {
-    const doc = new jsPDF();
+    if (!window.jspdf || !window.jspdf.jsPDF || !window.jspdfAutoTable) {
+      window.Swal && window.Swal.fire({ icon: 'error', title: 'PDF Error', text: 'jsPDF or autoTable not loaded from CDN.' });
+      return;
+    }
+    const doc = new window.jspdf.jsPDF();
     doc.setFontSize(16);
     doc.text(title, 14, 18);
     doc.autoTable({
@@ -64,7 +81,11 @@ const ReportsAnalytics = () => {
 
   // Helper: PDF for Demographics Summary
   const generateDemographicsPDF = (data) => {
-    const doc = new jsPDF();
+    if (!window.jspdf || !window.jspdf.jsPDF || !window.jspdfAutoTable) {
+      window.Swal && window.Swal.fire({ icon: 'error', title: 'PDF Error', text: 'jsPDF or autoTable not loaded from CDN.' });
+      return;
+    }
+    const doc = new window.jspdf.jsPDF();
     doc.setFontSize(16);
     doc.text('Demographics Summary Report', 14, 18);
     let y = 28;
@@ -99,7 +120,11 @@ const ReportsAnalytics = () => {
 
   // Helper: PDF for Annual Registration
   const generateAnnualRegistrationPDF = (data) => {
-    const doc = new jsPDF();
+    if (!window.jspdf || !window.jspdf.jsPDF || !window.jspdfAutoTable) {
+      window.Swal && window.Swal.fire({ icon: 'error', title: 'PDF Error', text: 'jsPDF or autoTable not loaded from CDN.' });
+      return;
+    }
+    const doc = new window.jspdf.jsPDF();
     doc.setFontSize(16);
     doc.text('Annual Registration Report', 14, 18);
     doc.autoTable({
@@ -153,6 +178,7 @@ const ReportsAnalytics = () => {
       });
 
     // Fetch demographics summary for graphs
+    setDemographicsLoading(true);
     fetch('https://disability-management-api.onrender.com/v1/pwd-records/demographics')
       .then(res => {
         if (!res.ok) throw new Error('Endpoint not found');
@@ -166,10 +192,14 @@ const ReportsAnalytics = () => {
             disability_types: data.data.disability_types || [],
           });
         } else {
+          setDemographicsData({ age_groups: [], genders: [], disability_types: [] });
           window.Swal && window.Swal.fire({ icon: 'error', title: 'Demographics Error', text: data.message || 'No data for demographics.' });
         }
+        setDemographicsLoading(false);
       })
       .catch(() => {
+        setDemographicsData({ age_groups: [], genders: [], disability_types: [] });
+        setDemographicsLoading(false);
         window.Swal && window.Swal.fire({ icon: 'error', title: 'Demographics Endpoint Error', text: 'Demographics endpoint not found or failed.' });
       });
   }, []);
@@ -214,36 +244,61 @@ const ReportsAnalytics = () => {
         setReportLoading(false);
         setActiveReport(null);
         if (data.status === 'success') {
-          // PDF generation for each report type (all 5)
-          if (type === 'Quarterly Registration Report') {
-            const columns = ['Quarter', 'Total Registered', 'Total Assessed', 'Pending'];
-            const rows = (data.data || []).map(row => [row.quarter, row.total_registered_pwd, row.total_assessed, row.pending]);
-            downloadPDF('Quarterly Registration Report', columns, rows);
-            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: 'Quarterly Registration Report generated.' });
-          } else if (type === 'Assistance Distribution Report') {
-            const columns = ['Assistance Type', 'Total Usage'];
-            const rows = (data.data || []).map(row => [row.assistance_type_name, row.total_usage]);
-            downloadPDF('Assistance Distribution Report', columns, rows);
-            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: 'Assistance Distribution Report generated.' });
-          } else if (type === 'Community-based Beneficiary Report') {
-            const columns = ['Community', 'Beneficiary Count'];
-            const rows = (data.data || []).map(row => [row.community_name, row.beneficiary_count]);
-            downloadPDF('Community-based Beneficiary Report', columns, rows);
-            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: 'Community-based Beneficiary Report generated.' });
-          } else if (type === 'Demographics Summary') {
-            generateDemographicsPDF(data.data || {});
-            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: 'Demographics Summary Report generated.' });
-          } else if (type === 'Annual Registration Report') {
-            generateAnnualRegistrationPDF(data.data || {});
-            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: 'Annual Registration Report generated.' });
-          } else {
-            // fallback: show JSON as PDF
-            const doc = new jsPDF();
-            doc.text(type, 14, 18);
-            doc.setFontSize(10);
-            doc.text(JSON.stringify(data.data, null, 2), 14, 28);
-            doc.save(type.replace(/\s+/g, '_').toLowerCase() + '_report.pdf');
-            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: `${type} generated.` });
+          let didDownload = false;
+          try {
+            if (type === 'Quarterly Registration Report') {
+              const columns = ['Quarter', 'Total Registered', 'Total Assessed', 'Pending'];
+              const rows = (data.data || []).map(row => [
+                row.quarter || '',
+                row.total_registered_pwd || '0',
+                row.total_assessed || '0',
+                row.pending || '0'
+              ]);
+              downloadPDF('Quarterly Registration Report', columns, rows);
+              didDownload = true;
+            } else if (type === 'Assistance Distribution Report') {
+              const columns = ['Assistance Type', 'Total Usage'];
+              const rows = (data.data || []).map(row => [row.assistance_type_name, row.total_usage]);
+              downloadPDF('Assistance Distribution Report', columns, rows);
+              didDownload = true;
+            } else if (type === 'Community-based Beneficiary Report') {
+              const columns = ['Community', 'Beneficiary Count'];
+              const rows = (data.data || []).map(row => [row.community_name, row.beneficiary_count]);
+              downloadPDF('Community-based Beneficiary Report', columns, rows);
+              didDownload = true;
+            } else if (type === 'Demographics Summary') {
+              generateDemographicsPDF(data.data || {});
+              didDownload = true;
+            } else if (type === 'Annual Registration Report') {
+              const columns = ['Quarter', 'Total Registered', 'Total Assessed', 'Pending'];
+              const rows = (data.data || []).map(row => [
+                row.quarter || '',
+                row.total_registered_pwd || '0',
+                row.total_assessed || '0',
+                row.pending || '0'
+              ]);
+              downloadPDF('Annual Registration Report', columns, rows);
+              didDownload = true;
+            } else {
+              // fallback: show JSON as PDF
+              if (!window.jspdf || !window.jspdf.jsPDF) {
+                window.Swal && window.Swal.fire({ icon: 'error', title: 'PDF Error', text: 'jsPDF not loaded from CDN.' });
+                return;
+              }
+              const doc = new window.jspdf.jsPDF();
+              doc.text(type, 14, 18);
+              doc.setFontSize(10);
+              doc.text(JSON.stringify(data.data, null, 2), 14, 28);
+              doc.save(type.replace(/\s+/g, '_').toLowerCase() + '_report.pdf');
+              didDownload = true;
+            }
+          } catch (err) {
+            console.error('PDF generation error:', err);
+            window.Swal && window.Swal.fire({ icon: 'error', title: 'PDF Error', text: `Could not generate PDF. ${err.message}` });
+            return;
+          }
+          if (didDownload) {
+            window.Swal && window.Swal.fire({ icon: 'success', title: 'Report Generated', text: `${type} generated and downloaded.` });
           }
         } else {
           window.Swal && window.Swal.fire({ icon: 'error', title: 'Report Error', text: data.message || 'Failed to generate report.' });
@@ -252,6 +307,7 @@ const ReportsAnalytics = () => {
       .catch((err) => {
         setReportLoading(false);
         setActiveReport(null);
+        console.error('Report fetch error:', err);
         window.Swal && window.Swal.fire({ icon: 'error', title: 'Endpoint Error', text: `Could not generate report. ${err.message}` });
       });
   };
@@ -335,7 +391,9 @@ const ReportsAnalytics = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
         <div className="bg-gray-800 p-4 rounded-xl border border-gray-700">
           <h3 className="text-lg font-semibold mb-2">Age Group Analysis</h3>
-          {demographicsData.age_groups.length === 0 ? (
+          {demographicsLoading ? (
+            <div className="text-center py-12">Loading chart...</div>
+          ) : demographicsData.age_groups.length === 0 ? (
             <div className="text-center py-12">No data available</div>
           ) : (
             <ResponsiveContainer width="100%" height={220}>
@@ -350,7 +408,9 @@ const ReportsAnalytics = () => {
         </div>
         <div className="bg-gray-800 p-4 rounded-xl border border-gray-700">
           <h3 className="text-lg font-semibold mb-2">Gender Analysis</h3>
-          {demographicsData.genders.length === 0 ? (
+          {demographicsLoading ? (
+            <div className="text-center py-12">Loading chart...</div>
+          ) : demographicsData.genders.length === 0 ? (
             <div className="text-center py-12">No data available</div>
           ) : (
             <ResponsiveContainer width="100%" height={220}>
@@ -362,20 +422,23 @@ const ReportsAnalytics = () => {
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
-                  label
+                  label={renderPieLabel('count', 'gender')}
                 >
                   {demographicsData.genders.map((entry, index) => (
                     <Cell key={`cell-gender-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip />
+                
               </PieChart>
             </ResponsiveContainer>
           )}
         </div>
         <div className="bg-gray-800 p-4 rounded-xl border border-gray-700">
           <h3 className="text-lg font-semibold mb-2">Disability Type Analysis</h3>
-          {demographicsData.disability_types.length === 0 ? (
+          {demographicsLoading ? (
+            <div className="text-center py-12">Loading chart...</div>
+          ) : demographicsData.disability_types.length === 0 ? (
             <div className="text-center py-12">No data available</div>
           ) : (
             <ResponsiveContainer width="100%" height={220}>
@@ -387,13 +450,14 @@ const ReportsAnalytics = () => {
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
-                  label
+                  label={renderPieLabel('count', 'disability_type')}
                 >
                   {demographicsData.disability_types.map((entry, index) => (
                     <Cell key={`cell-disability-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip />
+                
               </PieChart>
             </ResponsiveContainer>
           )}
