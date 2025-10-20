@@ -16,7 +16,7 @@ export default function OfficerPWDDetails() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}`)
+    fetch(`http://app.dms-api.com/v1/pwd-records/${id}`)
       .then(res => res.json())
       .then(result => {
         if (result.status === "success" && result.data) {
@@ -29,7 +29,7 @@ export default function OfficerPWDDetails() {
 
   useEffect(() => {
     setAssistLoading(true);
-    fetch(`https://disability-management-api.onrender.com/v1/assistance-requests/${id}`)
+    fetch(`http://app.dms-api.com/v1/assistance-requests/${id}`)
       .then(res => res.json())
       .then(result => {
         if (result.status === "success" && result.data) {
@@ -93,7 +93,7 @@ export default function OfficerPWDDetails() {
                 <h3 className="text-lg font-bold mb-2">Profile Image</h3>
                 {record.profile_image && record.profile_image !=null ? (
                   <img 
-                    src={`https://disability-management-api.onrender.com${record.profile_image}`} 
+                    src={`http://app.dms-api.com${record.profile_image}`} 
                     alt={`${record.name}'s profile`}
                     className="w-48 h-48 object-cover rounded-lg"
                   />

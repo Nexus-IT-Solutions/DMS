@@ -21,7 +21,7 @@ export default function OfficerPWDRecords() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`https://disability-management-api.onrender.com/v1/pwd-records?page=${page}`)
+    fetch(`http://app.dms-api.com/v1/pwd-records?page=${page}`)
       .then(res => res.json())
       .then(result => {
         if (result.status === "success" && result.data) {
@@ -65,7 +65,7 @@ export default function OfficerPWDRecords() {
       setLoading(true);
       const user = JSON.parse(localStorage.getItem("dms_user"));
       const user_id = user?.user_id;
-      fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}`, {
+      fetch(`http://app.dms-api.com/v1/pwd-records/${id}`, {
         method: 'DELETE',
         credentials: "include",
         headers: { 'Content-Type': 'application/json' },
@@ -185,7 +185,7 @@ export default function OfficerPWDRecords() {
                 >
                   <td className="px-4 py-3">
                     <img 
-                      src={record.profile_image ? `https://disability-management-api.onrender.com/${record.profile_image}` : "https://ui-avatars.com/api/?name=" + encodeURIComponent(record.full_name)}
+                      src={record.profile_image ? `http://app.dms-api.com/${record.profile_image}` : "https://ui-avatars.com/api/?name=" + encodeURIComponent(record.full_name)}
                       alt={record.full_name}
                       className="w-10 h-10 rounded-full object-cover"
                     />

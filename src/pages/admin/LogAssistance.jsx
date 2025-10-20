@@ -16,14 +16,14 @@ const LogAssistance = () => {
   const [showBeneficiaryResults, setShowBeneficiaryResults] = useState(false);
 
   useEffect(() => {
-    fetch('https://disability-management-api.onrender.com/v1/assistance-types')
+    fetch('http://app.dms-api.com/v1/assistance-types')
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && Array.isArray(data.data)) {
           setAssistanceTypes(data.data);
         }
       });
-    fetch('https://disability-management-api.onrender.com/v1/pwd-records')
+    fetch('http://app.dms-api.com/v1/pwd-records')
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && Array.isArray(data.data)) {
@@ -40,7 +40,7 @@ const LogAssistance = () => {
       return;
     }
     try {
-      const res = await fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${beneficiaryId}`);
+      const res = await fetch(`http://app.dms-api.com/v1/pwd-records/${beneficiaryId}`);
       const data = await res.json();
       if (data.status === 'success' && data.data) {
         setSelectedBeneficiary(data.data);
@@ -233,7 +233,7 @@ const LogAssistance = () => {
                   description: form.notes,
                   user_id: user_id,
                 };
-                const res = await fetch('https://disability-management-api.onrender.com/v1/assistance-requests', {
+                const res = await fetch('http://app.dms-api.com/v1/assistance-requests', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify(payload)
