@@ -287,27 +287,28 @@ export default function EditPWDRecord() {
             </select>
           </div>
         )}
-        {/* Guardian fields for minors, including education level and school name */}
+        {/* Guardian fields for minors (age < 18) */}
         {isMinor && (
           <>
-            {formData.guardianName !== undefined && (
+            {formData.guardian_name !== undefined && (
               <div>
                 <label className="block mb-2 font-semibold">Guardian Name</label>
-                <input name="guardianName" value={formData.guardianName || ""} onChange={handleChange} className="w-full p-3 rounded border border-gray-500 bg-gray-800" placeholder="Guardian Name" />
+                <input name="guardian_name" value={formData.guardian_name || ""} onChange={handleChange} className="w-full p-3 rounded border border-gray-500 bg-gray-800" placeholder="Guardian Name" />
               </div>
             )}
-            {formData.guardianOccupation !== undefined && (
+            {formData.guardian_occupation !== undefined && (
               <div>
                 <label className="block mb-2 font-semibold">Guardian Occupation</label>
-                <input name="guardianOccupation" value={formData.guardianOccupation || ""} onChange={handleChange} className="w-full p-3 rounded border border-gray-500 bg-gray-800" placeholder="Guardian Occupation" />
+                <input name="guardian_occupation" value={formData.guardian_occupation || ""} onChange={handleChange} className="w-full p-3 rounded border border-gray-500 bg-gray-800" placeholder="Guardian Occupation" />
               </div>
             )}
-            {formData.guardianPhone !== undefined && (
+            {formData.guardian_phone !== undefined && (
               <div>
                 <label className="block mb-2 font-semibold">Guardian Phone</label>
-                <input name="guardianPhone" value={formData.guardianPhone || ""} onChange={handleChange} className="w-full p-3 rounded border border-gray-500 bg-gray-800" placeholder="Guardian Phone" />
+                <input name="guardian_phone" value={formData.guardian_phone || ""} onChange={handleChange} className="w-full p-3 rounded border border-gray-500 bg-gray-800" placeholder="Guardian Phone" />
               </div>
             )}
+            {/* Keep other minor fields if present */}
             {formData.guardian_relationship !== undefined && (
               <div>
                 <label className="block mb-2 font-semibold">Guardian Relationship</label>
