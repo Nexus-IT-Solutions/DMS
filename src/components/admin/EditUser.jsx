@@ -17,7 +17,7 @@ const EditUser = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://app.dms-api.com/v1/users/${id}`)
+    fetch(`https://disability-management-api.onrender.com/v1/users/${id}`)
       .then(res => res.json())
       .then(data => {
         setLoading(false);
@@ -53,7 +53,7 @@ const EditUser = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    fetch(`http://app.dms-api.com/v1/users/${id}`, {
+    fetch(`https://disability-management-api.onrender.com/v1/users/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)

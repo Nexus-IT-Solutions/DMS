@@ -142,7 +142,7 @@ const ReportsAnalytics = () => {
   useEffect(() => {
     setLoading(true);
     // Fetch quarterly statistics
-    fetch('http://app.dms-api.com/v1/statistics')
+    fetch('https://disability-management-api.onrender.com/v1/statistics')
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && Array.isArray(data.data)) {
@@ -164,7 +164,7 @@ const ReportsAnalytics = () => {
       });
 
     // Fetch assistance distribution
-    fetch('http://app.dms-api.com/v1/assistance-types/report')
+    fetch('https://disability-management-api.onrender.com/v1/assistance-types/report')
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && Array.isArray(data.data)) {
@@ -179,7 +179,7 @@ const ReportsAnalytics = () => {
 
     // Fetch demographics summary for graphs
     setDemographicsLoading(true);
-    fetch('http://app.dms-api.com/v1/pwd-records/demographics')
+    fetch('https://disability-management-api.onrender.com/v1/pwd-records/demographics')
       .then(res => {
         if (!res.ok) throw new Error('Endpoint not found');
         return res.json();

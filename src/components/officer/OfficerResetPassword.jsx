@@ -37,7 +37,7 @@ const ResetPassword = () => {
     }
     setLoading(true);
     try {
-      const res = await fetch('http://app.dms-api.com/v1/users/password/reset', {
+      const res = await fetch('https://disability-management-api.onrender.com/v1/users/password/reset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

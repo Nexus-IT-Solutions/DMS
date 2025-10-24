@@ -16,7 +16,7 @@ export default function OfficerPWDDetails() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://app.dms-api.com/v1/pwd-records/${id}`)
+    fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}`)
       .then(res => res.json())
       .then(result => {
         if (result.status === "success" && result.data) {
@@ -29,7 +29,7 @@ export default function OfficerPWDDetails() {
 
   useEffect(() => {
     setAssistLoading(true);
-    fetch(`http://app.dms-api.com/v1/assistance-requests/${id}`)
+    fetch(`https://disability-management-api.onrender.com/v1/assistance-requests/${id}`)
       .then(res => res.json())
       .then(result => {
         if (result.status === "success" && result.data) {

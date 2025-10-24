@@ -48,7 +48,7 @@ const AdminOtp = () => {
     if (otpValue.length !== 6) return;
     setLoading(true);
     try {
-      const response = await axios.post('http://app.dms-api.com/v1/users/password/verify-otp', { otp: otpValue });
+      const response = await axios.post('https://disability-management-api.onrender.com/v1/users/password/verify-otp', { otp: otpValue });
       const result = response.data;
       if (result.status === 'success') {
         localStorage.setItem('reset_otp', otpValue);
@@ -71,7 +71,7 @@ const AdminOtp = () => {
     setStatus('');
     setResendLoading(true);
     try {
-      const response = await axios.post('http://app.dms-api.com/v1/users/password/verify-otp', { resend: true });
+      const response = await axios.post('https://disability-management-api.onrender.com/v1/users/password/verify-otp', { resend: true });
       const result = response.data;
       if (result.status === 'success') {
         setStatus('resent');
