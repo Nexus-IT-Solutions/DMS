@@ -157,8 +157,17 @@ const OfficerRegisterPWD = () => {
     if (formData.userImage) {
       payload.append('profile_image', formData.userImage);
     }
+    // Always append supporting documents as array
     if (formData.documents) {
-      payload.append('supporting_documents', formData.documents);
+      if (Array.isArray(formData.documents)) {
+        formData.documents.forEach(file => {
+          if (file instanceof File) {
+            payload.append('supporting_documents[]', file);
+          }
+        });
+      } else if (formData.documents instanceof File) {
+        payload.append('supporting_documents[]', formData.documents);
+      }
     }
     try {
       const response = await fetch("https://disability-management-api.onrender.com/v1/pwd-records", {
@@ -172,44 +181,34 @@ const OfficerRegisterPWD = () => {
       const result = await response.json();
       setRegistering(false);
       if (result.status === "success") {
-        window.Swal.fire({
+        Swal.fire({
           toast: true,
           position: "top-end",
           icon: "success",
           title: result.message || "PWD registered successfully!",
           showConfirmButton: false,
-          timer: 2500,
+          timer: 2000,
           background: "#232b3e",
           color: "#fff",
         });
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 1200);
       } else {
-
-        window.Swal.fire({
+        Swal.fire({
           toast: true,
           position: "top-end",
           icon: "error",
           title: result.message || "Registration failed!",
           showConfirmButton: false,
-          timer: 2500,
+          timer: 2000,
           background: "#232b3e",
           color: "#fff",
         });
-        window.location.reload();
       }
     } catch (error) {
       setRegistering(false);
       console.error("Register PWD error:", error);
-      // Swal.fire({
-      //           toast: true,
-      //           position: "top-end",
-      //           icon: "success",
-      //           title: "PWD registered successfully!",
-      //           showConfirmButton: false,
-      //           timer: 2500,
-      //           background: "#232b3e",
-      //           color: "#fff",
-      //         });
       Swal.fire({
         toast: true,
         position: "top-end",

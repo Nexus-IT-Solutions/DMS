@@ -160,8 +160,17 @@ const RegisterPWD = () => {
     if (formData.userImage) {
       payload.append('profile_image', formData.userImage);
     }
+    // Always append supporting documents as array
     if (formData.documents) {
-      payload.append('supporting_documents', formData.documents);
+      if (Array.isArray(formData.documents)) {
+        formData.documents.forEach(file => {
+          if (file instanceof File) {
+            payload.append('supporting_documents[]', file);
+          }
+        });
+      } else if (formData.documents instanceof File) {
+        payload.append('supporting_documents[]', formData.documents);
+      }
     }
 
     try {
@@ -187,7 +196,7 @@ const RegisterPWD = () => {
           color: "#fff",
         });
         setTimeout(() => {
-          navigate(-1);
+          window.location.reload();
         }, 1200);
       } else {
         Swal.fire({
