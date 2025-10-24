@@ -91,15 +91,13 @@ export default function OfficerPWDDetails() {
               </div>
               <div className="space-y-4">
                 <h3 className="text-lg font-bold mb-2">Profile Image</h3>
-                {record.profile_image && record.profile_image !=null ? (
-                  <img 
-                    src={`http://app.dms-api.com${record.profile_image}`} 
-                    alt={`${record.name}'s profile`}
-                    className="w-48 h-48 object-cover rounded-lg"
-                  />
-                ) : (
-                  <p>No profile image available</p>
-                )}
+                <img 
+                  src={record.profile_image
+                    ? `https://disability-management-api.onrender.com/${record.profile_image}`
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(record.full_name)}`}
+                  alt={record.full_name}
+                  className="w-48 h-48 object-cover rounded-lg"
+                />
               </div>
             </div>
             <div className="mt-8">

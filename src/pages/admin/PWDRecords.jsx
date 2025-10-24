@@ -232,9 +232,17 @@ export default function PWDTable() {
                   <td className="px-4 py-3">{record.created_at ? record.created_at.split(" ")[0] : ""}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded text-xs ${
-                      record.status === 'approved' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500'
+                      record.status === 'approved'
+                        ? 'bg-green-500/20 text-green-500'
+                        : record.status === 'declined'
+                          ? 'bg-red-500/20 text-red-500'
+                          : 'bg-yellow-500/20 text-yellow-500'
                     }`}>
-                      {record.status}
+                      {record.status === 'approved'
+                        ? 'Approved'
+                        : record.status === 'declined'
+                          ? 'Declined'
+                          : 'Pending'}
                     </span>
                   </td>
                   <td className="px-4 py-3 space-x-3">
