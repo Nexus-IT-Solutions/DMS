@@ -347,12 +347,12 @@ export default function EditPWDRecord() {
             typeof formData.profile_image === "string" ? (
               <div className="flex flex-col items-center">
                 <img src={`https://disability-management-api.onrender.com/${formData.profile_image.replace(/\\/g, '/')}`} alt={formData.full_name || 'Profile'} className="h-24 rounded mb-2" />
-                <button type="button" className="text-red-400 underline text-xs" onClick={handleRemoveImage}>Remove</button>
+                <button type="button" className="text-red-400 underline text-xs cursor-pointer" onClick={handleRemoveImage}>Remove</button>
               </div>
             ) : formData.profile_image instanceof File ? (
               <div className="flex flex-col items-center">
                 <span className="text-xs">{formData.profile_image.name}</span>
-                <button type="button" className="text-red-400 underline text-xs" onClick={handleRemoveImage}>Remove</button>
+                <button type="button" className="text-red-400 underline text-xs cursor-pointer" onClick={handleRemoveImage}>Remove</button>
               </div>
             ) : null
           ) : (
@@ -373,11 +373,13 @@ export default function EditPWDRecord() {
             {formData.supporting_documents.map((doc, idx) => (
               <li key={idx} className="flex items-center gap-2">
                 {typeof doc === "string" ? (
-                  <a href={`https://disability-management-api.onrender.com/${encodeURIComponent(doc)}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">Document {idx + 1}</a>
+                  <a href={`https://disability-management-api.onrender.com/${encodeURIComponent(doc)}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">
+                    {doc.split('/').pop()}
+                  </a>
                 ) : (
                   <span>{doc.name}</span>
                 )}
-                <button type="button" className="text-red-400 underline text-xs ml-2" onClick={() => handleRemoveFile(idx)}>Remove</button>
+                <button type="button" className="text-red-400 underline text-xs ml-2 cursor-pointer" onClick={() => handleRemoveFile(idx)}>Remove</button>
               </li>
             ))}
           </ul>
