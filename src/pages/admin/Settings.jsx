@@ -285,7 +285,7 @@ const Settings = () => {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`px-6 py-3 font-semibold rounded-t-lg focus:outline-none transition-colors duration-200 ${activeTab === tab.key ? 'bg-[#232b3e] dark:bg-[#1a2233] text-white' : 'bg-transparent text-gray-400 hover:bg-[#232b3e] hover:text-white'}`}
+            className={`px-6 py-3 font-semibold rounded-t-lg focus:outline-none transition-colors duration-200 ${activeTab === tab.key ? 'bg-[#1a2233] text-white' : 'bg-transparent text-gray-400 hover:bg-[#1a2233] hover:text-white'}`}
           >
             {tab.label}
           </button>
@@ -371,7 +371,7 @@ const Settings = () => {
                         key={item.id || item.community_id || item.category_id || item.type_id || item.assistance_type_id || idx}
                         className="mb-4"
                       >
-                        <td className="bg-[#232b3e] dark:bg-[#1a2233] px-6 py-3 rounded-lg">
+                        <td className="bg-[#1a2233] px-6 py-3 rounded-lg">
                           {displayName}
                         </td>
                         <td className="px-6 py-3 flex gap-2">

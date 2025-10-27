@@ -125,7 +125,7 @@ const AssistanceTracking = () => {
   };
 
   return (
-    <div className="dark text-white p-8 max-w-7xl mx-auto">
+  <div className="bg-gray-900 text-white p-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8 bg-gray-800 p-6 rounded-lg">
         <div>
           <h2 className="text-2xl font-bold mb-2">Assistance Tracking</h2>

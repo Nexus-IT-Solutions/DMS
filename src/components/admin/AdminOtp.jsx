@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { useDarkMode } from '../ThemedContext';
+import React, { useState, useRef, useEffect } from 'react';
+// ...existing code...
 import axios from 'axios';
 
 const AdminOtp = () => {
@@ -7,7 +7,10 @@ const AdminOtp = () => {
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
-  const { isDark } = useDarkMode();
+  const { setDarkMode } = useDarkMode();
+  useEffect(() => {
+    setDarkMode(true);
+  }, [setDarkMode]);
   const inputsRef = useRef([]);
 
   const handleChange = (e, idx) => {
@@ -89,7 +92,7 @@ const AdminOtp = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-900 dark:to-gray-950 px-4">
-      <div className="w-full max-w-md bg-white/80 dark:bg-gray-900/90 rounded-2xl shadow-2xl p-8 md:p-10 border border-gray-200 dark:border-gray-800 backdrop-blur-md">
+  <div className="w-full max-w-md bg-gray-900/90 rounded-2xl shadow-2xl p-8 md:p-10 border border-gray-800 backdrop-blur-md">
         <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mb-2">Admin OTP Verification</h2>
         <p className="text-center text-gray-500 dark:text-gray-400 mb-8">Enter the OTP sent to your email</p>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -105,7 +108,7 @@ const AdminOtp = () => {
                 value={digit}
                 onChange={e => handleChange(e, idx)}
                 onKeyDown={e => handleKeyDown(e, idx)}
-                className="w-12 h-12 md:w-14 md:h-14 text-center text-2xl rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-12 h-12 md:w-14 md:h-14 text-center text-2xl rounded-lg border border-gray-700 bg-gray-800 text-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 autoFocus={idx === 0}
                 required
                 disabled={loading || resendLoading}

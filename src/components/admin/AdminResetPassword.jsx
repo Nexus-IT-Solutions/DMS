@@ -64,7 +64,7 @@ const AdminResetPassword = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-10 rounded-xl shadow-2xl">
+  <div className="max-w-md w-full space-y-8 bg-gray-900 p-10 rounded-xl shadow-2xl">
         <div>
           <h2 className="text-center text-4xl font-bold text-gray-900 dark:text-white">
             Reset Password

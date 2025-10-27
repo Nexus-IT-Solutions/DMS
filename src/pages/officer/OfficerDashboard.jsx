@@ -113,7 +113,7 @@ const OfficerDashboard = () => {
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+  <div className="bg-gray-800 rounded-lg p-6 shadow-sm">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           Welcome back, {user.username}!
         </h1>
@@ -125,7 +125,7 @@ const OfficerDashboard = () => {
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
         {Object.entries(metrics).map(([key, metric]) => (
-          <div key={key} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm md:flex md:flex-row md:justify-between">
+          <div key={key} className="bg-gray-800 rounded-lg p-6 shadow-sm md:flex md:flex-row md:justify-between">
             <div className="flex items-center justify-between mb-4 md:mb-0 md:order-2 md:-mt-10">
               <div className={`p-3 rounded-lg ${getColorClasses(metric.color)}`}>
                 {getIconComponent(metric.icon, 'white')}
@@ -149,7 +149,7 @@ const OfficerDashboard = () => {
       {/* Bottom Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Quick Actions */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+  <div className="bg-gray-800 rounded-lg p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">

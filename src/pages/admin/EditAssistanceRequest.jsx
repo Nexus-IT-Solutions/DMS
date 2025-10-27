@@ -84,7 +84,7 @@ const EditAssistanceRequest = () => {
       },
       allowOutsideClick: () => !Swal.isLoading(),
       customClass: {
-        popup: 'bg-white rounded-lg',
+  popup: 'bg-gray-900 rounded-lg',
         title: 'text-gray-900',
         input: 'swal2-input',
       },
@@ -96,7 +96,7 @@ const EditAssistanceRequest = () => {
   if (!request) return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-red-500">Request not found.</div>;
 
   return (
-    <div className="bg-gray-900 min-h-screen p-8">
+  <div className="bg-gray-900 min-h-screen p-8">
         <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-8">
                 <button

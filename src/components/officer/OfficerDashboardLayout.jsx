@@ -20,7 +20,7 @@ const navItems = [
 
 
 const OfficerDashboardLayout = () => {
-  const { isDark, toggleDarkMode, setDarkMode } = useDarkMode();
+  const { setDarkMode } = useDarkMode();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,7 +38,7 @@ const OfficerDashboardLayout = () => {
 };
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900 overflow-hidden text-sm">
+  <div className="flex h-screen dark:bg-gray-900 overflow-hidden text-sm">
       {/* Sidebar */}
       <aside className={`fixed md:relative z-30 h-full w-64 bg-[#151c2c] dark:bg-[#101624] flex flex-col justify-between py-6 px-4 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}>
         <div className="flex-1">
@@ -87,32 +87,24 @@ const OfficerDashboardLayout = () => {
         <header className="flex items-center justify-between px-6 h-16 bg-white dark:bg-[#151c2c] shadow-sm border-b border-gray-200 dark:border-gray-800">
           <div className="flex items-center gap-4">
             <button
-              className="md:hidden p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
+              className="md:hidden p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
-              <RiMenuLine className="w-5 h-5 text-gray-700 dark:text-gray-200" />
+              <RiMenuLine className="w-5 h-5 text-gray-200" />
             </button>
-            <span className="text-base font-semibold text-gray-800 dark:text-gray-100">Officer Dashboard</span>
+            <span className="text-base font-semibold text-gray-100">Officer Dashboard</span>
           </div>
-
           <div className="flex items-center gap-4">
             <div className="relative w-48 md:w-64">
               <input
                 type="text"
                 placeholder="Search..."
-                className="w-full rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 border-0"
+                className="w-full rounded-lg dark:bg-gray-800 dark:text-gray-100 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 border-0"
               />
               <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                 <RiSearchLine className="w-4 h-4" />
               </span>
             </div>
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors focus:outline-none"
-              aria-label="Toggle dark mode"
-            >
-              {isDark ? <RiMoonLine className="w-5 h-5 text-yellow-400" /> : <RiSunLine className="w-5 h-5 text-gray-700 dark:text-gray-200" />}
-            </button>
           </div>
         </header>
 

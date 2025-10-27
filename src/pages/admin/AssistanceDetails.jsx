@@ -79,7 +79,7 @@ const AssistanceDetails = () => {
       showCancelButton: true,
       confirmButtonText: 'Update Status',
       customClass: {
-        popup: 'bg-white rounded-lg',
+  popup: 'bg-gray-900 rounded-lg',
         title: 'text-gray-900',
         input: 'swal2-input',
       },
@@ -92,15 +92,15 @@ const AssistanceDetails = () => {
   }
 
   if (loading) {
-    return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-white">Loading...</div>;
+  return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-white">Loading...</div>;
   }
 
   if (error) {
-    return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-red-500">Error: {error}</div>;
+  return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-red-500">Error: {error}</div>;
   }
 
   if (!assistanceDetails) {
-    return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-white">No assistance details found.</div>;
+  return <div className="bg-gray-900 min-h-screen flex items-center justify-center text-white">No assistance details found.</div>;
   }
 
   const {
@@ -113,7 +113,7 @@ const AssistanceDetails = () => {
   } = assistanceDetails;
 
   return (
-    <div className="bg-gray-900 min-h-screen p-8">
+  <div className="bg-gray-900 min-h-screen p-8">
       <div className="max-w-4xl mx-auto bg-gray-800 rounded-xl shadow-lg p-8">
         <div className="flex items-center justify-between mb-8">
           <button

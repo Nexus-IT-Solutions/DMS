@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import { useDarkMode } from '../../components/ThemedContext';
+// ...existing code...
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
@@ -10,7 +10,7 @@ const AdminLogin = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { isDark, toggleDarkMode, setDarkMode } = useDarkMode();
+  const { setDarkMode } = useDarkMode();
   React.useEffect(() => {
     setDarkMode(true);
   }, [setDarkMode]);
@@ -88,28 +88,10 @@ const AdminLogin = () => {
         </div>
       </div>
       {/* Right Section: Login Form */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center relative bg-white/80 dark:bg-gray-900/90 min-h-screen">
-        {/* Dark/Light Mode Toggle Icon */}
-        <button
-          onClick={toggleDarkMode}
-          className="absolute top-6 right-6 z-10 p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors focus:outline-none shadow"
-          aria-label="Toggle dark mode"
-        >
-          {isDark ? (
-            // Sun icon for light mode
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-yellow-400">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21m8.25-9H21M3 12h2.25m12.02-6.02l-1.59 1.59m-9.19 9.19l-1.59 1.59m12.02 0l-1.59-1.59m-9.19-9.19l-1.59-1.59M12 7.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Z" />
-            </svg>
-          ) : (
-            // Moon icon for dark mode
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-700 dark:text-gray-200">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 15.002A9.718 9.718 0 0 1 12 21.75a9.75 9.75 0 0 1 0-19.5c.31 0 .617.016.922.047a.75.75 0 0 1 .37 1.33A7.5 7.5 0 0 0 19.5 15.08a.75.75 0 0 1 1.33.37c.03.305.047.612.047.922Z" />
-            </svg>
-          )}
-        </button>
+      <div className="w-full md:w-1/2 flex flex-col justify-center relative bg-gray-900/90 min-h-screen">
         <div className="flex flex-col justify-center h-full p-8 md:p-10 max-w-md w-full mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-gray-100 mb-2">Admin Login</h2>
-          <p className="text-center text-gray-500 dark:text-gray-400 mb-8">Sign in to your account</p>
+          <h2 className="text-3xl font-bold text-center text-gray-100 mb-2">Admin Login</h2>
+          <p className="text-center text-gray-300 mb-8">Sign in to your account</p>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-gray-700 dark:text-gray-300 mb-1" htmlFor="username">Username</label>
@@ -120,7 +102,7 @@ const AdminLogin = () => {
                 required
                 value={username}
                 onChange={e => setUsername(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 placeholder="Enter your username"
               />
             </div>
@@ -134,7 +116,7 @@ const AdminLogin = () => {
                   required
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500 pr-10"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500 pr-10"
                   placeholder="Enter your password"
                 />
                 <button

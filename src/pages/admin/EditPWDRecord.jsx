@@ -166,12 +166,12 @@ export default function EditPWDRecord() {
     }
   };
 
-  if (loading) return <div className="text-center py-10 text-white">Loading...</div>;
+  
   if (!formData) return <div className="text-center py-10 text-white">No record found.</div>;
 
   // Only show fields that exist in formData (except status, profile image, supporting documents)
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-gray-900 p-10 rounded-2xl shadow-lg text-white space-y-6">
+  <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-gray-900 p-10 rounded-2xl shadow-lg text-white space-y-6">
       <div className="flex items-center justify-between mb-6">
         <button
           type="button"

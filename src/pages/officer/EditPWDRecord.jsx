@@ -166,7 +166,7 @@ export default function EditPWDRecord() {
     }
   };
 
-  if (loading) return <div className="text-center py-10 text-white">Loading...</div>;
+  
   if (!formData) return <div className="text-center py-10 text-white">No record found.</div>;
 
   // Only show fields that exist in formData (except status, profile image, supporting documents)

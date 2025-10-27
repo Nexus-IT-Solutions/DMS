@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import { useDarkMode } from '../ThemedContext';
+// ...existing code...
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -10,7 +10,10 @@ const AdminForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
-  const { isDark } = useDarkMode();
+  const { setDarkMode } = useDarkMode();
+  React.useEffect(() => {
+    setDarkMode(true);
+  }, [setDarkMode]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +39,7 @@ const AdminForgotPassword = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-900 dark:to-gray-950 px-4">
-      <div className="w-full max-w-md bg-white/80 dark:bg-gray-900/90 rounded-2xl shadow-2xl p-8 md:p-10 border border-gray-200 dark:border-gray-800 backdrop-blur-md">
+  <div className="w-full max-w-md bg-gray-900/90 rounded-2xl shadow-2xl p-8 md:p-10 border border-gray-800 backdrop-blur-md">
         <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mb-2">Admin Forgot Password</h2>
         <p className="text-center text-gray-500 dark:text-gray-400 mb-8">Enter your email to reset your password</p>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -49,7 +52,7 @@ const AdminForgotPassword = () => {
               required
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter your email"
             />
           </div>

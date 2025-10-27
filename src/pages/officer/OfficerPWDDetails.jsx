@@ -101,26 +101,26 @@ export default function OfficerPWDDetails() {
               </div>
             </div>
             <div className="mt-8">
-              <h3 className="text-lg font-bold mb-4">Documents</h3>
-              {record.documents && record.documents.length > 0 ? (
-                <div className="space-y-3">
-                  {record.documents.map((doc, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 bg-gray-700 rounded">
-                      <span>{doc.name}</span>
-                      <Link
-                        to={doc.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center text-blue-400 hover:text-blue-300"
-                      >
-                        <Eye className="w-4 h-4 mr-1" />
-                        View
-                      </Link>
-                    </div>
+              <h3 className="text-lg font-bold mb-4">Supporting Documents</h3>
+              {record.supporting_documents && Array.isArray(record.supporting_documents) && record.supporting_documents.length > 0 ? (
+                <ul className="mt-2 list-disc list-inside text-sm">
+                  {record.supporting_documents.map((doc, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      {typeof doc === "string" ? (
+                        <>
+                          <a href={`https://disability-management-api.onrender.com/${encodeURIComponent(doc)}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">
+                            {doc.split('/').pop()}
+                          </a>
+                          <button type="button" className="ml-2 px-2 py-1 bg-teal-700 text-xs rounded text-white" onClick={() => window.open(`https://disability-management-api.onrender.com/${encodeURIComponent(doc)}`, '_blank')}>Preview</button>
+                        </>
+                      ) : (
+                        <span>{doc.name}</span>
+                      )}
+                    </li>
                   ))}
-                </div>
+                </ul>
               ) : (
-                <p>No documents available</p>
+                <span className="text-xs text-gray-400">No supporting documents uploaded.</span>
               )}
             </div>
             <div className="mt-8">
