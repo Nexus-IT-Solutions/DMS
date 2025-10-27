@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useDarkMode } from '../ThemedContext';
+// import { useDarkMode } from '../ThemedContext';
 import axios from 'axios';
 
   
@@ -17,11 +17,11 @@ const OfficerOtp = () => {
   }, [countdown]);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [status, setStatus] = useState('');
-  const { setDarkMode } = useDarkMode();
-  useEffect(() => {
-    setDarkMode(true);
-  }, [setDarkMode]);
-  const inputsRef = useRef([]);
+  // const { setDarkMode } = useDarkMode();
+  // useEffect(() => {
+  //   setDarkMode(true);
+  // }, [setDarkMode]);
+  // const inputsRef = useRef([]);
 
   const handleChange = (e, idx) => {
     const value = e.target.value.replace(/\D/g, '');

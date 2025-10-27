@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import { useDarkMode } from '../components/ThemedContext';
+// import { useDarkMode } from '../components/ThemedContext';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -10,10 +10,10 @@ const Login = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { setDarkMode } = useDarkMode();
-  React.useEffect(() => {
-    setDarkMode(true);
-  }, [setDarkMode]);
+  // const { setDarkMode } = useDarkMode();
+  // React.useEffect(() => {
+  //   setDarkMode(true);
+  // }, [setDarkMode]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Outlet } from 'react-router-dom';
-import { useDarkMode } from '../ThemedContext';
+// import { useDarkMode } from '../ThemedContext';
 import {
   RiDashboardLine, RiUserAddLine, RiFileListLine, RiFileWarningLine,
   RiUserSettingsLine, RiLogoutBoxLine, RiMenuLine, RiSearchLine,
@@ -20,17 +20,17 @@ const navItems = [
 
 
 const OfficerDashboardLayout = () => {
-  const { setDarkMode } = useDarkMode();
+  // const { setDarkMode } = useDarkMode();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    setDarkMode(true); // Always default to dark mode
-    if (location.pathname === '/officer-dashboard' || location.pathname === '/officer-dashboard/') {
-      navigate('/officer-dashboard');
-    }
-  }, [setDarkMode, location.pathname, navigate]);
+  // useEffect(() => {
+  //   setDarkMode(true); // Always default to dark mode
+  //   if (location.pathname === '/officer-dashboard' || location.pathname === '/officer-dashboard/') {
+  //     navigate('/officer-dashboard');
+  //   }
+  // }, [setDarkMode, location.pathname, navigate]);
 
   const handleLogout = () => {
   localStorage.removeItem("dms_user");

@@ -374,7 +374,7 @@ export default function EditPWDRecord() {
             {formData.supporting_documents.map((doc, idx) => (
               <li key={idx} className="flex items-center gap-2">
                 {typeof doc === "string" ? (
-                  <a href={`https://disability-management-api.onrender.com/${encodeURIComponent(doc)}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">
+                  <a href={`https://disability-management-api.onrender.com/uploads/pwd/${encodeURIComponent(doc.split('/').pop())}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">
                     {doc.split('/').pop()}
                   </a>
                 ) : (

@@ -103,8 +103,8 @@ export default function PWDDetails() {
               <div className="space-y-4">
                 <h3 className="text-lg font-bold mb-2">Profile Image</h3>
                 <img 
-                  src={record.profile_image
-                    ? `https://disability-management-api.onrender.com/${record.profile_image}`
+                  src={record.profile_image && typeof record.profile_image === "string" && record.profile_image !== ""
+                    ? `https://disability-management-api.onrender.com/${record.profile_image.replace(/\\/g, '/')}`
                     : `https://ui-avatars.com/api/?name=${encodeURIComponent(record.full_name)}`}
                   alt={record.full_name}
                   className="w-48 h-48 object-cover rounded-lg"
@@ -119,10 +119,10 @@ export default function PWDDetails() {
                     <li key={idx} className="flex items-center gap-2">
                       {typeof doc === "string" ? (
                         <>
-                          <a href={`https://disability-management-api.onrender.com/${encodeURIComponent(doc)}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">
+                          <a href={`https://disability-management-api.onrender.com/uploads/pwd/${encodeURIComponent(doc.split('/').pop())}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">
                             {doc.split('/').pop()}
                           </a>
-                          <button type="button" className="ml-2 px-2 py-1 bg-teal-700 text-xs rounded text-white" onClick={() => window.open(`https://disability-management-api.onrender.com/${encodeURIComponent(doc)}`, '_blank')}>Preview</button>
+                          <button type="button" className="ml-2 px-2 py-1 bg-teal-700 text-xs rounded text-white" onClick={() => window.open(`https://disability-management-api.onrender.com/uploads/pwd/${encodeURIComponent(doc.split('/').pop())}`, '_blank')}>Preview</button>
                         </>
                       ) : (
                         <span>{doc.name}</span>
