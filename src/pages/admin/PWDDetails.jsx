@@ -136,9 +136,15 @@ export default function PWDDetails() {
             </div>
             <div className="mt-8">
               <h3 className="text-lg font-bold mb-4">Record Status</h3>
-              <div className={`inline-block px-4 py-2 rounded-full text-base ${
-                record.status === 'approved' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500'
-              }`}>
+              <div
+                className={`inline-block px-4 py-2 rounded-full text-base ${
+                  record.status === 'approved'
+                    ? 'bg-green-500/20 text-green-500'
+                    : record.status === 'declined'
+                    ? 'bg-red-500/20 text-red-500'
+                    : 'bg-yellow-500/20 text-yellow-500'
+                }`}
+              >
                 {record.status}
               </div>
             </div>
