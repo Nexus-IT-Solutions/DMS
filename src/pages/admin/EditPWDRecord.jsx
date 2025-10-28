@@ -121,7 +121,7 @@ export default function EditPWDRecord() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    setLoading(true);
+  setLoading(true);
     const user = JSON.parse(localStorage.getItem("dms_user"));
     const user_id = user?.user_id;
     const form = new FormData();
@@ -138,8 +138,8 @@ export default function EditPWDRecord() {
       }
     });
     form.append("user_id", user_id);
-    const res = await fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}`, {
-      method: "PATCH",
+    const res = await fetch(`https://disability-management-api.onrender.com/v1/pwd-records/${id}/update`, {
+      method: "POST",
       body: form,
     });
     const result = await res.json();
@@ -153,7 +153,8 @@ export default function EditPWDRecord() {
         color: "#fff",
         confirmButtonColor: "#6366f1",
       });
-      navigate("/admin-dashboard/records");
+      setFormData(result.data);
+      setLoading(false);
     } else {
       await Swal.fire({
         icon: "error",
@@ -163,10 +164,12 @@ export default function EditPWDRecord() {
         color: "#fff",
         confirmButtonColor: "#6366f1",
       });
+      setLoading(false);
     }
   };
 
   
+  if (loading) return <div className="text-center py-10 text-white">Loading...</div>;
   if (!formData) return <div className="text-center py-10 text-white">No record found.</div>;
 
   // Only show fields that exist in formData (except status, profile image, supporting documents)
